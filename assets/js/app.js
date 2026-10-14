@@ -145,70 +145,188 @@
     });
   })();
 
-  // ---- v6: product details interactions ----
+  // ---- product details: variety, origin, quantity, packaging and live price ----
   (function(){
-    var q = document.getElementById('pd-qty'); if (!q) return;
-    var TIERS = [[0,1.20],[2000,1.12],[10000,1.05]];
-    function unitMT(){ var u = document.querySelector('.qty-unit .vchip.on'); return u && u.dataset.unit === 'mt'; }
-    function val(){ return parseFloat((q.value || '0').replace(/,/g,'')) || 0; }
-    function updateQty(){
-      var kg = val() * (unitMT() ? 1000 : 1), t = 0;
-      TIERS.forEach(function(x, i){ if (kg >= x[0]) t = i; });
-      document.querySelectorAll('.tiers .tier').forEach(function(el, i){ el.classList.toggle('on', i === t); });
-      document.getElementById('pd-total').textContent = '$' + (kg * TIERS[t][1]).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
-      var h = document.getElementById('pd-qty-hint');
-      if (kg < 500){ h.textContent = 'Below MOQ — minimum order is 500 kg'; h.classList.add('warn'); }
-      else { h.textContent = 'Tier price $' + TIERS[t][1].toFixed(2) + '/kg applied · prices drop as quantity grows'; h.classList.remove('warn'); }
+    var root = document.getElementById('screen-product-details');
+    var q = document.getElementById('pd-qty'); if (!root || !q) return;
+
+    var VARS = {"alphonso": {"label": "Alphonso (Hapus)", "short": "Alphonso", "price": 1.2, "was": 1.36, "imgs": ["assets/images/mango.jpg", "assets/images/mango2.jpg", "assets/images/orchard.jpg", "assets/images/mango3.jpg"], "desc": "The 'King of Mangoes' from Ratnagiri and Devgad. Saffron-coloured, fibreless pulp with a rich, honeyed aroma and thin skin. GI-tagged, naturally ripened and hot-water treated to meet EU, UAE and US import norms — 10–12 days shelf life in cold chain."}, "kesar": {"label": "Kesar", "short": "Kesar", "price": 1.05, "was": 1.18, "imgs": ["assets/images/mango_kesar2.jpg", "assets/images/mango_kesar1.jpg", "assets/images/mango_kesar3.jpg"], "desc": "Grown at the foothills of Gir in Gujarat, Kesar is named after its saffron-hued pulp. Sweet, mildly tangy and very aromatic with excellent keeping quality — ideal for fresh retail and pulp processing. GI-tagged; 12–14 days shelf life in cold chain."}, "totapuri": {"label": "Totapuri", "short": "Totapuri", "price": 0.62, "was": 0.7, "imgs": ["assets/images/mango_totapuri3.jpg", "assets/images/mango_totapuri1.jpg", "assets/images/orchard.jpg"], "desc": "Recognisable by its parrot-beak tip, Totapuri is a firm, tangy-sweet mango from South India. High pulp yield and long shelf life make it the first choice for juice, pulp and dried-fruit manufacturers worldwide. Available April to July."}, "banganapalli": {"label": "Banganapalli", "short": "Banganapalli", "price": 0.85, "was": 0.96, "imgs": ["assets/images/mango_banganapalli1.jpg", "assets/images/mango_banganapalli3.jpg", "assets/images/mango_banganapalli2.jpg"], "desc": "Andhra Pradesh's large, golden-yellow mango with smooth, fibreless flesh and a mild sweetness. Thin skin and a small stone give a high edible portion. GI-tagged and popular across the Gulf and Southeast Asia; 10–12 days shelf life."}, "dasheri": {"label": "Dasheri", "short": "Dasheri", "price": 0.78, "was": 0.88, "imgs": ["assets/images/mango_dasheri1.jpg", "assets/images/mango_dasheri3.jpg", "assets/images/mango_dasheri2.jpg"], "desc": "A classic North Indian mango from Malihabad, Lucknow. Elongated fruit with green-yellow skin and very sweet, aromatic, fibreless pulp. Best for premium fresh-fruit retail; harvested June to July and best shipped by air for peak freshness."}, "himsagar": {"label": "Himsagar", "short": "Himsagar", "price": 0.92, "was": 1.04, "imgs": ["assets/images/mango_himsagar1.jpg", "assets/images/mango_himsagar2.jpg", "assets/images/mango_himsagar3.jpg"], "desc": "West Bengal's prized mango — medium-sized fruit with deep-yellow, fibreless pulp and an intensely sweet flavour. A short May–June season makes it a sought-after specialty for buyers in Bangladesh, the UK and the Middle East. GI-tagged."}};
+    var COUNTRIES = [{"code": "in", "name": "India", "f": 1.0, "markets": [["Ratnagiri APMC", "Maharashtra", 1.0], ["Vashi APMC, Navi Mumbai", "Maharashtra", 1.04], ["Devgad Market", "Maharashtra", 1.06], ["Salem Market", "Tamil Nadu", 0.93], ["Krishnagiri Market", "Tamil Nadu", 0.91], ["Banganapalle Market", "Andhra Pradesh", 0.94], ["Chittoor Market", "Andhra Pradesh", 0.92], ["Malihabad Mandi, Lucknow", "Uttar Pradesh", 0.95]]}, {"code": "pk", "name": "Pakistan", "f": 0.92, "markets": [["Multan Fruit Mandi", "Punjab", 1.0], ["Mirpur Khas Market", "Sindh", 0.97], ["Hyderabad Sabzi Mandi", "Sindh", 0.98]]}, {"code": "th", "name": "Thailand", "f": 1.08, "markets": [["Talaad Thai Market", "Bangkok", 1.0], ["Chachoengsao Market", "Chachoengsao", 0.96]]}, {"code": "ph", "name": "Philippines", "f": 1.12, "markets": [["Guimaras Trading Post", "Western Visayas", 1.03], ["Pangasinan Market", "Ilocos", 0.98]]}, {"code": "mx", "name": "Mexico", "f": 1.05, "markets": [["Central de Abasto", "Mexico City", 1.04], ["Sinaloa Market", "Sinaloa", 0.98], ["Michoacán Market", "Michoacán", 0.97]]}, {"code": "br", "name": "Brazil", "f": 0.98, "markets": [["Petrolina Market", "Pernambuco", 1.0], ["CEAGESP", "São Paulo", 1.06]]}, {"code": "pe", "name": "Peru", "f": 1.03, "markets": [["Piura Market", "Piura", 0.99], ["Lambayeque Market", "Lambayeque", 1.0]]}, {"code": "eg", "name": "Egypt", "f": 0.88, "markets": [["Obour Market", "Cairo", 1.0], ["Ismailia Market", "Ismailia", 0.96]]}, {"code": "ke", "name": "Kenya", "f": 0.85, "markets": [["Makueni Market", "Makueni", 0.98], ["Kilifi Market", "Kilifi", 1.0]]}];
+    var PACKS = {"carton": {"name": "Carton", "unit": "cartons", "hint": "Ventilated corrugated boxes, export grade", "opts": [{"name": "4 kg gift box", "short": "4 kg box", "note": "Premium retail", "per": 4, "cost": 0.6}, {"name": "10 kg carton", "short": "10 kg", "note": "5-ply, ventilated", "per": 10, "cost": 0.85}, {"name": "20 kg carton", "short": "20 kg", "note": "Export standard", "per": 20, "cost": 1.2}], "def": 2}, "bags": {"name": "Bags", "unit": "bags", "hint": "Breathable bags for bulk shipments", "opts": [{"name": "10 kg jute bag", "short": "10 kg jute", "note": "Eco, breathable", "per": 10, "cost": 0.35}, {"name": "25 kg PP woven", "short": "25 kg PP", "note": "Strong, low cost", "per": 25, "cost": 0.45}, {"name": "50 kg mesh bag", "short": "50 kg mesh", "note": "Max airflow", "per": 50, "cost": 0.55}], "def": 1}, "pallet": {"name": "Pallets", "unit": "pallets", "hint": "Stretch-wrapped with corner boards", "opts": [{"name": "Wooden · ISPM-15", "short": "Wooden", "note": "Heat-treated", "per": 1000, "cost": 16}, {"name": "Euro pallet", "short": "Euro", "note": "1200 × 800 mm", "per": 1000, "cost": 18}, {"name": "Plastic pallet", "short": "Plastic", "note": "Hygienic, reusable", "per": 1000, "cost": 24}], "def": 0}, "custom": {"name": "Customized", "unit": "packs", "hint": "Tell the supplier exactly how you want it packed", "opts": [{"name": "Private label", "short": "Private label", "note": "Your brand printed", "perKg": 0.03}, {"name": "Retail packs", "short": "Retail packs", "note": "1–5 kg consumer packs", "perKg": 0.12}, {"name": "Mixed assortment", "short": "Mixed packs", "note": "Multiple varieties", "perKg": 0.06}], "def": 0}};
+    var UNITS = { kg: 1, mt: 1000, lb: 0.453592 };
+    var TIER_AT = [0, 2000, 10000], TIER_RATIO = [1, 0.9333, 0.875];
+
+    var st = { variety: 'alphonso', country: 'in', market: 0, unit: 'kg', packs: { carton: { opt: 2, count: null } } };
+
+    function $(id){ return document.getElementById(id); }
+    function money(v){ return '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+    function fmt(v, d){ return v.toLocaleString('en-US', { maximumFractionDigits: d || 0 }); }
+    function country(){ return COUNTRIES.filter(function(c){ return c.code === st.country; })[0]; }
+    function countryPrice(c){ return VARS[st.variety].price * c.f; }
+    function marketPrice(c, i){ return Math.round(countryPrice(c) * c.markets[i][2] * 100) / 100; }
+    function unitPrice(){ return marketPrice(country(), st.market); }
+    function qtyVal(){ return parseFloat((q.value || '0').replace(/,/g, '')) || 0; }
+    function kg(){ return qtyVal() * UNITS[st.unit]; }
+    function tierIndex(k){ var t = 0; TIER_AT.forEach(function(x, i){ if (k >= x) t = i; }); return t; }
+    function tierPrice(i){ return Math.round(unitPrice() * TIER_RATIO[i] * 100) / 100; }
+    function autoCount(type, opt){ var p = PACKS[type], o = p.opts[opt]; return Math.max(1, Math.ceil(kg() / o.per)); }
+    function packCount(type){ var s = st.packs[type]; return s.count == null ? autoCount(type, s.opt) : s.count; }
+    function packCost(type){
+      var s = st.packs[type], o = PACKS[type].opts[s.opt];
+      return o.perKg ? o.perKg * kg() : o.cost * packCount(type);
     }
-    document.addEventListener('click', function(e){
-      var chip = e.target.closest('[data-chipgroup] .vchip');
-      if (!chip) return;
-      var wasMT = chip.dataset.unit && unitMT();
-      chip.parentElement.querySelectorAll('.vchip').forEach(function(c){ c.classList.remove('on'); }); chip.classList.add('on');
-      if (chip.dataset.unit && wasMT !== unitMT()){
-        var v = unitMT() ? val() / 1000 : val() * 1000;
-        q.value = v.toLocaleString('en-US', {maximumFractionDigits:3}); updateQty();
-      }
-    });
-    document.querySelectorAll('[data-qty-step]').forEach(function(b){
-      b.addEventListener('click', function(){
-        var step = unitMT() ? (parseFloat(b.dataset.qtyStep) > 0 ? 1 : -1) : parseFloat(b.dataset.qtyStep);
-        var v = Math.max(0, val() + step);
-        q.value = v.toLocaleString('en-US', {maximumFractionDigits:3}); updateQty();
+
+    // ---------- render ----------
+    function update(){
+      var c = country(), up = unitPrice(), v = VARS[st.variety], k = kg(), t = tierIndex(k);
+      // header price
+      var was = up * v.was / v.price;
+      root.querySelector('.pd-price b').textContent = money(up);
+      root.querySelector('.pd-price .strike').textContent = money(was);
+      root.querySelector('.pd-price .off').textContent = Math.round((1 - up / was) * 100) + '% off';
+      // origin rows
+      $('pd-country-flag').src = 'assets/images/flags/' + c.code + '.png';
+      $('pd-country').textContent = c.name;
+      $('pd-country-price').textContent = 'avg ' + money(countryPrice(c)) + '/kg';
+      $('pd-market').textContent = c.markets[st.market][0];
+      $('pd-market-sub').textContent = c.markets[st.market][1];
+      $('pd-market-price').textContent = 'avg ' + money(up) + '/kg';
+      // quantity
+      $('pd-qty-unit').textContent = st.unit.toUpperCase();
+      var h = $('pd-qty-hint');
+      if (k < 500){ h.textContent = 'Below MOQ — minimum order is 500 kg'; h.classList.add('warn'); }
+      else { h.textContent = '≈ ' + fmt(k) + ' kg · tier price ' + money(tierPrice(t)) + '/kg applied'; h.classList.remove('warn'); }
+      root.querySelectorAll('.tiers .tier').forEach(function(el, i){
+        el.classList.toggle('on', i === t);
+        el.querySelector('.tp').textContent = money(tierPrice(i));
       });
+      // packaging tiles
+      var packTotal = 0;
+      root.querySelectorAll('.pk-tile').forEach(function(el){
+        var type = el.dataset.pack, s = st.packs[type], sub = el.querySelector('small');
+        el.classList.toggle('on', !!s);
+        if (!s){ sub.textContent = 'Tap to add'; return; }
+        var o = PACKS[type].opts[s.opt];
+        sub.textContent = o.perKg ? o.short : fmt(packCount(type)) + ' × ' + o.short;
+        packTotal += packCost(type);
+      });
+      // breakdown + CTA
+      var goods = k * tierPrice(t), total = goods + packTotal;
+      $('pb-goods-l').textContent = 'Product (' + fmt(k) + ' kg × ' + money(tierPrice(t)) + ')';
+      $('pb-goods').textContent = money(goods);
+      $('pb-pack').textContent = packTotal ? money(packTotal) : '—';
+      $('pb-total').textContent = money(total);
+      $('pd-total').textContent = money(total);
+    }
+
+    function setVariety(key){
+      var v = VARS[key]; if (!v) return;
+      st.variety = key;
+      root.querySelectorAll('.vtile').forEach(function(t){ t.classList.toggle('on', t.dataset.variety === key); });
+      $('pd-var-name').textContent = v.label;
+      $('pd-desc').textContent = v.desc;
+      var g = root.querySelector('.pd-gs');
+      g.innerHTML = v.imgs.map(function(src){ return '<img src="' + src + '" alt="">'; }).join('');
+      g.scrollLeft = 0; g.classList.remove('swap'); void g.offsetWidth; g.classList.add('swap');
+      $('pd-count').textContent = '1 / ' + v.imgs.length;
+      var nm = root.querySelector('.pd-name');
+      nm.textContent = nm.textContent.replace(/^[^—]*?Mango/, v.short + ' Mango');
+      update();
+    }
+
+    // ---------- bottom sheets ----------
+    var pick = $('pd-pick'), pack = $('pd-pack');
+    function openSheet(el){ el.classList.add('open'); }
+    function closeSheet(el){ el.classList.remove('open'); }
+    var CHECK = '<svg class="pk-check" viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>';
+    var PIN = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+
+    function openPicker(kind){
+      var c = country(), rows;
+      if (kind === 'country'){
+        $('pk-title').textContent = 'Select country';
+        $('pk-sub').textContent = 'Average ' + VARS[st.variety].short + ' price by origin';
+        rows = COUNTRIES.map(function(x){
+          return '<div class="pk-row' + (x.code === st.country ? ' on' : '') + '" data-pick-country="' + x.code + '"><span class="pk-flag"><img src="assets/images/flags/' + x.code + '.png" alt=""></span>' +
+            '<div class="pk-b"><b>' + x.name + '</b><small>' + x.markets.length + ' markets</small></div><div class="pk-p"><b>' + money(countryPrice(x)) + '</b><small>avg / kg</small></div>' + CHECK + '</div>';
+        });
+      } else {
+        $('pk-title').textContent = 'Select market';
+        $('pk-sub').textContent = 'Average ' + VARS[st.variety].short + ' price in ' + c.name;
+        rows = c.markets.map(function(m, i){
+          return '<div class="pk-row' + (i === st.market ? ' on' : '') + '" data-pick-market="' + i + '"><span class="pk-pin">' + PIN + '</span>' +
+            '<div class="pk-b"><b>' + m[0] + '</b><small>' + m[1] + '</small></div><div class="pk-p"><b>' + money(marketPrice(c, i)) + '</b><small>avg / kg</small></div>' + CHECK + '</div>';
+        });
+      }
+      $('pk-list').innerHTML = rows.join('');
+      openSheet(pick);
+    }
+
+    var draft = null;
+    function openPack(type){
+      var p = PACKS[type], cur = st.packs[type];
+      draft = { type: type, opt: cur ? cur.opt : p.def, count: cur ? cur.count : null };
+      $('pp-title').textContent = p.name;
+      $('pp-sub').textContent = p.hint;
+      $('pp-remove').style.display = cur ? '' : 'none';
+      renderPack();
+      openSheet(pack);
+    }
+    function renderPack(){
+      var p = PACKS[draft.type], o = p.opts[draft.opt];
+      $('pp-opts').innerHTML = p.opts.map(function(x, i){
+        return '<div class="pp-opt' + (i === draft.opt ? ' on' : '') + '" data-pp-opt="' + i + '"><b>' + x.name + '</b><small>' + x.note + '</small><em>' +
+          (x.perKg ? '+' + money(x.perKg) + '/kg' : money(x.cost) + ' each') + '</em></div>';
+      }).join('');
+      var perKg = !!o.perKg;
+      $('pp-count-wrap').style.display = perKg ? 'none' : '';
+      $('pp-notes-wrap').style.display = draft.type === 'custom' ? '' : 'none';
+      var n = draft.count == null ? autoCount(draft.type, draft.opt) : draft.count;
+      $('pp-count').value = fmt(n);
+      $('pp-count-l').textContent = 'Number of ' + p.unit;
+      $('pp-count-hint').textContent = perKg ? '' : (draft.count == null ? 'Auto-filled for ' + fmt(kg()) + ' kg' : 'Custom count') + ' · ' + o.per + ' kg per ' + p.unit.replace(/s$/, '');
+      var cost = perKg ? o.perKg * kg() : o.cost * n;
+      $('pp-cost').textContent = money(cost);
+    }
+
+    // ---------- events ----------
+    root.addEventListener('click', function(e){
+      var t;
+      if ((t = e.target.closest('.vtile'))) { if (!t.classList.contains('on')) setVariety(t.dataset.variety); return; }
+      if ((t = e.target.closest('[data-open-picker]'))) { openPicker(t.dataset.openPicker); return; }
+      if ((t = e.target.closest('[data-pick-country]'))) { st.country = t.dataset.pickCountry; st.market = 0; closeSheet(pick); update(); return; }
+      if ((t = e.target.closest('[data-pick-market]'))) { st.market = +t.dataset.pickMarket; closeSheet(pick); update(); return; }
+      if ((t = e.target.closest('[data-close-sheet]'))) { closeSheet($(t.dataset.closeSheet)); return; }
+      if ((t = e.target.closest('.unit-chip'))) {
+        if (t.dataset.unit === st.unit) return;
+        var k0 = kg(); st.unit = t.dataset.unit;
+        root.querySelectorAll('.unit-chip').forEach(function(u){ u.classList.toggle('on', u === t); });
+        q.value = fmt(k0 / UNITS[st.unit], 3); update(); return;
+      }
+      if ((t = e.target.closest('.pk-tile'))) { openPack(t.dataset.pack); return; }
+      if ((t = e.target.closest('[data-pp-opt]'))) { draft.opt = +t.dataset.ppOpt; draft.count = null; renderPack(); return; }
+      if ((t = e.target.closest('[data-pp-step]'))) {
+        var n = (draft.count == null ? autoCount(draft.type, draft.opt) : draft.count) + (+t.dataset.ppStep);
+        draft.count = Math.max(1, n); renderPack(); return;
+      }
+      if (e.target.closest('#pp-apply')) { st.packs[draft.type] = { opt: draft.opt, count: draft.count }; closeSheet(pack); update(); return; }
+      if (e.target.closest('#pp-remove')) { delete st.packs[draft.type]; closeSheet(pack); update(); return; }
     });
-    q.addEventListener('input', updateQty);
-    q.addEventListener('blur', function(){ q.value = val().toLocaleString('en-US', {maximumFractionDigits:3}); });
-    var n = 0, cart = document.getElementById('pd-cart'), badge = document.getElementById('pd-cart-n'), toast = document.getElementById('pd-toast');
+    $('pp-count').addEventListener('input', function(){
+      var v = parseInt(this.value.replace(/,/g, ''), 10); draft.count = v > 0 ? v : 1;
+      var p = PACKS[draft.type], o = p.opts[draft.opt]; $('pp-cost').textContent = money(o.cost * draft.count);
+      $('pp-count-hint').textContent = 'Custom count · ' + o.per + ' kg per ' + p.unit.replace(/s$/, '');
+    });
+    q.addEventListener('input', update);
+    q.addEventListener('blur', function(){ q.value = fmt(qtyVal(), 3); });
+
+    var n = 0, cart = $('pd-cart'), badge = $('pd-cart-n'), toast = $('pd-toast');
     cart.addEventListener('click', function(){
       n++; badge.textContent = n; badge.classList.add('show');
       toast.classList.add('show'); clearTimeout(toast._t); toast._t = setTimeout(function(){ toast.classList.remove('show'); }, 1600);
     });
-    // variety tiles swap the gallery, price, title and tier prices (Amazon-style)
-    var VARS = {"alphonso": {"label": "Alphonso (Hapus)", "short": "Alphonso", "price": 1.2, "was": 1.36, "imgs": ["assets/images/mango.jpg", "assets/images/mango2.jpg", "assets/images/orchard.jpg", "assets/images/mango3.jpg"]}, "kesar": {"label": "Kesar", "short": "Kesar", "price": 1.05, "was": 1.18, "imgs": ["assets/images/mango_kesar2.jpg", "assets/images/mango_kesar1.jpg", "assets/images/mango_kesar3.jpg"]}, "totapuri": {"label": "Totapuri", "short": "Totapuri", "price": 0.62, "was": 0.7, "imgs": ["assets/images/mango_totapuri3.jpg", "assets/images/mango_totapuri1.jpg", "assets/images/orchard.jpg"]}, "banganapalli": {"label": "Banganapalli", "short": "Banganapalli", "price": 0.85, "was": 0.96, "imgs": ["assets/images/mango_banganapalli1.jpg", "assets/images/mango_banganapalli3.jpg", "assets/images/mango_banganapalli2.jpg"]}};
-    var RATIO = TIERS.map(function(x){ return x[1] / TIERS[0][1]; });
-    function money(v){ return '$' + v.toFixed(2); }
-    document.addEventListener('click', function(e){
-      var tile = e.target.closest('.vtile'); if (!tile || tile.classList.contains('on')) return;
-      var v = VARS[tile.dataset.variety]; if (!v) return;
-      document.querySelectorAll('.vtile').forEach(function(t){ t.classList.toggle('on', t === tile); });
-      document.getElementById('pd-var-name').textContent = v.label;
-      var g = document.querySelector('#screen-product-details .pd-gs');
-      g.innerHTML = v.imgs.map(function(src){ return '<img src="' + src + '" alt="">'; }).join('');
-      g.scrollLeft = 0; g.classList.remove('swap'); void g.offsetWidth; g.classList.add('swap');
-      document.getElementById('pd-count').textContent = '1 / ' + v.imgs.length;
-      var nm = document.querySelector('#screen-product-details .pd-name');
-      nm.textContent = nm.textContent.replace(/^[^—]*?Mango/, v.short + ' Mango');
-      document.querySelector('.pd-price b').textContent = money(v.price);
-      document.querySelector('.pd-price .strike').textContent = money(v.was);
-      document.querySelector('.pd-price .off').textContent = Math.round((1 - v.price / v.was) * 100) + '% off';
-      TIERS.forEach(function(x, i){ x[1] = Math.round(v.price * RATIO[i] * 100) / 100; });
-      document.querySelectorAll('.tiers .tier .tp').forEach(function(el, i){ el.textContent = money(TIERS[i][1]); });
-      updateQty();
-    });
-    updateQty();
+    update();
   })();
-
   render();
 
   // ---- country sheet + continent page ----
@@ -217,9 +335,12 @@
     var CHEV = "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M9 6l6 6-6 6\"/></svg>";
     function flagSrc(k){ return 'assets/images/flags/' + k + '.png'; }
     function fmt(n){ return n.toLocaleString('en-US'); }
+    // sectors a country exports in (Spices, Fruits, Grains...) — sample figures scaled from its product count
+    function sectors(products){ return Math.max(3, Math.min(12, Math.round(products / 45))); }
     function fillContinent(key){
       var c = CONT[key]; if (!c) return;
-      var p = 0, e = 0; c.list.forEach(function(x){ p += x[3]; e += x[4]; });
+      var p = 0, e = 0; c.list.forEach(function(x){ p += x[3]; e = Math.max(e, sectors(x[3])); });
+      e = Math.min(14, e + 2);
       document.getElementById('ct-title').textContent = c.name;
       document.getElementById('ct-name').textContent = c.name;
       document.getElementById('ct-n').textContent = c.list.length;
@@ -230,7 +351,7 @@
       document.getElementById('ct-flags').innerHTML = fl;
       document.getElementById('ct-list').innerHTML = c.list.map(function(x){
         return '<div class="ct-row" data-goto="category-products" data-category="' + x[1] + '"><span class="cf"><img src="' + flagSrc(x[0]) + '" alt=""></span>' +
-          '<div class="ct-rb"><b>' + x[1] + '</b><small>' + x[2] + '</small><div class="ct-meta"><span>' + fmt(x[3]) + ' products</span><span>' + fmt(x[4]) + ' exporters</span></div></div>' + CHEV + '</div>';
+          '<div class="ct-rb"><b>' + x[1] + '</b><small>' + x[2] + '</small><div class="ct-meta"><span>' + fmt(x[3]) + ' products</span><span>' + sectors(x[3]) + ' sectors</span></div></div>' + CHEV + '</div>';
       }).join('');
     }
     document.addEventListener('click', function(e){
