@@ -1,0 +1,9 @@
+# Cloudflare Pages: always re-check HTML, CSS and JS so updates show up right away
+/
+  Cache-Control: no-cache
+/index.html
+  Cache-Control: no-cache
+/assets/css/*
+  Cache-Control: no-cache
+/assets/js/*
+  Cache-Control: no-cache
