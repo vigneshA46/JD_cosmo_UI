@@ -184,6 +184,28 @@
       n++; badge.textContent = n; badge.classList.add('show');
       toast.classList.add('show'); clearTimeout(toast._t); toast._t = setTimeout(function(){ toast.classList.remove('show'); }, 1600);
     });
+    // variety tiles swap the gallery, price, title and tier prices (Amazon-style)
+    var VARS = {"alphonso": {"label": "Alphonso (Hapus)", "short": "Alphonso", "price": 1.2, "was": 1.36, "imgs": ["assets/images/mango.jpg", "assets/images/mango2.jpg", "assets/images/orchard.jpg", "assets/images/mango3.jpg"]}, "kesar": {"label": "Kesar", "short": "Kesar", "price": 1.05, "was": 1.18, "imgs": ["assets/images/mango_kesar2.jpg", "assets/images/mango_kesar1.jpg", "assets/images/mango_kesar3.jpg"]}, "totapuri": {"label": "Totapuri", "short": "Totapuri", "price": 0.62, "was": 0.7, "imgs": ["assets/images/mango_totapuri3.jpg", "assets/images/mango_totapuri1.jpg", "assets/images/orchard.jpg"]}, "banganapalli": {"label": "Banganapalli", "short": "Banganapalli", "price": 0.85, "was": 0.96, "imgs": ["assets/images/mango_banganapalli1.jpg", "assets/images/mango_banganapalli3.jpg", "assets/images/mango_banganapalli2.jpg"]}};
+    var RATIO = TIERS.map(function(x){ return x[1] / TIERS[0][1]; });
+    function money(v){ return '$' + v.toFixed(2); }
+    document.addEventListener('click', function(e){
+      var tile = e.target.closest('.vtile'); if (!tile || tile.classList.contains('on')) return;
+      var v = VARS[tile.dataset.variety]; if (!v) return;
+      document.querySelectorAll('.vtile').forEach(function(t){ t.classList.toggle('on', t === tile); });
+      document.getElementById('pd-var-name').textContent = v.label;
+      var g = document.querySelector('#screen-product-details .pd-gs');
+      g.innerHTML = v.imgs.map(function(src){ return '<img src="' + src + '" alt="">'; }).join('');
+      g.scrollLeft = 0; g.classList.remove('swap'); void g.offsetWidth; g.classList.add('swap');
+      document.getElementById('pd-count').textContent = '1 / ' + v.imgs.length;
+      var nm = document.querySelector('#screen-product-details .pd-name');
+      nm.textContent = nm.textContent.replace(/^[^—]*?Mango/, v.short + ' Mango');
+      document.querySelector('.pd-price b').textContent = money(v.price);
+      document.querySelector('.pd-price .strike').textContent = money(v.was);
+      document.querySelector('.pd-price .off').textContent = Math.round((1 - v.price / v.was) * 100) + '% off';
+      TIERS.forEach(function(x, i){ x[1] = Math.round(v.price * RATIO[i] * 100) / 100; });
+      document.querySelectorAll('.tiers .tier .tp').forEach(function(el, i){ el.textContent = money(TIERS[i][1]); });
+      updateQty();
+    });
     updateQty();
   })();
 
