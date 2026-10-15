@@ -152,11 +152,11 @@
 
     var VARS = {"alphonso": {"label": "Alphonso (Hapus)", "short": "Alphonso", "price": 1.2, "was": 1.36, "imgs": ["assets/images/mango.jpg", "assets/images/mango2.jpg", "assets/images/orchard.jpg", "assets/images/mango3.jpg"], "desc": "The 'King of Mangoes' from Ratnagiri and Devgad. Saffron-coloured, fibreless pulp with a rich, honeyed aroma and thin skin. GI-tagged, naturally ripened and hot-water treated to meet EU, UAE and US import norms — 10–12 days shelf life in cold chain."}, "kesar": {"label": "Kesar", "short": "Kesar", "price": 1.05, "was": 1.18, "imgs": ["assets/images/mango_kesar2.jpg", "assets/images/mango_kesar1.jpg", "assets/images/mango_kesar3.jpg"], "desc": "Grown at the foothills of Gir in Gujarat, Kesar is named after its saffron-hued pulp. Sweet, mildly tangy and very aromatic with excellent keeping quality — ideal for fresh retail and pulp processing. GI-tagged; 12–14 days shelf life in cold chain."}, "totapuri": {"label": "Totapuri", "short": "Totapuri", "price": 0.62, "was": 0.7, "imgs": ["assets/images/mango_totapuri3.jpg", "assets/images/mango_totapuri1.jpg", "assets/images/orchard.jpg"], "desc": "Recognisable by its parrot-beak tip, Totapuri is a firm, tangy-sweet mango from South India. High pulp yield and long shelf life make it the first choice for juice, pulp and dried-fruit manufacturers worldwide. Available April to July."}, "banganapalli": {"label": "Banganapalli", "short": "Banganapalli", "price": 0.85, "was": 0.96, "imgs": ["assets/images/mango_banganapalli1.jpg", "assets/images/mango_banganapalli3.jpg", "assets/images/mango_banganapalli2.jpg"], "desc": "Andhra Pradesh's large, golden-yellow mango with smooth, fibreless flesh and a mild sweetness. Thin skin and a small stone give a high edible portion. GI-tagged and popular across the Gulf and Southeast Asia; 10–12 days shelf life."}, "dasheri": {"label": "Dasheri", "short": "Dasheri", "price": 0.78, "was": 0.88, "imgs": ["assets/images/mango_dasheri1.jpg", "assets/images/mango_dasheri3.jpg", "assets/images/mango_dasheri2.jpg"], "desc": "A classic North Indian mango from Malihabad, Lucknow. Elongated fruit with green-yellow skin and very sweet, aromatic, fibreless pulp. Best for premium fresh-fruit retail; harvested June to July and best shipped by air for peak freshness."}, "himsagar": {"label": "Himsagar", "short": "Himsagar", "price": 0.92, "was": 1.04, "imgs": ["assets/images/mango_himsagar1.jpg", "assets/images/mango_himsagar2.jpg", "assets/images/mango_himsagar3.jpg"], "desc": "West Bengal's prized mango — medium-sized fruit with deep-yellow, fibreless pulp and an intensely sweet flavour. A short May–June season makes it a sought-after specialty for buyers in Bangladesh, the UK and the Middle East. GI-tagged."}};
     var COUNTRIES = [{"code": "in", "name": "India", "f": 1.0, "markets": [["Ratnagiri APMC", "Maharashtra", 1.0], ["Vashi APMC, Navi Mumbai", "Maharashtra", 1.04], ["Devgad Market", "Maharashtra", 1.06], ["Salem Market", "Tamil Nadu", 0.93], ["Krishnagiri Market", "Tamil Nadu", 0.91], ["Banganapalle Market", "Andhra Pradesh", 0.94], ["Chittoor Market", "Andhra Pradesh", 0.92], ["Malihabad Mandi, Lucknow", "Uttar Pradesh", 0.95]]}, {"code": "pk", "name": "Pakistan", "f": 0.92, "markets": [["Multan Fruit Mandi", "Punjab", 1.0], ["Mirpur Khas Market", "Sindh", 0.97], ["Hyderabad Sabzi Mandi", "Sindh", 0.98]]}, {"code": "th", "name": "Thailand", "f": 1.08, "markets": [["Talaad Thai Market", "Bangkok", 1.0], ["Chachoengsao Market", "Chachoengsao", 0.96]]}, {"code": "ph", "name": "Philippines", "f": 1.12, "markets": [["Guimaras Trading Post", "Western Visayas", 1.03], ["Pangasinan Market", "Ilocos", 0.98]]}, {"code": "mx", "name": "Mexico", "f": 1.05, "markets": [["Central de Abasto", "Mexico City", 1.04], ["Sinaloa Market", "Sinaloa", 0.98], ["Michoacán Market", "Michoacán", 0.97]]}, {"code": "br", "name": "Brazil", "f": 0.98, "markets": [["Petrolina Market", "Pernambuco", 1.0], ["CEAGESP", "São Paulo", 1.06]]}, {"code": "pe", "name": "Peru", "f": 1.03, "markets": [["Piura Market", "Piura", 0.99], ["Lambayeque Market", "Lambayeque", 1.0]]}, {"code": "eg", "name": "Egypt", "f": 0.88, "markets": [["Obour Market", "Cairo", 1.0], ["Ismailia Market", "Ismailia", 0.96]]}, {"code": "ke", "name": "Kenya", "f": 0.85, "markets": [["Makueni Market", "Makueni", 0.98], ["Kilifi Market", "Kilifi", 1.0]]}];
-    var PACKS = {"carton": {"name": "Carton", "unit": "cartons", "hint": "Ventilated corrugated boxes, export grade", "opts": [{"name": "4 kg gift box", "short": "4 kg box", "note": "Premium retail", "per": 4, "cost": 0.6}, {"name": "10 kg carton", "short": "10 kg", "note": "5-ply, ventilated", "per": 10, "cost": 0.85}, {"name": "20 kg carton", "short": "20 kg", "note": "Export standard", "per": 20, "cost": 1.2}], "def": 2}, "bags": {"name": "Bags", "unit": "bags", "hint": "Breathable bags for bulk shipments", "opts": [{"name": "10 kg jute bag", "short": "10 kg jute", "note": "Eco, breathable", "per": 10, "cost": 0.35}, {"name": "25 kg PP woven", "short": "25 kg PP", "note": "Strong, low cost", "per": 25, "cost": 0.45}, {"name": "50 kg mesh bag", "short": "50 kg mesh", "note": "Max airflow", "per": 50, "cost": 0.55}], "def": 1}, "pallet": {"name": "Pallets", "unit": "pallets", "hint": "Stretch-wrapped with corner boards", "opts": [{"name": "Wooden · ISPM-15", "short": "Wooden", "note": "Heat-treated", "per": 1000, "cost": 16}, {"name": "Euro pallet", "short": "Euro", "note": "1200 × 800 mm", "per": 1000, "cost": 18}, {"name": "Plastic pallet", "short": "Plastic", "note": "Hygienic, reusable", "per": 1000, "cost": 24}], "def": 0}, "custom": {"name": "Customized", "unit": "packs", "hint": "Tell the supplier exactly how you want it packed", "opts": [{"name": "Private label", "short": "Private label", "note": "Your brand printed", "perKg": 0.03}, {"name": "Retail packs", "short": "Retail packs", "note": "1–5 kg consumer packs", "perKg": 0.12}, {"name": "Mixed assortment", "short": "Mixed packs", "note": "Multiple varieties", "perKg": 0.06}], "def": 0}};
+    var PACKS = {"carton": {"name": "Carton Boxes", "short": "Cartons", "unit": "cartons", "one": "carton", "sizes": [5, 10, 20], "base": 0.4, "def_sub": 5, "def_size": 2, "subs": ["Single Wall", "Double Wall", "Triple Wall", "Rigid Box", "Die-Cut Box", "Heavy Duty Export Carton"], "hint": "Corrugated boxes, ventilated for fresh produce"}, "pallet": {"name": "Pallets", "short": "Pallets", "unit": "pallets", "one": "pallet", "sizes": [500, 1000, 1500], "base": 12, "def_sub": 0, "def_size": 1, "subs": ["Wooden Pallet", "Plastic Pallet", "Metal Pallet", "Plywood Pallet", "Euro Pallet", "Two-Way Pallet", "Four-Way Pallet"], "hint": "Stretch-wrapped with corner boards"}, "bags": {"name": "Bags & Sacks", "short": "Bags", "unit": "bags", "one": "bag", "sizes": [10, 25, 50], "base": 0.22, "def_sub": 0, "def_size": 1, "subs": ["PP Woven Bag", "HDPE Bag", "LDPE Bag", "Jute Bag", "Paper Bag", "Multiwall Paper Sack", "Laminated Bag", "BOPP Bag"], "hint": "Breathable bags and sacks for bulk produce"}, "fibc": {"name": "Jumbo Bags (FIBC)", "short": "Jumbo Bags", "unit": "jumbo bags", "one": "jumbo bag", "sizes": [500, 1000, 1500], "base": 6.5, "def_sub": 0, "def_size": 1, "subs": ["U-Panel", "Circular", "Four-Panel", "Baffle", "Ventilated", "Conductive"], "hint": "Flexible intermediate bulk containers"}, "wood": {"name": "Wooden Packaging", "short": "Wooden", "unit": "boxes", "one": "box", "sizes": [50, 100, 250], "base": 6, "def_sub": 1, "def_size": 1, "subs": ["Wooden Box", "Wooden Crate", "Plywood Box", "Plywood Crate", "Wooden Case", "Machinery Crate"], "hint": "ISPM-15 heat-treated timber"}, "drum": {"name": "Drums & Barrels", "short": "Drums", "unit": "drums", "one": "drum", "sizes": [50, 100, 200], "base": 9, "def_sub": 0, "def_size": 2, "subs": ["Plastic Drum", "Steel Drum", "Fibre Drum", "Open Top", "Closed Top", "HDPE Drum"], "hint": "For pulp, puree and liquids"}, "bottle": {"name": "Bottles & Containers", "short": "Bottles", "unit": "containers", "one": "container", "sizes": [1, 5, 20], "base": 0.35, "def_sub": 2, "def_size": 1, "subs": ["Plastic Bottle", "Glass Bottle", "HDPE Container", "PET Container", "Jerry Can", "Metal Can", "Tin Container"], "hint": "Retail and food-service containers"}, "bulk": {"name": "Bulk Containers", "short": "Bulk", "unit": "units", "one": "unit", "sizes": [1000, 5000, 20000], "base": 95, "def_sub": 0, "def_size": 0, "subs": ["IBC Tank", "Flexitank", "ISO Tank Container", "Bulk Container Liner", "Collapsible IBC"], "hint": "Large-volume liquid and pulp transport"}, "pouch": {"name": "Pouches & Flexible Packaging", "short": "Pouches", "unit": "pouches", "one": "pouch", "sizes": [0.5, 1, 5], "base": 0.08, "def_sub": 0, "def_size": 1, "subs": ["Stand-Up Pouch", "Flat Pouch", "Vacuum Pouch", "Zipper Pouch", "Aluminium Foil Pouch", "Retort Pouch", "Spout Pouch"], "hint": "Consumer-ready flexible packs"}, "wrap": {"name": "Wrapping & Film", "short": "Wraps & Film", "unit": "rolls", "one": "roll", "sizes": [250, 500, 1000], "base": 4.5, "def_sub": 0, "def_size": 1, "subs": ["Stretch Film", "Shrink Film", "Bubble Wrap", "Cling Film", "PE Film", "VCI Film", "Pallet Wrap"], "hint": "Roll coverage shown per roll"}, "protect": {"name": "Protective Packaging", "short": "Protective", "unit": "packs", "one": "pack", "sizes": [10, 25, 50], "base": 0.4, "def_sub": 2, "def_size": 1, "subs": ["Foam", "EPS / Thermocol", "EPE Foam", "Air Bubble Cushion", "Air Pillow", "Honeycomb Paper", "Edge Protector"], "hint": "Cushioning to prevent bruising in transit"}, "crate": {"name": "Trays & Crates", "short": "Trays & Crates", "unit": "crates", "one": "crate", "sizes": [5, 10, 20], "base": 0.7, "def_sub": 1, "def_size": 1, "subs": ["Plastic Crate", "Fruit Crate", "Vegetable Crate", "Corrugated Tray", "Plastic Tray", "Wooden Tray", "Stackable Crate"], "hint": "Stackable crates and trays for fresh fruit"}, "insul": {"name": "Insulated Packaging", "short": "Insulated", "unit": "boxes", "one": "box", "sizes": [5, 10, 20], "base": 1.6, "def_sub": 3, "def_size": 1, "subs": ["Insulated Box", "EPS Cooler Box", "Thermal Bag", "Cold Chain Box", "Gel Pack Packaging"], "hint": "Keeps produce cool on long journeys"}, "metal": {"name": "Metal Packaging", "short": "Metal", "unit": "containers", "one": "container", "sizes": [10, 25, 50], "base": 2.4, "def_sub": 0, "def_size": 1, "subs": ["Tin Box", "Metal Box", "Steel Container", "Aluminium Container", "Metal Crate", "Steel Cage"], "hint": "Rigid, tamper-proof metal packs"}, "paper": {"name": "Paper-Based Packaging", "short": "Paper-based", "unit": "packs", "one": "pack", "sizes": [5, 10, 25], "base": 0.3, "def_sub": 2, "def_size": 1, "subs": ["Kraft Paper Wrap", "Honeycomb Paper Wrap", "Paperboard Box", "Paper Tube", "Paper Sleeve", "Moulded Pulp"], "hint": "Recyclable, plastic-free options"}, "special": {"name": "Specialized Export Packaging", "short": "Specialized", "unit": "packs", "one": "pack", "sizes": [10, 25, 50], "base": 0.9, "def_sub": 1, "def_size": 1, "subs": ["Vacuum-Sealed", "Moisture Barrier", "Anti-Static", "VCI Anti-Rust", "Desiccant", "UN-Certified Dangerous Goods"], "hint": "Compliance-grade export protection"}, "custom": {"name": "Customized Packaging", "short": "Customized", "unit": "packs", "one": "pack", "sizes": [1, 5, 10], "base": 0.2, "def_sub": 0, "def_size": 1, "subs": ["Private Label", "Retail Pack", "Mixed Assortment"], "hint": "Tell the supplier exactly how you want it packed"}};
     var UNITS = { kg: 1, mt: 1000, lb: 0.453592 };
     var TIER_AT = [0, 2000, 10000], TIER_RATIO = [1, 0.9333, 0.875];
 
-    var st = { variety: 'alphonso', country: 'in', market: 0, unit: 'kg', packs: { carton: { opt: 2, count: null } } };
+    var st = { variety: 'alphonso', country: 'in', market: 0, unit: 'kg', packs: { carton: { sub: 5, size: 2 } } };
 
     function $(id){ return document.getElementById(id); }
     function money(v){ return '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
@@ -169,12 +169,14 @@
     function kg(){ return qtyVal() * UNITS[st.unit]; }
     function tierIndex(k){ var t = 0; TIER_AT.forEach(function(x, i){ if (k >= x) t = i; }); return t; }
     function tierPrice(i){ return Math.round(unitPrice() * TIER_RATIO[i] * 100) / 100; }
-    function autoCount(type, opt){ var p = PACKS[type], o = p.opts[opt]; return Math.max(1, Math.ceil(kg() / o.per)); }
-    function packCount(type){ var s = st.packs[type]; return s.count == null ? autoCount(type, s.opt) : s.count; }
-    function packCost(type){
-      var s = st.packs[type], o = PACKS[type].opts[s.opt];
-      return o.perKg ? o.perKg * kg() : o.cost * packCount(type);
+    function sizeLabel(v){ return v < 1 ? (v * 1000) + ' g' : fmt(v) + ' kg'; }
+    function needFor(type, size){ return Math.max(1, Math.ceil(kg() / PACKS[type].sizes[size])); }
+    // sample cost model: bigger packs cost more each (but less per kg); premium sub-types cost a little more
+    function costFor(type, sub, size){
+      var p = PACKS[type], each = p.base * Math.pow(p.sizes[size] / p.sizes[0], 0.75) * (1 + 0.06 * sub);
+      return Math.round(each * needFor(type, size) * 100) / 100;
     }
+    function packCost(type){ var s = st.packs[type]; return costFor(type, s.sub, s.size); }
 
     // ---------- render ----------
     function update(){
@@ -206,8 +208,7 @@
         var type = el.dataset.pack, s = st.packs[type], sub = el.querySelector('small');
         el.classList.toggle('on', !!s);
         if (!s){ sub.textContent = 'Tap to add'; return; }
-        var o = PACKS[type].opts[s.opt];
-        sub.textContent = o.perKg ? o.short : fmt(packCount(type)) + ' × ' + o.short;
+        sub.textContent = fmt(needFor(type, s.size)) + ' × ' + sizeLabel(PACKS[type].sizes[s.size]);
         packTotal += packCost(type);
       });
       // breakdown + CTA
@@ -265,28 +266,28 @@
     var draft = null;
     function openPack(type){
       var p = PACKS[type], cur = st.packs[type];
-      draft = { type: type, opt: cur ? cur.opt : p.def, count: cur ? cur.count : null };
+      draft = { type: type, sub: cur ? cur.sub : p.def_sub, size: cur ? cur.size : p.def_size };
       $('pp-title').textContent = p.name;
       $('pp-sub').textContent = p.hint;
       $('pp-remove').style.display = cur ? '' : 'none';
+      $('pp-notes-wrap').style.display = type === 'custom' ? '' : 'none';
+      $('pp-sum-ic').innerHTML = root.querySelector('.pk-tile[data-pack="' + type + '"] .pk-ic').innerHTML;
       renderPack();
       openSheet(pack);
     }
     function renderPack(){
-      var p = PACKS[draft.type], o = p.opts[draft.opt];
-      $('pp-opts').innerHTML = p.opts.map(function(x, i){
-        return '<div class="pp-opt' + (i === draft.opt ? ' on' : '') + '" data-pp-opt="' + i + '"><b>' + x.name + '</b><small>' + x.note + '</small><em>' +
-          (x.perKg ? '+' + money(x.perKg) + '/kg' : money(x.cost) + ' each') + '</em></div>';
+      var p = PACKS[draft.type], need = needFor(draft.type, draft.size);
+      $('pp-subs').innerHTML = p.subs.map(function(x, i){
+        return '<span class="pp-chip' + (i === draft.sub ? ' on' : '') + '" data-pp-sub="' + i + '">' + x + '</span>';
       }).join('');
-      var perKg = !!o.perKg;
-      $('pp-count-wrap').style.display = perKg ? 'none' : '';
-      $('pp-notes-wrap').style.display = draft.type === 'custom' ? '' : 'none';
-      var n = draft.count == null ? autoCount(draft.type, draft.opt) : draft.count;
-      $('pp-count').value = fmt(n);
-      $('pp-count-l').textContent = 'Number of ' + p.unit;
-      $('pp-count-hint').textContent = perKg ? '' : (draft.count == null ? 'Auto-filled for ' + fmt(kg()) + ' kg' : 'Custom count') + ' · ' + o.per + ' kg per ' + p.unit.replace(/s$/, '');
-      var cost = perKg ? o.perKg * kg() : o.cost * n;
-      $('pp-cost').textContent = money(cost);
+      $('pp-size-l').textContent = 'Quantity per ' + p.one;
+      $('pp-sizes').innerHTML = p.sizes.map(function(x, i){
+        return '<div class="pp-size' + (i === draft.size ? ' on' : '') + '" data-pp-size="' + i + '"><b>' + sizeLabel(x) + '</b><small>per ' + p.one + '</small></div>';
+      }).join('');
+      $('pp-need-l').textContent = p.unit.charAt(0).toUpperCase() + p.unit.slice(1) + ' needed';
+      $('pp-need').textContent = fmt(need) + ' ' + p.unit;
+      $('pp-need-hint').textContent = 'Auto-calculated · ' + fmt(kg()) + ' kg ÷ ' + sizeLabel(p.sizes[draft.size]) + ' per ' + p.one;
+      $('pp-cost').textContent = money(costFor(draft.type, draft.sub, draft.size));
     }
 
     // ---------- events ----------
@@ -304,18 +305,10 @@
         q.value = fmt(k0 / UNITS[st.unit], 3); update(); return;
       }
       if ((t = e.target.closest('.pk-tile'))) { openPack(t.dataset.pack); return; }
-      if ((t = e.target.closest('[data-pp-opt]'))) { draft.opt = +t.dataset.ppOpt; draft.count = null; renderPack(); return; }
-      if ((t = e.target.closest('[data-pp-step]'))) {
-        var n = (draft.count == null ? autoCount(draft.type, draft.opt) : draft.count) + (+t.dataset.ppStep);
-        draft.count = Math.max(1, n); renderPack(); return;
-      }
-      if (e.target.closest('#pp-apply')) { st.packs[draft.type] = { opt: draft.opt, count: draft.count }; closeSheet(pack); update(); return; }
+      if ((t = e.target.closest('[data-pp-sub]'))) { draft.sub = +t.dataset.ppSub; renderPack(); return; }
+      if ((t = e.target.closest('[data-pp-size]'))) { draft.size = +t.dataset.ppSize; renderPack(); return; }
+      if (e.target.closest('#pp-apply')) { st.packs[draft.type] = { sub: draft.sub, size: draft.size }; closeSheet(pack); update(); return; }
       if (e.target.closest('#pp-remove')) { delete st.packs[draft.type]; closeSheet(pack); update(); return; }
-    });
-    $('pp-count').addEventListener('input', function(){
-      var v = parseInt(this.value.replace(/,/g, ''), 10); draft.count = v > 0 ? v : 1;
-      var p = PACKS[draft.type], o = p.opts[draft.opt]; $('pp-cost').textContent = money(o.cost * draft.count);
-      $('pp-count-hint').textContent = 'Custom count · ' + o.per + ' kg per ' + p.unit.replace(/s$/, '');
     });
     q.addEventListener('input', update);
     q.addEventListener('blur', function(){ q.value = fmt(qtyVal(), 3); });
