@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&family=IBM+Plex+Mono:wght@600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=e0b04c74">
+<link rel="stylesheet" href="assets/css/style.css?v=f11763f6">
 </head>
 <body> 
 <!-- Product & logistics photos: Wikimedia Commons (open licences). Credits:
@@ -609,12 +609,12 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
     <section class="screen" id="screen-rq-warehouse">
       <div class="subheader"><button class="back-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Warehouse</h2><span class="rq-skip" data-rq-skip>Skip</span></div>
       <div class="rq-steps"><div class="rqs done"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><small>Shipping</small></div><i class="done"></i><div class="rqs done"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><small>Port</small></div><i class="done"></i><div class="rqs done"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><small>Carrier</small></div><i class="done"></i><div class="rqs on"><span>4</span><small>Warehouse</small></div><i class=""></i><div class="rqs "><span>5</span><small>Transport</small></div><i class=""></i><div class="rqs "><span>6</span><small>Review</small></div></div>
-      <div class="rq-search rq-whbar"><div class="rq-tabs"><span class="rq-tab on" data-rq-whtab="popular">Popular</span><span class="rq-tab" data-rq-whtab="nearby">Nearby</span><span class="rq-tab" data-rq-whtab="recent">Recent</span><span class="rq-fbtn" id="wh-fbtn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg><b id="wh-fcount"></b></span></div></div>
+      <div class="rq-search rq-whbar"><div class="io-seg"><span data-io="out"><b>Outbound</b><small>Exporting country</small><em data-io-st="out"></em></span><span data-io="in"><b>Inbound</b><small>Importing country</small><em data-io-st="in"></em></span></div><div class="rq-tabs"><span class="rq-tab on" data-rq-whtab="popular">Popular</span><span class="rq-tab" data-rq-whtab="nearby">Nearby</span><span class="rq-tab" data-rq-whtab="recent">Recent</span><span class="rq-fbtn" id="wh-fbtn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg><b id="wh-fcount"></b></span></div></div>
       <div class="screen-scroll"><div class="content rq-pad">
         <div class="rq-opt-note"><b>Optional</b><span id="rq-wh-s"></span></div>
         <div id="rq-whs"></div>
       </div></div>
-      <div class="rq-foot two"><button class="btn btn-secondary" data-rq-skip>Skip</button><button class="btn btn-primary" id="rq-wh-next" disabled>Continue</button></div>
+      <div class="rq-foot two"><button class="btn btn-secondary" data-rq-skip>Skip</button><button class="btn btn-primary" id="rq-wh-next">Continue</button></div>
           <div id="wh-filter" class="sheet-wrap pd-sh"><div class="sheet-backdrop" data-rq-close="wh-filter"></div><div class="bottom-sheet">
         <div class="fhead"><span class="cs-x" data-rq-close="wh-filter"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span><h3>Warehouse filters</h3><a id="wh-f-reset">Reset</a></div>
         <div class="fbody" id="wh-f-body"></div>
@@ -658,9 +658,10 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
     <section class="screen" id="screen-rq-transport">
       <div class="subheader"><button class="back-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Transport</h2><span class="rq-skip" data-tr-skip>Skip</span></div>
       <div class="rq-steps"><div class="rqs done"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><small>Shipping</small></div><i class="done"></i><div class="rqs done"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><small>Port</small></div><i class="done"></i><div class="rqs done"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><small>Carrier</small></div><i class="done"></i><div class="rqs done"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><small>Warehouse</small></div><i class="done"></i><div class="rqs on"><span>5</span><small>Transport</small></div><i class=""></i><div class="rqs "><span>6</span><small>Review</small></div></div>
+      <div class="rq-search rq-iobar"><div class="io-seg"><span data-io="out"><b>Outbound</b><small>Exporting country</small><em data-io-st="out"></em></span><span data-io="in"><b>Inbound</b><small>Importing country</small><em data-io-st="in"></em></span></div></div>
       <div class="screen-scroll"><div class="content rq-pad">
-        <div class="rq-opt-note"><b>Optional</b><span>Book a truck to move your cargo from the port or warehouse to your delivery address.</span></div>
-        <div class="tr-route">
+        <div class="rq-opt-note"><b>Optional</b><span id="tr-note"></span></div>
+        <div class="tr-route" id="tr-route">
           <div class="tr-pt"><i class="a"></i><div><small>Pickup</small><b id="tr-from"></b></div></div>
           <div class="tr-pt"><i class="b"></i><div><small>Drop</small><b id="tr-to"></b></div></div>
           <div class="tr-meta"><span id="tr-km"></span><label class="tr-date"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><input type="date" id="tr-date"></label></div>
@@ -669,7 +670,7 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
         <div class="rq-sorts"><span class="rq-sort on" data-tr-sort="best">Best match</span><span class="rq-sort" data-tr-sort="price">Lowest price</span><span class="rq-sort" data-tr-sort="near">Nearest</span><span class="rq-fbtn" id="tr-fbtn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg><b id="tr-fcount"></b></span></div>
         <div id="tr-list"></div>
       </div></div>
-      <div class="rq-foot two"><button class="btn btn-secondary" data-tr-skip>Skip</button><button class="btn btn-primary" id="tr-next" disabled>Continue</button></div>
+      <div class="rq-foot two"><button class="btn btn-secondary" data-tr-skip>Skip</button><button class="btn btn-primary" id="tr-next">Continue</button></div>
       <div id="tr-filter" class="sheet-wrap pd-sh"><div class="sheet-backdrop" data-rq-close="tr-filter"></div><div class="bottom-sheet">
         <div class="fhead"><span class="cs-x" data-rq-close="tr-filter"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span><h3>Filters</h3><a id="tr-f-reset">Reset</a></div>
         <div class="fbody" id="tr-f-body"></div>
@@ -1364,6 +1365,6 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
   <div class="home-indicator"></div>
 </div>
 
-<script src="assets/js/app.js?v=e33987b2"></script>
+<script src="assets/js/app.js?v=e6b199e8"></script>
 </body>
 </html>
