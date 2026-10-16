@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&family=IBM+Plex+Mono:wght@600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=56742784">
+<link rel="stylesheet" href="assets/css/style.css?v=f934b985">
 </head>
 <body> 
 <!-- Product & logistics photos: Wikimedia Commons (open licences). Credits:
@@ -556,18 +556,22 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
         <div class="rq-prod" id="rq-prod"></div>
         <div class="rq-modes"><div class="rq-mode on" data-mode="sea"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20c2 1 4 1 6 0s4-1 6 0 4 1 6 0"/><path d="M4 18l-1-5h18l-2 5"/><path d="M12 4v9M7 13V8h10v5"/></svg><span>Sea Freight</span></div><div class="rq-mode" data-mode="air"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg><span>Air Freight</span></div></div>
         <div class="rq-hero"><img id="rq-hero" src="assets/images/ship.jpg" alt=""><div><b id="rq-hero-t">Sea Freight</b><small id="rq-hero-s"></small></div></div>
-        <div class="rq-l" id="rq-from-l">From port</div>
-        <div class="rq-field static"><span class="rqf-ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span><div class="rqf-b"><b id="rq-from"></b><small id="rq-from-s"></small></div><span class="rqf-auto">Auto</span></div>
-        <div class="rq-l">Deliver to</div>
-        <div class="rq-field" id="rq-to-row"><span class="rqf-ic flag"><img id="rq-to-flag" src="assets/images/flags/ae.png" alt=""></span><div class="rqf-b"><b id="rq-to"></b><small id="rq-to-s"></small></div><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
-        <div class="rq-l" id="rq-load-l">Container type</div>
-        <div class="rq-loads" id="rq-loads"></div>
-        <div class="rq-l">Cargo ready date</div>
-        <label class="rq-field rq-date"><span class="rqf-ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><input type="date" id="rq-ready" value="2026-10-25" min="2026-10-16"></label>
+        <div class="rq-l rq-l-row"><span>Delivery address</span><a data-goto="address-book">Address book</a></div>
+        <div class="rq-saved" id="rq-saved"></div>
+        <div class="rq-form" id="rq-form">
+          <div class="rq-in" id="rq-a-country-row"><small>Country</small><div class="rq-in-sel"><span class="rq-in-flag"><img id="rq-a-flag" src="assets/images/flags/ae.png" alt=""></span><b id="rq-a-country">United Arab Emirates</b><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div></div>
+          <div class="rq-in-2"><label class="rq-in"><small>Contact name</small><input id="rq-a-name" type="text" autocomplete="off"></label><label class="rq-in"><small>Phone</small><input id="rq-a-phone" type="tel" autocomplete="off"></label></div>
+          <label class="rq-in" id="rq-a-line-row"><small>Street address *</small><input id="rq-a-line" type="text" placeholder="Building, street, area" autocomplete="off"></label>
+          <div class="rq-in-2"><label class="rq-in" id="rq-a-city-row"><small>City *</small><input id="rq-a-city" type="text" autocomplete="off"></label><label class="rq-in"><small>Postal code</small><input id="rq-a-zip" type="text" autocomplete="off"></label></div>
+        </div>
+        <label class="rq-vk" id="rq-vk"><input type="checkbox" id="rq-vk-in"><span class="rq-vk-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>
+          <span class="rq-vk-ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="15" height="12" rx="1.5"/><path d="M16 10h4l3 3v5h-7z"/><circle cx="6" cy="19.5" r="1.6"/><circle cx="18.5" cy="19.5" r="1.6"/></svg></span>
+          <span class="rq-vk-b"><b>Let Venture Karts handle this delivery</b><small id="rq-vk-s">Door-to-door · freight, customs clearance &amp; delivery to your address</small></span>
+          <span class="rq-vk-p"><b id="rq-vk-p">$0</b><small>all-inclusive</small></span></label>
       </div></div>
       <div class="rq-foot"><button class="btn btn-primary" id="rq-next-1">Select destination port</button></div>
       <div id="rq-dest-sheet" class="sheet-wrap pd-sh"><div class="sheet-backdrop" data-rq-close="rq-dest-sheet"></div><div class="bottom-sheet"><div class="sheet-handle"></div>
-        <div class="cs-head"><div><h3>Deliver to</h3><p>Choose the destination country</p></div><span class="cs-x" data-rq-close="rq-dest-sheet"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span></div>
+        <div class="cs-head"><div><h3>Country</h3><p>Where should the goods be delivered?</p></div><span class="cs-x" data-rq-close="rq-dest-sheet"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span></div>
         <div class="pk-list" id="rq-dest-list"></div></div></div>
     </section>
 
@@ -575,25 +579,37 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
       <div class="subheader"><button class="back-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2 id="rq-port-title">Select Destination Port</h2></div>
       <div class="rq-steps"><div class="rqs done"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><small>Shipping</small></div><i class="done"></i><div class="rqs on"><span>2</span><small>Port</small></div><i class=""></i><div class="rqs "><span>3</span><small>Carrier</small></div><i class=""></i><div class="rqs "><span>4</span><small>Warehouse</small></div><i class=""></i><div class="rqs "><span>5</span><small>Review</small></div></div>
       <div class="rq-search"><label class="rq-sbox"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input id="rq-port-q" type="text" placeholder="Search port, city or country" autocomplete="off"></label>
-        <div class="rq-tabs"><span class="rq-tab on" data-rq-ptab="in" id="rq-tab-in">In UAE</span><span class="rq-tab" data-rq-ptab="all">All destinations</span></div></div>
+        <div class="rq-tabs"><span class="rq-tab on" data-rq-ptab="popular">Popular</span><span class="rq-tab" data-rq-ptab="nearby">Nearby</span><span class="rq-tab" data-rq-ptab="recent">Recent</span></div></div>
       <div class="screen-scroll"><div class="content rq-pad"><div class="rq-ports" id="rq-ports"></div></div></div>
     </section>
 
     <section class="screen" id="screen-rq-carrier">
       <div class="subheader"><button class="back-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2 id="rq-car-title">Select Shipping Line</h2></div>
       <div class="rq-steps"><div class="rqs done"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><small>Shipping</small></div><i class="done"></i><div class="rqs done"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><small>Port</small></div><i class="done"></i><div class="rqs on"><span>3</span><small>Carrier</small></div><i class=""></i><div class="rqs "><span>4</span><small>Warehouse</small></div><i class=""></i><div class="rqs "><span>5</span><small>Review</small></div></div>
-      <div class="rq-routebar"><div><b id="rq-route"></b><small id="rq-route-s"></small></div><span class="rq-edit" data-goto="rq-ship">Edit</span></div>
       <div class="screen-scroll"><div class="content rq-pad">
         <div class="rq-days" id="rq-days"></div>
-        <div class="rq-sorts"><span class="rq-sort on" data-rq-sort="price">Best price</span><span class="rq-sort" data-rq-sort="fast">Fastest</span><span class="rq-sort" data-rq-sort="direct">Direct only</span></div>
+        <div class="rq-sorts"><span class="rq-sort on" data-rq-sort="price">Sort: Best price</span><span class="rq-sort" data-rq-sort="name" id="rq-sort-name">Airline</span><span class="rq-sort" data-rq-sort="fast">Transit time</span><span class="rq-fbtn" id="rq-fbtn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg><b id="rq-fcount"></b></span></div>
         <div id="rq-cars"></div>
         <p class="rq-note">Freight rates are indicative and confirmed by the carrier with your final quote.</p>
+      </div></div>
+          <div id="rq-filter" class="sheet-wrap pd-sh"><div class="sheet-backdrop" data-rq-close="rq-filter"></div><div class="bottom-sheet">
+        <div class="fhead"><span class="cs-x" data-rq-close="rq-filter"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span><h3>Filter</h3><a id="rq-f-reset">Reset</a></div>
+        <div class="fbody">
+          <div class="fl">Price range <small>(USD per kg)</small></div><div id="rq-f-range"></div>
+          <div class="fl" id="rq-f-carl">Airlines</div><div id="rq-f-car"></div>
+          <div id="rq-f-stopwrap"><div class="fl">Transit time</div><div id="rq-f-stops"></div></div>
+          <div id="rq-f-seaonly"><div class="fl">Arrival time</div><label class="farr"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Arrive before</span><input type="date" id="rq-f-arr"></label></div>
+          <div id="rq-f-aironly"><div class="fl">Departure time</div><div class="fdep"><span data-fdep="any">Any</span><span data-fdep="am">Morning<small>00:00 – 12:00</small></span><span data-fdep="pm">Evening<small>12:00 – 24:00</small></span></div>
+          <div class="fl">Service type</div><div id="rq-f-svc"></div></div>
+        </div>
+        <div class="ffoot"><button class="btn btn-primary" id="rq-f-apply">Apply Filters</button></div>
       </div></div>
     </section>
 
     <section class="screen" id="screen-rq-warehouse">
       <div class="subheader"><button class="back-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Warehouse</h2><span class="rq-skip" data-rq-skip>Skip</span></div>
       <div class="rq-steps"><div class="rqs done"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><small>Shipping</small></div><i class="done"></i><div class="rqs done"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><small>Port</small></div><i class="done"></i><div class="rqs done"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><small>Carrier</small></div><i class="done"></i><div class="rqs on"><span>4</span><small>Warehouse</small></div><i class=""></i><div class="rqs "><span>5</span><small>Review</small></div></div>
+      <div class="rq-search rq-whbar"><div class="rq-tabs"><span class="rq-tab on" data-rq-whtab="popular">Popular</span><span class="rq-tab" data-rq-whtab="nearby">Nearby</span><span class="rq-tab" data-rq-whtab="recent">Recent</span></div></div>
       <div class="screen-scroll"><div class="content rq-pad">
         <div class="rq-opt-note"><b>Optional</b><span id="rq-wh-s"></span></div>
         <div id="rq-whs"></div>
@@ -1271,6 +1287,6 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
   <div class="home-indicator"></div>
 </div>
 
-<script src="assets/js/app.js?v=f60d6d1d"></script>
+<script src="assets/js/app.js?v=f1b38bbd"></script>
 </body>
 </html>

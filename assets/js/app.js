@@ -376,156 +376,297 @@
     });
   })();
 
-  // ---- request quote flow: shipping mode -> port/airport -> liner/airline -> warehouse (optional) -> review -> sent ----
+  // ---- request quote flow: shipping + delivery address -> port/airport -> liner/airline -> warehouse (optional) -> review -> sent ----
+  // "Let Venture Karts handle this delivery" jumps from step 1 straight to the review.
   (function(){
     if (!document.getElementById('screen-rq-ship')) return;
-    var D = {"icons": {"ship": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M2 20c2 1 4 1 6 0s4-1 6 0 4 1 6 0\"/><path d=\"M4 18l-1-5h18l-2 5\"/><path d=\"M12 4v9M7 13V8h10v5\"/></svg>", "plane": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z\"/></svg>"}, "portImgs": ["port.jpg", "ship.jpg", "container.jpg", "aircargo.jpg", "aircargo.jpg", "truck.jpg"], "origins": {"in": {"sea": ["INNSA", "Nhava Sheva (JNPT)", "Mumbai, India"], "air": ["BOM", "Chhatrapati Shivaji Intl", "Mumbai, India"]}, "pk": {"sea": ["PKKHI", "Port of Karachi", "Karachi, Pakistan"], "air": ["KHI", "Jinnah International", "Karachi, Pakistan"]}, "th": {"sea": ["THLCH", "Laem Chabang Port", "Chonburi, Thailand"], "air": ["BKK", "Suvarnabhumi Airport", "Bangkok, Thailand"]}, "ph": {"sea": ["PHMNL", "Port of Manila", "Manila, Philippines"], "air": ["MNL", "Ninoy Aquino Intl", "Manila, Philippines"]}, "mx": {"sea": ["MXZLO", "Port of Manzanillo", "Colima, Mexico"], "air": ["MEX", "Mexico City Intl", "Mexico City, Mexico"]}, "br": {"sea": ["BRSSZ", "Port of Santos", "São Paulo, Brazil"], "air": ["GRU", "Guarulhos Intl", "São Paulo, Brazil"]}, "pe": {"sea": ["PECLL", "Port of Callao", "Lima, Peru"], "air": ["LIM", "Jorge Chávez Intl", "Lima, Peru"]}, "eg": {"sea": ["EGALY", "Port of Alexandria", "Alexandria, Egypt"], "air": ["CAI", "Cairo International", "Cairo, Egypt"]}, "ke": {"sea": ["KEMBA", "Port of Mombasa", "Mombasa, Kenya"], "air": ["NBO", "Jomo Kenyatta Intl", "Nairobi, Kenya"]}}, "dests": [{"code": "ae", "name": "United Arab Emirates", "seaF": 1.0, "airF": 1.0, "ports": [["AEJEA", "Port of Jebel Ali", "Dubai"], ["AEKHL", "Khalifa Port", "Abu Dhabi"], ["AESHJ", "Port Khalid", "Sharjah"]], "airports": [["DXB", "Dubai International", "Dubai"], ["DWC", "Al Maktoum International", "Dubai"], ["AUH", "Zayed International", "Abu Dhabi"]]}, {"code": "sa", "name": "Saudi Arabia", "seaF": 1.15, "airF": 1.08, "ports": [["SAJED", "Jeddah Islamic Port", "Jeddah"], ["SADMM", "King Abdulaziz Port", "Dammam"]], "airports": [["JED", "King Abdulaziz Intl", "Jeddah"], ["RUH", "King Khalid Intl", "Riyadh"], ["DMM", "King Fahd Intl", "Dammam"]]}, {"code": "qa", "name": "Qatar", "seaF": 1.1, "airF": 1.05, "ports": [["QAHMD", "Hamad Port", "Doha"]], "airports": [["DOH", "Hamad International", "Doha"]]}, {"code": "sg", "name": "Singapore", "seaF": 1.25, "airF": 1.2, "ports": [["SGSIN", "Port of Singapore", "Singapore"]], "airports": [["SIN", "Changi Airport", "Singapore"]]}, {"code": "nl", "name": "Netherlands", "seaF": 1.9, "airF": 1.7, "ports": [["NLRTM", "Port of Rotterdam", "Rotterdam"]], "airports": [["AMS", "Amsterdam Schiphol", "Amsterdam"]]}, {"code": "de", "name": "Germany", "seaF": 1.95, "airF": 1.75, "ports": [["DEHAM", "Port of Hamburg", "Hamburg"], ["DEBRV", "Port of Bremerhaven", "Bremerhaven"]], "airports": [["FRA", "Frankfurt Airport", "Frankfurt"], ["MUC", "Munich Airport", "Munich"]]}, {"code": "gb", "name": "United Kingdom", "seaF": 2.0, "airF": 1.8, "ports": [["GBFXT", "Port of Felixstowe", "Felixstowe"], ["GBSOU", "Port of Southampton", "Southampton"], ["GBLGP", "London Gateway", "London"]], "airports": [["LHR", "Heathrow Airport", "London"], ["MAN", "Manchester Airport", "Manchester"]]}, {"code": "us", "name": "United States", "seaF": 2.6, "airF": 2.3, "ports": [["USNYC", "Port of New York & New Jersey", "New York"], ["USLAX", "Port of Los Angeles", "Los Angeles"], ["USSAV", "Port of Savannah", "Savannah"]], "airports": [["JFK", "John F. Kennedy Intl", "New York"], ["LAX", "Los Angeles Intl", "Los Angeles"], ["ORD", "O'Hare International", "Chicago"]]}], "seaLoads": [{"name": "LCL", "short": "LCL (shared)", "note": "Shared container", "perKg": 0.16}, {"name": "20 ft Reefer", "short": "20' Reefer", "note": "Up to 20 t · 2–8 °C", "cap": 20000, "rate": 1650}, {"name": "40 ft Reefer", "short": "40' Reefer HC", "note": "Up to 26 t · 2–8 °C", "cap": 26000, "rate": 2450}], "airLoads": [{"name": "General", "short": "General cargo", "note": "Standard handling", "perKg": 0.95}, {"name": "Perishable", "short": "Perishable (PER)", "note": "Cool chain 2–8 °C", "perKg": 1.25}, {"name": "Express", "short": "Express priority", "note": "Next flight out", "perKg": 1.6}], "liners": [{"code": "MSK", "name": "Maersk", "bg": "#42B0D5", "fg": "#fff", "f": 1.0, "tt": 6, "direct": true, "tag": "Best seller"}, {"code": "MSC", "name": "MSC", "bg": "#1B1B1B", "fg": "#F2C200", "f": 0.94, "tt": 8, "direct": false, "via": "Salalah"}, {"code": "ONE", "name": "Ocean Network Express", "bg": "#E4007F", "fg": "#fff", "f": 0.97, "tt": 7, "direct": true}, {"code": "CMA", "name": "CMA CGM", "bg": "#0F2A5A", "fg": "#fff", "f": 1.05, "tt": 6, "direct": true, "tag": "Fastest"}, {"code": "HLC", "name": "Hapag-Lloyd", "bg": "#F26722", "fg": "#fff", "f": 1.08, "tt": 9, "direct": false, "via": "Khalifa"}, {"code": "EMC", "name": "Evergreen", "bg": "#0B7B3E", "fg": "#fff", "f": 0.91, "tt": 10, "direct": false, "via": "Colombo", "tag": "Lowest price"}], "airlines": [{"code": "EK", "name": "Emirates SkyCargo", "bg": "#D71921", "fg": "#fff", "f": 1.0, "tt": 1, "direct": true, "tag": "Best seller"}, {"code": "QR", "name": "Qatar Airways Cargo", "bg": "#5C0632", "fg": "#fff", "f": 0.96, "tt": 2, "direct": false, "via": "Doha"}, {"code": "AI", "name": "Air India Cargo", "bg": "#C8102E", "fg": "#FFD200", "f": 0.92, "tt": 1, "direct": true, "tag": "Lowest price"}, {"code": "SQ", "name": "Singapore Airlines Cargo", "bg": "#1D2F6F", "fg": "#F0B323", "f": 1.06, "tt": 2, "direct": false, "via": "Singapore"}, {"code": "EY", "name": "Etihad Cargo", "bg": "#BD8B13", "fg": "#fff", "f": 0.98, "tt": 2, "direct": false, "via": "Abu Dhabi"}, {"code": "LH", "name": "Lufthansa Cargo", "bg": "#05164D", "fg": "#FFAD00", "f": 1.12, "tt": 1, "direct": true, "tag": "Fastest"}], "warehouses": {"ae": [{"name": "JD Cold Hub — Jebel Ali", "area": "JAFZA South, Dubai", "km": 4, "tags": ["Cold 2–8 °C", "Bonded", "24/7"], "rate": 18, "rating": 4.8, "img": "warehouse.jpg"}, {"name": "Gulf Agri Store", "area": "Al Quoz Industrial, Dubai", "km": 19, "tags": ["Cold 2–8 °C", "Ripening rooms"], "rate": 15, "rating": 4.6, "img": "container.jpg"}, {"name": "Emirates Dry Port Warehouse", "area": "KEZAD, Abu Dhabi", "km": 9, "tags": ["Ambient", "Bonded"], "rate": 11, "rating": 4.4, "img": "warehouse.jpg"}], "sa": [{"name": "Red Sea Cold Chain", "area": "Jeddah Industrial City", "km": 7, "tags": ["Cold 2–8 °C", "Bonded"], "rate": 17, "rating": 4.7, "img": "warehouse.jpg"}, {"name": "Eastern Logistics Park", "area": "Dammam 2nd Industrial", "km": 12, "tags": ["Ambient", "24/7"], "rate": 12, "rating": 4.5, "img": "container.jpg"}], "qa": [{"name": "Doha Fresh Logistics", "area": "Birkat Al Awamer, Doha", "km": 8, "tags": ["Cold 2–8 °C", "Bonded"], "rate": 19, "rating": 4.6, "img": "warehouse.jpg"}], "sg": [{"name": "Jurong Cold Store", "area": "Jurong Port, Singapore", "km": 3, "tags": ["Cold 2–8 °C", "Bonded", "24/7"], "rate": 22, "rating": 4.8, "img": "warehouse.jpg"}], "nl": [{"name": "Rotterdam Fresh Port", "area": "Maasvlakte, Rotterdam", "km": 5, "tags": ["Cold 2–8 °C", "Ripening rooms"], "rate": 24, "rating": 4.7, "img": "warehouse.jpg"}], "de": [{"name": "Hamburg Cool Terminal", "area": "Altenwerder, Hamburg", "km": 6, "tags": ["Cold 2–8 °C", "Bonded"], "rate": 25, "rating": 4.6, "img": "warehouse.jpg"}], "gb": [{"name": "Felixstowe Cold Store", "area": "Port of Felixstowe", "km": 2, "tags": ["Cold 2–8 °C", "Bonded", "24/7"], "rate": 26, "rating": 4.7, "img": "warehouse.jpg"}, {"name": "London Gateway Logistics", "area": "Thurrock, Essex", "km": 8, "tags": ["Ambient", "Bonded"], "rate": 18, "rating": 4.5, "img": "container.jpg"}], "us": [{"name": "NJ Port Cold Storage", "area": "Elizabeth, New Jersey", "km": 6, "tags": ["Cold 2–8 °C", "FDA-registered"], "rate": 28, "rating": 4.6, "img": "warehouse.jpg"}, {"name": "LA Harbor Fresh", "area": "Wilmington, California", "km": 4, "tags": ["Cold 2–8 °C", "Bonded"], "rate": 30, "rating": 4.5, "img": "container.jpg"}]}};
-    var rq = { mode: 'sea', dest: 'ae', load: 1, ready: '2026-10-25', port: null, carrier: null, day: 0, sort: 'price', direct: false, wh: null };
+    var D = {"icons": {"ship": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M2 20c2 1 4 1 6 0s4-1 6 0 4 1 6 0\"/><path d=\"M4 18l-1-5h18l-2 5\"/><path d=\"M12 4v9M7 13V8h10v5\"/></svg>", "plane": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z\"/></svg>"}, "portImgs": ["port.jpg", "ship.jpg", "container.jpg", "aircargo.jpg", "aircargo.jpg", "truck.jpg"], "origins": {"in": {"sea": ["INNSA", "Nhava Sheva (JNPT)", "Mumbai, India"], "air": ["BOM", "Chhatrapati Shivaji Intl", "Mumbai, India"]}, "pk": {"sea": ["PKKHI", "Port of Karachi", "Karachi, Pakistan"], "air": ["KHI", "Jinnah International", "Karachi, Pakistan"]}, "th": {"sea": ["THLCH", "Laem Chabang Port", "Chonburi, Thailand"], "air": ["BKK", "Suvarnabhumi Airport", "Bangkok, Thailand"]}, "ph": {"sea": ["PHMNL", "Port of Manila", "Manila, Philippines"], "air": ["MNL", "Ninoy Aquino Intl", "Manila, Philippines"]}, "mx": {"sea": ["MXZLO", "Port of Manzanillo", "Colima, Mexico"], "air": ["MEX", "Mexico City Intl", "Mexico City, Mexico"]}, "br": {"sea": ["BRSSZ", "Port of Santos", "São Paulo, Brazil"], "air": ["GRU", "Guarulhos Intl", "São Paulo, Brazil"]}, "pe": {"sea": ["PECLL", "Port of Callao", "Lima, Peru"], "air": ["LIM", "Jorge Chávez Intl", "Lima, Peru"]}, "eg": {"sea": ["EGALY", "Port of Alexandria", "Alexandria, Egypt"], "air": ["CAI", "Cairo International", "Cairo, Egypt"]}, "ke": {"sea": ["KEMBA", "Port of Mombasa", "Mombasa, Kenya"], "air": ["NBO", "Jomo Kenyatta Intl", "Nairobi, Kenya"]}}, "dests": [{"code": "ae", "name": "United Arab Emirates", "seaF": 1.0, "airF": 1.0, "ports": [["AEJEA", "Port of Jebel Ali", "Dubai"], ["AEKHL", "Khalifa Port", "Abu Dhabi"], ["AESHJ", "Port Khalid", "Sharjah"]], "airports": [["DXB", "Dubai International", "Dubai"], ["DWC", "Al Maktoum International", "Dubai"], ["AUH", "Zayed International", "Abu Dhabi"]]}, {"code": "sa", "name": "Saudi Arabia", "seaF": 1.15, "airF": 1.08, "ports": [["SAJED", "Jeddah Islamic Port", "Jeddah"], ["SADMM", "King Abdulaziz Port", "Dammam"]], "airports": [["JED", "King Abdulaziz Intl", "Jeddah"], ["RUH", "King Khalid Intl", "Riyadh"], ["DMM", "King Fahd Intl", "Dammam"]]}, {"code": "qa", "name": "Qatar", "seaF": 1.1, "airF": 1.05, "ports": [["QAHMD", "Hamad Port", "Doha"]], "airports": [["DOH", "Hamad International", "Doha"]]}, {"code": "sg", "name": "Singapore", "seaF": 1.25, "airF": 1.2, "ports": [["SGSIN", "Port of Singapore", "Singapore"]], "airports": [["SIN", "Changi Airport", "Singapore"]]}, {"code": "nl", "name": "Netherlands", "seaF": 1.9, "airF": 1.7, "ports": [["NLRTM", "Port of Rotterdam", "Rotterdam"]], "airports": [["AMS", "Amsterdam Schiphol", "Amsterdam"]]}, {"code": "de", "name": "Germany", "seaF": 1.95, "airF": 1.75, "ports": [["DEHAM", "Port of Hamburg", "Hamburg"], ["DEBRV", "Port of Bremerhaven", "Bremerhaven"]], "airports": [["FRA", "Frankfurt Airport", "Frankfurt"], ["MUC", "Munich Airport", "Munich"]]}, {"code": "gb", "name": "United Kingdom", "seaF": 2.0, "airF": 1.8, "ports": [["GBFXT", "Port of Felixstowe", "Felixstowe"], ["GBSOU", "Port of Southampton", "Southampton"], ["GBLGP", "London Gateway", "London"]], "airports": [["LHR", "Heathrow Airport", "London"], ["MAN", "Manchester Airport", "Manchester"]]}, {"code": "us", "name": "United States", "seaF": 2.6, "airF": 2.3, "ports": [["USNYC", "Port of New York & New Jersey", "New York"], ["USLAX", "Port of Los Angeles", "Los Angeles"], ["USSAV", "Port of Savannah", "Savannah"]], "airports": [["JFK", "John F. Kennedy Intl", "New York"], ["LAX", "Los Angeles Intl", "Los Angeles"], ["ORD", "O'Hare International", "Chicago"]]}], "seaLoads": [{"name": "LCL", "short": "LCL (shared)", "note": "Shared container", "perKg": 0.16}, {"name": "20 ft Reefer", "short": "20' Reefer", "note": "Up to 20 t · 2–8 °C", "cap": 20000, "rate": 1650}, {"name": "40 ft Reefer", "short": "40' Reefer HC", "note": "Up to 26 t · 2–8 °C", "cap": 26000, "rate": 2450}], "airLoads": [{"name": "General", "short": "General cargo", "note": "Standard handling", "perKg": 0.95}, {"name": "Perishable", "short": "Perishable (PER)", "note": "Cool chain 2–8 °C", "perKg": 1.25}, {"name": "Express", "short": "Express priority", "note": "Next flight out", "perKg": 1.6}], "liners": [{"code": "MSK", "name": "Maersk", "bg": "#42B0D5", "fg": "#fff", "f": 1.0, "tt": 6, "direct": true, "tag": "Best seller"}, {"code": "MSC", "name": "MSC", "bg": "#1B1B1B", "fg": "#F2C200", "f": 0.94, "tt": 8, "direct": false, "via": "Salalah"}, {"code": "ONE", "name": "Ocean Network Express", "bg": "#E4007F", "fg": "#fff", "f": 0.97, "tt": 7, "direct": true}, {"code": "CMA", "name": "CMA CGM", "bg": "#0F2A5A", "fg": "#fff", "f": 1.05, "tt": 6, "direct": true, "tag": "Fastest"}, {"code": "HLC", "name": "Hapag-Lloyd", "bg": "#F26722", "fg": "#fff", "f": 1.08, "tt": 9, "direct": false, "via": "Khalifa"}, {"code": "EMC", "name": "Evergreen", "bg": "#0B7B3E", "fg": "#fff", "f": 0.91, "tt": 10, "direct": false, "via": "Colombo", "tag": "Lowest price"}], "airlines": [{"code": "EK", "name": "Emirates SkyCargo", "bg": "#D71921", "fg": "#fff", "f": 1.0, "tt": 1, "direct": true, "tag": "Best seller"}, {"code": "QR", "name": "Qatar Airways Cargo", "bg": "#5C0632", "fg": "#fff", "f": 0.96, "tt": 2, "direct": false, "via": "Doha"}, {"code": "AI", "name": "Air India Cargo", "bg": "#C8102E", "fg": "#FFD200", "f": 0.92, "tt": 1, "direct": true, "tag": "Lowest price"}, {"code": "SQ", "name": "Singapore Airlines Cargo", "bg": "#1D2F6F", "fg": "#F0B323", "f": 1.06, "tt": 2, "direct": false, "via": "Singapore"}, {"code": "EY", "name": "Etihad Cargo", "bg": "#BD8B13", "fg": "#fff", "f": 0.98, "tt": 2, "direct": false, "via": "Abu Dhabi"}, {"code": "LH", "name": "Lufthansa Cargo", "bg": "#05164D", "fg": "#FFAD00", "f": 1.12, "tt": 1, "direct": true, "tag": "Fastest"}], "warehouses": {"ae": [{"name": "JD Cold Hub — Jebel Ali", "area": "JAFZA South, Dubai", "km": 4, "tags": ["Cold 2–8 °C", "Bonded", "24/7"], "rate": 18, "rating": 4.8, "img": "warehouse.jpg"}, {"name": "Gulf Agri Store", "area": "Al Quoz Industrial, Dubai", "km": 19, "tags": ["Cold 2–8 °C", "Ripening rooms"], "rate": 15, "rating": 4.6, "img": "container.jpg"}, {"name": "Emirates Dry Port Warehouse", "area": "KEZAD, Abu Dhabi", "km": 9, "tags": ["Ambient", "Bonded"], "rate": 11, "rating": 4.4, "img": "warehouse.jpg"}], "sa": [{"name": "Red Sea Cold Chain", "area": "Jeddah Industrial City", "km": 7, "tags": ["Cold 2–8 °C", "Bonded"], "rate": 17, "rating": 4.7, "img": "warehouse.jpg"}, {"name": "Eastern Logistics Park", "area": "Dammam 2nd Industrial", "km": 12, "tags": ["Ambient", "24/7"], "rate": 12, "rating": 4.5, "img": "container.jpg"}], "qa": [{"name": "Doha Fresh Logistics", "area": "Birkat Al Awamer, Doha", "km": 8, "tags": ["Cold 2–8 °C", "Bonded"], "rate": 19, "rating": 4.6, "img": "warehouse.jpg"}], "sg": [{"name": "Jurong Cold Store", "area": "Jurong Port, Singapore", "km": 3, "tags": ["Cold 2–8 °C", "Bonded", "24/7"], "rate": 22, "rating": 4.8, "img": "warehouse.jpg"}], "nl": [{"name": "Rotterdam Fresh Port", "area": "Maasvlakte, Rotterdam", "km": 5, "tags": ["Cold 2–8 °C", "Ripening rooms"], "rate": 24, "rating": 4.7, "img": "warehouse.jpg"}], "de": [{"name": "Hamburg Cool Terminal", "area": "Altenwerder, Hamburg", "km": 6, "tags": ["Cold 2–8 °C", "Bonded"], "rate": 25, "rating": 4.6, "img": "warehouse.jpg"}], "gb": [{"name": "Felixstowe Cold Store", "area": "Port of Felixstowe", "km": 2, "tags": ["Cold 2–8 °C", "Bonded", "24/7"], "rate": 26, "rating": 4.7, "img": "warehouse.jpg"}, {"name": "London Gateway Logistics", "area": "Thurrock, Essex", "km": 8, "tags": ["Ambient", "Bonded"], "rate": 18, "rating": 4.5, "img": "container.jpg"}], "us": [{"name": "NJ Port Cold Storage", "area": "Elizabeth, New Jersey", "km": 6, "tags": ["Cold 2–8 °C", "FDA-registered"], "rate": 28, "rating": 4.6, "img": "warehouse.jpg"}, {"name": "LA Harbor Fresh", "area": "Wilmington, California", "km": 4, "tags": ["Cold 2–8 °C", "Bonded"], "rate": 30, "rating": 4.5, "img": "container.jpg"}]}, "regions": {"ae": "gulf", "sa": "gulf", "qa": "gulf", "sg": "asia", "nl": "eu", "de": "eu", "gb": "eu", "us": "us"}, "popular": {"sea": ["AEJEA", "NLRTM", "SGSIN", "DEHAM", "GBFXT", "USLAX", "SAJED", "QAHMD", "USNYC"], "air": ["DXB", "LHR", "SIN", "FRA", "JFK", "DOH", "AMS", "JED", "LAX"]}, "recent": {"sea": [["AEJEA", "12 Sep 2026"], ["NLRTM", "28 Aug 2026"], ["SAJED", "02 Aug 2026"]], "air": [["DXB", "18 Sep 2026"], ["LHR", "30 Aug 2026"]]}, "saved": [{"label": "Warehouse — Jebel Ali", "name": "Ahmed Al Fahim", "phone": "+971 4 880 1200", "line": "Plot S30210, Jebel Ali Free Zone South", "city": "Dubai", "zip": "17000", "country": "ae"}, {"label": "Head Office", "name": "Procurement Desk", "phone": "+971 4 295 4410", "line": "Office 1204, Al Ghurair Centre, Deira", "city": "Dubai", "zip": "8455", "country": "ae"}]};
+    var rq = { mode: 'sea', dest: 'ae', load: 1, ready: '2026-10-25', port: null, portC: null, carrier: null, tt: 0, day: 0, sort: 'price', direct: false, wh: null, managed: false, saved: 0, addr: null };
+    rq.addr = JSON.parse(JSON.stringify(D.saved[0]));
 
     function $(id){ return document.getElementById(id); }
     function money(v, d){ return '$' + v.toLocaleString('en-US', { minimumFractionDigits: d == null ? 2 : d, maximumFractionDigits: d == null ? 2 : d }); }
     function usd(v){ return 'USD ' + Math.round(v).toLocaleString('en-US'); }
     function fmt(v){ return v.toLocaleString('en-US', { maximumFractionDigits: 0 }); }
+    function esc(v){ return String(v).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
     function pd(){ return window.pdSummary ? window.pdSummary() : null; }
-    function dest(){ return D.dests.filter(function(x){ return x.code === rq.dest; })[0]; }
+    function destBy(code){ return D.dests.filter(function(x){ return x.code === code; })[0]; }
+    function dest(){ return destBy(rq.dest); }
+    function portDest(){ return destBy(rq.portC || rq.dest); }
     function sea(){ return rq.mode === 'sea'; }
     function origin(){ var p = pd(), o = D.origins[p ? p.countryCode : 'in'] || D.origins['in']; return sea() ? o.sea : o.air; }
     function loads(){ return sea() ? D.seaLoads : D.airLoads; }
-    function load(){ return loads()[rq.load] || loads()[0]; }
-    function plusDays(d, n){ var x = new Date(d.getTime()); x.setDate(x.getDate() + n); return x; }
+    // container / cargo type is picked automatically from the order weight
+    function load(){ var p = pd(), kg = p ? p.kg : 5000; return sea() ? (kg < 8000 ? loads()[0] : kg <= 20000 ? loads()[1] : loads()[2]) : loads()[1]; }
+    function carriers(){ return sea() ? D.liners : D.airlines; }
     function addDays(iso, n){ var d = new Date(iso + 'T00:00:00'); d.setDate(d.getDate() + n); return d; }
+    function plusDays(d, n){ var x = new Date(d.getTime()); x.setDate(x.getDate() + n); return x; }
+    // carrier filters (reference: air cargo filter sheet)
+    var DEP = { EK: '18:40', QR: '22:10', AI: '10:30', SQ: '13:20', EY: '06:15', LH: '09:15', MSK: '08:00', MSC: '14:00', ONE: '11:00', CMA: '06:00', HLC: '16:00', EMC: '20:00' };
+    var SVC = { EK: ['gen', 'temp', 'dg', 'live', 'val'], QR: ['gen', 'temp', 'dg', 'val'], AI: ['gen', 'temp'], SQ: ['gen', 'temp', 'val'], EY: ['gen', 'temp', 'dg'], LH: ['gen', 'temp', 'dg', 'live'] };
+    var SVC_L = [['gen', 'General Cargo'], ['temp', 'Temperature Controlled'], ['dg', 'Dangerous Goods (DG)'], ['live', 'Live Animals'], ['val', 'Valuable Cargo']];
+    var flt = { min: null, max: null, car: [], stops: [], dep: 'any', svc: [], arr: null };
+    function perKg(price){ var p = pd(); return price / Math.max(p ? p.kg : 5000, 1); }
+    function fltCount(){ return (flt.min != null ? 1 : 0) + flt.car.length + flt.stops.length + (flt.dep !== 'any' ? 1 : 0) + flt.svc.length + (flt.arr ? 1 : 0); }
     var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     function dfmt(d){ return d.getDate() + ' ' + MON[d.getMonth()] + ' ' + d.getFullYear(); }
     function dshort(d){ return d.getDate() + ' ' + MON[d.getMonth()]; }
     var CHEV = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
     var CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>';
+    var PIN = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+    var PLUS = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>';
+    var TRUCK = '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="15" height="12" rx="1.5"/><path d="M16 10h4l3 3v5h-7z"/><circle cx="6" cy="19.5" r="1.6"/><circle cx="18.5" cy="19.5" r="1.6"/></svg>';
 
-    // freight estimate for one carrier on the selected route
-    function freight(c){
-      var p = pd(), kg = p ? p.kg : 5000, l = load(), f = dest()[sea() ? 'seaF' : 'airF'] * c.f;
+    // ---------- pricing (sample model) ----------
+    function freight(c, d){
+      var p = pd(), kg = p ? p.kg : 5000, l = load(), f = (d || portDest())[sea() ? 'seaF' : 'airF'] * c.f;
       if (sea()){
         if (l.perKg) return Math.max(350, kg * l.perKg * f);
         return Math.ceil(kg / l.cap) * l.rate * f;
       }
       return Math.max(kg, 100) * l.perKg * f;
     }
+    // door-to-door: best carrier rate + customs clearance + last-mile delivery
+    function managedPrice(){
+      var d = dest(), best = Math.min.apply(null, carriers().map(function(c){ return freight(c, d); }));
+      return Math.round(best * 1.05 + (sea() ? 260 : 140) + (sea() ? 220 : 110));
+    }
+    function managedDays(){ var fast = Math.min.apply(null, carriers().map(function(c){ return c.tt; })); return fast + (sea() ? 6 : 2); }
     function units(){
       var p = pd(), kg = p ? p.kg : 5000, l = load();
       if (sea() && !l.perKg) return Math.ceil(kg / l.cap) + ' × ' + l.short;
       return l.short;
     }
+    function addrShort(){ var a = rq.addr; return [a.line, a.city, dest().name].filter(Boolean).join(', '); }
 
-    // ---------- step 1: shipping ----------
+    // ---------- step 1: shipping + delivery address ----------
+    function renderSaved(){
+      $('rq-saved').innerHTML = D.saved.map(function(a, i){
+        return '<span class="rq-sv' + (rq.saved === i ? ' on' : '') + '" data-rq-saved="' + i + '">' + PIN + esc(a.label) + '</span>';
+      }).join('') + '<span class="rq-sv' + (rq.saved === -1 ? ' on' : '') + '" data-rq-saved="-1">' + PLUS + 'New address</span>';
+    }
+    function fillForm(){
+      var a = rq.addr, d = dest();
+      $('rq-a-flag').src = 'assets/images/flags/' + d.code + '.png';
+      $('rq-a-country').textContent = d.name;
+      $('rq-a-name').value = a.name || ''; $('rq-a-phone').value = a.phone || ''; $('rq-a-line').value = a.line || '';
+      $('rq-a-city').value = a.city || ''; $('rq-a-zip').value = a.zip || '';
+      ['rq-a-line-row', 'rq-a-city-row'].forEach(function(id){ $(id).classList.remove('err'); });
+    }
+    function renderVK(){
+      $('rq-vk').classList.toggle('on', rq.managed);
+      $('rq-vk-in').checked = rq.managed;
+      $('rq-vk-p').textContent = money(managedPrice(), 0);
+      $('rq-vk-s').textContent = 'Door-to-door ' + (sea() ? 'by sea' : 'by air') + ' · freight, customs clearance & delivery to ' + (rq.addr.city || 'your address') + ' in ~' + managedDays() + ' days';
+      $('rq-next-1').textContent = rq.managed ? 'Review quotation' : (sea() ? 'Select destination port' : 'Select destination airport');
+    }
     function renderShip(){
-      var p = pd(), o = origin(), d = dest();
+      var p = pd();
       if (p){
-        $('rq-prod').innerHTML = '<span class="rqp-img"><img src="' + p.img + '" alt=""></span><div class="rqp-b"><b>' + p.name + '</b><small>' + fmt(p.kg) + ' kg · ' + (p.packText || 'No packaging') + '</small><small>' + p.market + ', ' + p.country + '</small></div><div class="rqp-p"><b>' + money(p.goods + p.packCost) + '</b><small>product + packing</small></div>';
+        $('rq-prod').innerHTML = '<span class="rqp-img"><img src="' + p.img + '" alt=""></span><div class="rqp-b"><b>' + p.name + '</b><small>' + fmt(p.kg) + ' kg · ' + (p.packText || 'No packaging') + '</small></div><div class="rqp-p"><b>' + money(p.goods + p.packCost) + '</b><small>product + packing</small></div>';
       }
       document.querySelectorAll('.rq-mode').forEach(function(m){ m.classList.toggle('on', m.dataset.mode === rq.mode); });
       $('rq-hero').src = sea() ? 'assets/images/ship.jpg' : 'assets/images/aircargo.jpg';
       $('rq-hero-t').textContent = sea() ? 'Sea Freight' : 'Air Freight';
       $('rq-hero-s').textContent = sea() ? 'Most economical for bulk orders · 12–30 days' : 'Fastest for perishables · 1–3 days';
-      $('rq-from-l').textContent = sea() ? 'From port' : 'From airport';
-      $('rq-from').textContent = o[0] + ' · ' + o[1];
-      $('rq-from-s').textContent = 'Nearest to ' + (p ? p.market : 'your market') + ', ' + o[2];
-      $('rq-to-flag').src = 'assets/images/flags/' + d.code + '.png';
-      $('rq-to').textContent = d.name;
-      $('rq-to-s').textContent = (sea() ? d.ports.length + ' ports' : d.airports.length + ' airports') + ' available';
-      $('rq-load-l').textContent = sea() ? 'Container type' : 'Cargo type';
-      $('rq-loads').innerHTML = loads().map(function(l, i){
-        return '<div class="rq-load' + (i === rq.load ? ' on' : '') + '" data-rq-load="' + i + '"><b>' + l.name + '</b><small>' + l.note + '</small></div>';
-      }).join('');
-      $('rq-next-1').textContent = sea() ? 'Select destination port' : 'Select destination airport';
+      renderSaved(); fillForm();
+      renderVK();
+    }
+    function readForm(){
+      rq.addr.name = $('rq-a-name').value.trim(); rq.addr.phone = $('rq-a-phone').value.trim();
+      rq.addr.line = $('rq-a-line').value.trim(); rq.addr.city = $('rq-a-city').value.trim(); rq.addr.zip = $('rq-a-zip').value.trim();
+    }
+    function validAddr(){
+      readForm();
+      var bad = [];
+      if (!rq.addr.line) bad.push('rq-a-line-row');
+      if (!rq.addr.city) bad.push('rq-a-city-row');
+      ['rq-a-line-row', 'rq-a-city-row'].forEach(function(id){ $(id).classList.toggle('err', bad.indexOf(id) > -1); });
+      if (bad.length){ $(bad[0]).scrollIntoView({ behavior: 'smooth', block: 'center' }); $(bad[0]).querySelector('input').focus(); }
+      return !bad.length;
     }
 
-    // ---------- step 2: port / airport ----------
-    var portTab = 'in';
+    // ---------- step 2: port / airport (Popular · Nearby · Recent) ----------
+    var portTab = 'popular';
+    function allPorts(){
+      var key = sea() ? 'ports' : 'airports', out = {};
+      D.dests.forEach(function(c){ c[key].forEach(function(x){ out[x[0]] = [x, c]; }); });
+      return out;
+    }
     function portList(){
-      var d = dest(), key = sea() ? 'ports' : 'airports', q = ($('rq-port-q').value || '').trim().toLowerCase(), rows = [];
-      var list = portTab === 'in' ? d[key].map(function(x){ return [x, d]; }) :
-        D.dests.reduce(function(a, c){ return a.concat(c[key].map(function(x){ return [x, c]; })); }, []);
-      list.forEach(function(r, i){
+      var all = allPorts(), mode = sea() ? 'sea' : 'air', q = ($('rq-port-q').value || '').trim().toLowerCase(), list = [];
+      if (portTab === 'popular') list = D.popular[mode].map(function(code){ return all[code] && all[code].concat(['Popular']); });
+      else if (portTab === 'recent') list = D.recent[mode].map(function(r){ return all[r[0]] && all[r[0]].concat([null, 'Last used ' + r[1]]); });
+      else {
+        var region = D.regions[rq.dest];
+        Object.keys(all).forEach(function(code){ var r = all[code]; if (r[1].code === rq.dest) list.push(r.concat([null, null])); });
+        if (list.length) list[0][2] = 'Nearest';
+        Object.keys(all).forEach(function(code){ var r = all[code]; if (r[1].code !== rq.dest && D.regions[r[1].code] === region) list.push(r.concat([null, 'Same region'])); });
+      }
+      var rows = [];
+      list.filter(Boolean).forEach(function(r, i){
         var x = r[0], c = r[1], hay = (x[0] + ' ' + x[1] + ' ' + x[2] + ' ' + c.name).toLowerCase();
         if (q && hay.indexOf(q) < 0) return;
         rows.push('<div class="rq-port' + (rq.port && rq.port[0] === x[0] ? ' on' : '') + '" data-rq-port="' + x[0] + '" data-rq-pc="' + c.code + '"><span class="rqo-img"><img src="assets/images/' + D.portImgs[(sea() ? 0 : 3) + (i % 3)] + '" alt=""></span>' +
-          '<div class="rqo-b"><b>' + x[0] + (portTab === 'in' && i === 0 ? '<em>Recommended</em>' : '') + '</b><span>' + x[1] + '</span><small>' + x[2] + ', ' + c.name + '</small></div>' + CHEV + '</div>');
+          '<div class="rqo-b"><b>' + x[0] + (r[2] ? '<em>' + r[2] + '</em>' : '') + '</b><span>' + x[1] + '</span><small>' + x[2] + ', ' + c.name + (r[3] ? ' · <i>' + r[3] + '</i>' : '') + '</small></div>' + CHEV + '</div>');
       });
-      $('rq-ports').innerHTML = rows.join('') || '<div class="rq-empty">No ' + (sea() ? 'ports' : 'airports') + ' match your search</div>';
+      $('rq-ports').innerHTML = rows.join('') || '<div class="rq-empty">' + (portTab === 'recent' && !q ? 'No recent ' + (sea() ? 'ports' : 'airports') + ' yet' : 'No ' + (sea() ? 'ports' : 'airports') + ' match your search') + '</div>';
     }
     function renderPort(){
       $('rq-port-title').textContent = sea() ? 'Select Destination Port' : 'Select Destination Airport';
       $('rq-port-q').placeholder = sea() ? 'Search port, city or country' : 'Search airport, city or country';
-      $('rq-tab-in').textContent = 'In ' + dest().name;
       document.querySelectorAll('[data-rq-ptab]').forEach(function(t){ t.classList.toggle('on', t.dataset.rqPtab === portTab); });
       portList();
     }
 
     // ---------- step 3: liner / airline ----------
     function renderCarrier(){
-      var o = origin(), list = (sea() ? D.liners : D.airlines).slice();
+      var list = carriers().slice();
       $('rq-car-title').textContent = sea() ? 'Select Shipping Line' : 'Select Airline';
-      $('rq-route').textContent = o[0] + '  →  ' + rq.port[0];
-      $('rq-route-s').textContent = dshort(addDays(rq.ready, 0)) + ' onwards · ' + load().short + ' · ' + (sea() ? 'Sea' : 'Air');
       var days = '';
       for (var i = 0; i < 5; i++){ var d = addDays(rq.ready, i * (sea() ? 2 : 1)); days += '<div class="rq-day' + (i === rq.day ? ' on' : '') + '" data-rq-day="' + i + '"><b>' + d.getDate() + '</b><small>' + MON[d.getMonth()] + '</small></div>'; }
       $('rq-days').innerHTML = days;
-      document.querySelectorAll('[data-rq-sort]').forEach(function(s){ s.classList.toggle('on', s.dataset.rqSort === rq.sort || (s.dataset.rqSort === 'direct' && rq.direct)); });
-      list = list.map(function(c, i){ return { c: c, price: freight(c), tt: c.tt + (rq.day % 2 && !c.direct ? 1 : 0) }; });
-      if (rq.direct) list = list.filter(function(x){ return x.c.direct; });
-      list.sort(function(a, b){ return rq.sort === 'fast' ? a.tt - b.tt : a.price - b.price; });
+      document.querySelectorAll('[data-rq-sort]').forEach(function(s){ s.classList.toggle('on', s.dataset.rqSort === rq.sort); });
+      $('rq-sort-name').textContent = sea() ? 'Shipping line' : 'Airline';
+      list = list.map(function(c){ return { c: c, price: freight(c), tt: c.tt + (rq.day % 2 && !c.direct ? 1 : 0) }; });
+      list = list.filter(function(x){
+        var c = x.c, k = perKg(x.price), h = parseInt(DEP[c.code], 10);
+        if (flt.min != null && (k < flt.min || k > flt.max)) return false;
+        if (flt.car.length && flt.car.indexOf(c.code) < 0) return false;
+        if (!sea() && flt.stops.length && flt.stops.indexOf(c.direct ? '0' : '1') < 0) return false;
+        if (sea() && flt.arr && plusDays(addDays(rq.ready, rq.day * 2), x.tt) > new Date(flt.arr + 'T23:59:59')) return false;
+        if (flt.dep === 'am' && h >= 12 || flt.dep === 'pm' && h < 12) return false;
+        if (!sea() && flt.svc.some(function(v){ return (SVC[c.code] || []).indexOf(v) < 0; })) return false;
+        return true;
+      });
+      list.sort(function(a, b){ return rq.sort === 'fast' ? a.tt - b.tt : rq.sort === 'name' ? a.c.name.localeCompare(b.c.name) : a.price - b.price; });
+      $('rq-fcount').textContent = fltCount() || ''; $('rq-fbtn').classList.toggle('on', fltCount() > 0);
       var dep = addDays(rq.ready, rq.day * (sea() ? 2 : 1));
       $('rq-cars').innerHTML = list.map(function(x){
         var c = x.c, arr = plusDays(dep, x.tt);
         return '<div class="rq-car' + (rq.carrier && rq.carrier.code === c.code ? ' on' : '') + '">' +
           '<div class="rqc-top"><span class="rqc-logo" style="background:' + c.bg + ';color:' + c.fg + '">' + c.code + '</span><div class="rqc-n"><b>' + c.name + '</b><small>' + (c.direct ? 'Direct' : '1 transshipment' + (c.via ? ' · via ' + c.via : '')) + '</small></div>' +
-          '<div class="rqc-p"><b>' + usd(x.price) + '</b><small>Freight (est.)</small></div></div>' +
-          '<div class="rqc-mid"><div><small>Departs</small><b>' + dshort(dep) + '</b></div><div class="rqc-line"><span></span><em>' + x.tt + (sea() ? ' days' : (x.tt === 1 ? ' day' : ' days')) + '</em><span></span></div><div><small>Arrives</small><b>' + dshort(arr) + '</b></div></div>' +
+          '<div class="rqc-p"><b>' + (sea() ? usd(x.price) : 'USD ' + perKg(x.price).toFixed(2)) + '</b><small>' + (sea() ? 'Freight (est.)' : 'per kg (est.) · ' + usd(x.price)) + '</small></div></div>' +
+          '<div class="rqc-mid"><div><small>Departs</small><b>' + dshort(dep) + (sea() ? '' : ' ' + DEP[c.code]) + '</b></div><div class="rqc-line"><span></span><em>' + x.tt + (x.tt === 1 ? ' day' : ' days') + '</em><span></span></div><div><small>Arrives</small><b>' + dshort(arr) + '</b></div></div>' +
           '<div class="rqc-foot"><span class="rqc-tag">' + units() + '</span>' + (c.tag ? '<span class="rqc-tag gold">' + c.tag + '</span>' : '') + '<button class="rqc-sel" data-rq-carrier="' + c.code + '" data-rq-tt="' + x.tt + '">Select</button></div></div>';
-      }).join('') || '<div class="rq-empty">No direct services on this date — try another day</div>';
+      }).join('') || '<div class="rq-empty">No services match' + (fltCount() ? ' your filters — try another date or reset the filters' : ' on this date — try another day') + '</div>';
+    }
+
+    // ---------- filter sheet ----------
+    var fd = null, RANGE = [0, 1];
+    function openFilter(){
+      var ks = carriers().map(function(c){ return perKg(freight(c)); });
+      RANGE = [Math.floor(Math.min.apply(null, ks) * 20) / 20, Math.ceil(Math.max.apply(null, ks) * 20) / 20];
+      fd = JSON.parse(JSON.stringify(flt));
+      drawFilter(); $('rq-filter').classList.add('open');
+    }
+    function chk(group, val, label, on){ return '<label class="fchk"><input type="checkbox" data-fg="' + group + '" value="' + val + '"' + (on ? ' checked' : '') + '><span></span>' + label + '</label>'; }
+    function drawFilter(){
+      var lo = fd.min != null ? fd.min : RANGE[0], hi = fd.max != null ? fd.max : RANGE[1];
+      $('rq-f-carl').textContent = sea() ? 'Shipping lines' : 'Airlines';
+      $('rq-f-range').innerHTML = '<div class="frng"><input type="range" id="rq-f-lo" min="' + RANGE[0] + '" max="' + RANGE[1] + '" step="0.01" value="' + lo + '"><input type="range" id="rq-f-hi" min="' + RANGE[0] + '" max="' + RANGE[1] + '" step="0.01" value="' + hi + '"></div><div class="frng-v"><span id="rq-f-lov">' + lo.toFixed(2) + '</span><span id="rq-f-hiv">' + hi.toFixed(2) + '</span></div>';
+      $('rq-f-car').innerHTML = carriers().map(function(c){ return chk('car', c.code, c.name, fd.car.indexOf(c.code) > -1); }).join('');
+      $('rq-f-stops').innerHTML = [['0', 'Direct'], ['1', '1 Stop'], ['2', '2+ Stops']].map(function(x){ return chk('stops', x[0], x[1], fd.stops.indexOf(x[0]) > -1); }).join('');
+      document.querySelectorAll('[data-fdep]').forEach(function(b){ b.classList.toggle('on', b.dataset.fdep === fd.dep); });
+      $('rq-f-svc').innerHTML = SVC_L.map(function(x){ return chk('svc', x[0], x[1], fd.svc.indexOf(x[0]) > -1); }).join('');
+      $('rq-f-aironly').style.display = sea() ? 'none' : '';
+      $('rq-f-stopwrap').style.display = sea() ? 'none' : '';
+      $('rq-f-seaonly').style.display = sea() ? '' : 'none';
+      $('rq-f-arr').min = rq.ready; $('rq-f-arr').value = fd.arr || '';
+      ['rq-f-lo', 'rq-f-hi'].forEach(function(id){ $(id).addEventListener('input', function(){
+        var a = +$('rq-f-lo').value, b = +$('rq-f-hi').value;
+        if (a > b){ if (id === 'rq-f-lo') $('rq-f-lo').value = a = b; else $('rq-f-hi').value = b = a; }
+        $('rq-f-lov').textContent = a.toFixed(2); $('rq-f-hiv').textContent = b.toFixed(2);
+      }); });
+    }
+    function readFilter(){
+      var a = +$('rq-f-lo').value, b = +$('rq-f-hi').value;
+      fd.min = a > RANGE[0] || b < RANGE[1] ? a : null; fd.max = fd.min != null ? b : null;
+      fd.arr = sea() ? ($('rq-f-arr').value || null) : null;
+      ['car', 'stops', 'svc'].forEach(function(g){ fd[g] = [].slice.call(document.querySelectorAll('[data-fg="' + g + '"]:checked')).map(function(i){ return i.value; }); });
     }
 
     // ---------- step 4: warehouse ----------
     function whCost(w){ var p = pd(), pallets = Math.max(1, Math.ceil((p ? p.kg : 5000) / 1000)); return { pallets: pallets, cost: pallets * w.rate }; }
+    // tabs: Popular (top rated in the region) · Nearby (closest to the chosen port) · Recent (used before)
+    var whTab = 'popular';
+    var WH_RECENT = [['JD Cold Hub — Jebel Ali', '12 Sep 2026'], ['Rotterdam Fresh Port', '28 Aug 2026'], ['Red Sea Cold Chain', '02 Aug 2026']];
+    function allWh(){ var out = []; Object.keys(D.warehouses).forEach(function(k){ D.warehouses[k].forEach(function(w){ out.push({ w: w, c: k }); }); }); return out; }
+    function whByName(n){ return allWh().filter(function(x){ return x.w.name === n; })[0]; }
+    function whList(){
+      var pc = portDest().code, region = D.regions[pc];
+      if (whTab === 'nearby') return allWh().filter(function(x){ return x.c === pc; }).sort(function(a, b){ return a.w.km - b.w.km; })
+        .map(function(x, i){ return { w: x.w, c: x.c, badge: i === 0 ? 'Nearest' : null }; });
+      if (whTab === 'recent') return WH_RECENT.map(function(r){ var x = whByName(r[0]); return x && { w: x.w, c: x.c, note: 'Last used ' + r[1] }; }).filter(Boolean);
+      return allWh().filter(function(x){ return D.regions[x.c] === region; }).sort(function(a, b){ return b.w.rating - a.w.rating; })
+        .map(function(x, i){ return { w: x.w, c: x.c, badge: i < 2 ? 'Popular' : null }; });
+    }
     function renderWh(){
-      var d = dest(), list = D.warehouses[d.code] || [];
+      var pc = portDest().code;
       $('rq-wh-s').textContent = 'Store your cargo near ' + rq.port[1] + ' before final delivery. You can skip this step.';
-      $('rq-whs').innerHTML = list.map(function(w, i){
-        var c = whCost(w);
-        return '<div class="rq-wh' + (rq.wh && rq.wh.name === w.name ? ' on' : '') + '" data-rq-wh="' + i + '"><span class="rqw-img"><img src="assets/images/' + w.img + '" alt=""></span>' +
-          '<div class="rqw-b"><b>' + w.name + '</b><small>' + w.area + ' · ' + w.km + ' km from port</small><div class="rqw-tags">' + w.tags.map(function(t){ return '<span>' + t + '</span>'; }).join('') + '</div>' +
+      document.querySelectorAll('[data-rq-whtab]').forEach(function(t){ t.classList.toggle('on', t.dataset.rqWhtab === whTab); });
+      $('rq-whs').innerHTML = whList().map(function(x){
+        var w = x.w, c = whCost(w), where = x.c === pc ? w.km + ' km from port' : destBy(x.c).name;
+        return '<div class="rq-wh' + (rq.wh && rq.wh.name === w.name ? ' on' : '') + '" data-rq-wh="' + esc(w.name) + '"><span class="rqw-img"><img src="assets/images/' + w.img + '" alt=""></span>' +
+          '<div class="rqw-b"><b>' + w.name + '</b>' + (x.badge ? '<em class="rqw-badge">' + x.badge + '</em>' : '') + '<small>' + w.area + ' · ' + where + '</small>' + (x.note ? '<small class="rqw-note">' + x.note + '</small>' : '') +
+          '<div class="rqw-tags">' + w.tags.map(function(t){ return '<span>' + t + '</span>'; }).join('') + '</div>' +
           '<div class="rqw-p"><b>' + money(c.cost, 0) + '</b> / week · ' + c.pallets + ' pallets <span class="star">' + w.rating + '</span></div></div><span class="rqw-radio">' + CHECK + '</span></div>';
-      }).join('');
+      }).join('') || '<div class="rq-empty">No warehouses here yet — try another tab or skip this step</div>';
       $('rq-wh-next').disabled = !rq.wh;
     }
 
     // ---------- review + sent ----------
     function totals(){
-      var p = pd(), fr = freight(rq.carrier), wh = rq.wh ? whCost(rq.wh).cost : 0;
+      var p = pd(), fr = rq.managed ? managedPrice() : freight(rq.carrier), wh = !rq.managed && rq.wh ? whCost(rq.wh).cost : 0;
       return { p: p, fr: fr, wh: wh, total: p.goods + p.packCost + fr + wh };
     }
     function kv(k, v){ return '<div class="kv-row"><span class="k">' + k + '</span><span class="v">' + v + '</span></div>'; }
+    function routeBar(rightCode, rightName){
+      return '<div class="rv-route"><span class="rv-arrow">' + (sea() ? D.icons.ship : D.icons.plane) + '</span><div style="flex:1;min-width:0"><small>' + (sea() ? 'Sea freight to' : 'Air freight to') + '</small><b>' + rightCode + '</b><small>' + rightName + '</small></div></div>';
+    }
+    // steps 2-4 are skipped when Venture Karts handles the delivery
+    function markSteps(){
+      document.querySelectorAll('#screen-rq-review .rqs').forEach(function(el, i){
+        if (i < 1 || i > 3) return;
+        el.classList.toggle('skip', rq.managed); el.classList.toggle('done', !rq.managed);
+        el.querySelector('span').innerHTML = rq.managed ? '–' : CHECK;
+      });
+    }
     function renderReview(){
-      var t = totals(), p = t.p, o = origin(), dep = addDays(rq.ready, rq.day * (sea() ? 2 : 1)), arr = plusDays(dep, rq.tt);
-      $('rv-prod').innerHTML = '<div class="rv-ph"><span class="rqp-img"><img src="' + p.img + '" alt=""></span><div class="rqp-b"><b>' + p.name + '</b><small>' + p.variety + ' · ' + p.market + ', ' + p.country + '</small></div></div>' +
+      markSteps();
+      var t = totals(), p = t.p;
+      $('rv-prod').innerHTML = '<div class="rv-ph"><span class="rqp-img"><img src="' + p.img + '" alt=""></span><div class="rqp-b"><b>' + p.name + '</b><small>' + p.variety + '</small></div></div>' +
         kv('Quantity', fmt(p.kg) + ' kg') + kv('Unit price', money(p.unitPrice) + ' / kg') + kv('Packaging', p.packText || 'None');
-      $('rv-ship').innerHTML = '<div class="rv-route"><div><b>' + o[0] + '</b><small>' + o[1] + '</small></div><span class="rv-arrow">' + (sea() ? D.icons.ship : D.icons.plane) + '</span><div style="text-align:right"><b>' + rq.port[0] + '</b><small>' + rq.port[1] + '</small></div></div>' +
-        kv('Mode', sea() ? 'Sea Freight' : 'Air Freight') + kv(sea() ? 'Shipping line' : 'Airline', rq.carrier.name) + kv(sea() ? 'Container' : 'Cargo type', units()) +
-        kv('Departs', dfmt(dep)) + kv('Arrives (est.)', dfmt(arr)) + kv('Transit', rq.tt + ' days · ' + (rq.carrier.direct ? 'Direct' : '1 transshipment'));
+      var to = kv('Deliver to', esc(addrShort())) + (rq.addr.name ? kv('Contact', esc(rq.addr.name) + (rq.addr.phone ? ' · ' + esc(rq.addr.phone) : '')) : '');
+      if (rq.managed){
+        var eta = addDays(rq.ready, managedDays());
+        $('rv-ship').innerHTML = '<div class="rv-vk">' + TRUCK + 'Handled by Venture Karts · door-to-door</div>' + routeBar(esc(rq.addr.city || dest().name), 'Door delivery') +
+          kv('Mode', sea() ? 'Sea Freight' : 'Air Freight') + kv(sea() ? 'Container' : 'Cargo type', units()) + kv('Includes', 'Freight · customs · last mile') +
+          kv('Delivered by (est.)', dfmt(eta)) + to;
+      } else {
+        var dep = addDays(rq.ready, rq.day * (sea() ? 2 : 1)), arr = plusDays(dep, rq.tt);
+        $('rv-ship').innerHTML = routeBar(rq.port[0], rq.port[1]) +
+          kv('Mode', sea() ? 'Sea Freight' : 'Air Freight') + kv(sea() ? 'Shipping line' : 'Airline', rq.carrier.name) + kv(sea() ? 'Container' : 'Cargo type', units()) +
+          kv('Departs', dfmt(dep)) + kv('Arrives (est.)', dfmt(arr)) + kv('Transit', rq.tt + (rq.tt === 1 ? ' day' : ' days') + ' · ' + (rq.carrier.direct ? 'Direct' : '1 transshipment')) + to;
+      }
+      $('rv-wh').parentElement.style.display = rq.managed ? 'none' : '';
       $('rv-wh').innerHTML = rq.wh ? kv('Warehouse', rq.wh.name) + kv('Location', rq.wh.area) + kv('Storage', whCost(rq.wh).pallets + ' pallets · 1 week (est.)') :
-        '<div class="rv-none">No warehouse — cargo goes straight to you after customs clearance. <a data-goto="rq-warehouse">Add one</a></div>';
-      $('rv-cost').innerHTML = kv('Product', money(p.goods)) + kv('Packaging', money(p.packCost)) + kv((sea() ? 'Ocean' : 'Air') + ' freight (est.)', money(t.fr)) +
-        kv('Warehouse (est.)', t.wh ? money(t.wh) : '—') + '<div class="kv-row rv-tot"><span class="k">Total (est.)</span><span class="v">' + money(t.total) + '</span></div>';
+        '<div class="rv-none">No warehouse — cargo goes straight to your delivery address after customs clearance. <a data-goto="rq-warehouse">Add one</a></div>';
+      $('rv-cost').innerHTML = kv('Product', money(p.goods)) + kv('Packaging', money(p.packCost)) +
+        (rq.managed ? kv('Door-to-door delivery', money(t.fr)) : kv((sea() ? 'Ocean' : 'Air') + ' freight (est.)', money(t.fr)) + kv('Warehouse (est.)', t.wh ? money(t.wh) : '—')) +
+        '<div class="kv-row rv-tot"><span class="k">Total (est.)</span><span class="v">' + money(t.total) + '</span></div>';
       $('rv-total').textContent = money(t.total);
     }
     function renderSent(){
-      var t = totals(), o = origin();
+      var t = totals();
       $('rs-id').textContent = 'RQ-20261016-' + (1000 + Math.floor(t.total) % 9000);
-      $('rs-card').innerHTML = '<div class="rv-ph"><span class="rqp-img"><img src="' + t.p.img + '" alt=""></span><div class="rqp-b"><b>' + t.p.name + '</b><small>' + fmt(t.p.kg) + ' kg · ' + rq.carrier.name + '</small></div></div>' +
-        '<div class="rv-route"><div><b>' + o[0] + '</b><small>' + o[2] + '</small></div><span class="rv-arrow">' + (sea() ? D.icons.ship : D.icons.plane) + '</span><div style="text-align:right"><b>' + rq.port[0] + '</b><small>' + rq.port[2] + '</small></div></div>' +
-        kv('Warehouse', rq.wh ? rq.wh.name : 'Not required') + '<div class="kv-row rv-tot"><span class="k">Total (est.)</span><span class="v">' + money(t.total) + '</span></div>';
+      var right = rq.managed ? [esc(rq.addr.city || dest().name), 'Door delivery'] : [rq.port[0], rq.port[2]];
+      $('rs-card').innerHTML = '<div class="rv-ph"><span class="rqp-img"><img src="' + t.p.img + '" alt=""></span><div class="rqp-b"><b>' + t.p.name + '</b><small>' + fmt(t.p.kg) + ' kg · ' + (rq.managed ? 'Venture Karts door-to-door' : rq.carrier.name) + '</small></div></div>' +
+        routeBar(right[0], right[1]) + kv('Deliver to', esc(addrShort())) + (rq.managed ? '' : kv('Warehouse', rq.wh ? rq.wh.name : 'Not required')) +
+        '<div class="kv-row rv-tot"><span class="k">Total (est.)</span><span class="v">' + money(t.total) + '</span></div>';
     }
 
-    // ---------- destination sheet ----------
+    // ---------- country sheet (delivery address) ----------
     function openDest(){
       $('rq-dest-list').innerHTML = D.dests.map(function(d){
         return '<div class="pk-row' + (d.code === rq.dest ? ' on' : '') + '" data-rq-dest="' + d.code + '"><span class="pk-flag"><img src="assets/images/flags/' + d.code + '.png" alt=""></span><div class="pk-b"><b>' + d.name + '</b><small>' + d.ports.length + ' ports · ' + d.airports.length + ' airports</small></div><svg class="pk-check" viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></div>';
@@ -533,41 +674,65 @@
       $('rq-dest-sheet').classList.add('open');
     }
 
-    // ---------- navigation hooks ----------
-    function show(id){ goTo(id); }
+    // ---------- events ----------
     document.addEventListener('click', function(e){
       var t;
-      // entering the flow from anywhere renders step 1 fresh
       if ((t = e.target.closest('[data-goto="rq-ship"]'))) { setTimeout(renderShip, 0); return; }
-      if ((t = e.target.closest('.rq-mode'))) { if (rq.mode !== t.dataset.mode){ rq.mode = t.dataset.mode; rq.load = 1; rq.port = null; rq.carrier = null; } renderShip(); return; }
-      if ((t = e.target.closest('[data-rq-load]'))) { rq.load = +t.dataset.rqLoad; renderShip(); return; }
-      if (e.target.closest('#rq-to-row')) { openDest(); return; }
-      if ((t = e.target.closest('[data-rq-dest]'))) { if (rq.dest !== t.dataset.rqDest){ rq.dest = t.dataset.rqDest; rq.port = null; rq.wh = null; } $('rq-dest-sheet').classList.remove('open'); renderShip(); return; }
+      if ((t = e.target.closest('.rq-mode'))) { readForm(); if (rq.mode !== t.dataset.mode){ rq.mode = t.dataset.mode; rq.load = 1; rq.port = null; rq.portC = null; rq.carrier = null; } renderShip(); return; }
+      if ((t = e.target.closest('[data-rq-saved]'))) {
+        var i = +t.dataset.rqSaved; rq.saved = i;
+        if (i >= 0){ rq.addr = JSON.parse(JSON.stringify(D.saved[i])); rq.dest = rq.addr.country; }
+        else { rq.addr = { label: 'New address', name: '', phone: '', line: '', city: '', zip: '', country: rq.dest }; }
+        rq.port = null; rq.portC = null; rq.wh = null;
+        renderSaved(); fillForm(); renderVK(); if (i < 0) $('rq-a-line').focus(); return;
+      }
+      if (e.target.closest('#rq-a-country-row')) { readForm(); openDest(); return; }
+      if ((t = e.target.closest('[data-rq-dest]'))) {
+        if (rq.dest !== t.dataset.rqDest){ rq.dest = t.dataset.rqDest; rq.addr.country = rq.dest; rq.port = null; rq.portC = null; rq.wh = null; rq.saved = -1; }
+        $('rq-dest-sheet').classList.remove('open'); renderSaved(); fillForm(); renderVK(); return;
+      }
       if ((t = e.target.closest('[data-rq-close]'))) { $(t.dataset.rqClose).classList.remove('open'); return; }
-      if (e.target.closest('#rq-next-1')) { rq.ready = $('rq-ready').value || rq.ready; portTab = 'in'; $('rq-port-q').value = ''; renderPort(); show('rq-port'); return; }
+      if (e.target.closest('#rq-next-1')) {
+        if (!validAddr()) return;
+        if (rq.managed){ renderReview(); goTo('rq-review'); return; }
+        portTab = 'popular'; $('rq-port-q').value = ''; renderPort(); goTo('rq-port'); return;
+      }
       if ((t = e.target.closest('[data-rq-ptab]'))) { portTab = t.dataset.rqPtab; renderPort(); return; }
       if ((t = e.target.closest('[data-rq-port]'))) {
-        var c = D.dests.filter(function(x){ return x.code === t.dataset.rqPc; })[0];
-        if (c.code !== rq.dest){ rq.dest = c.code; rq.wh = null; }
+        var c = destBy(t.dataset.rqPc);
+        if (rq.portC !== c.code) rq.wh = null;
+        rq.portC = c.code;
         rq.port = c[sea() ? 'ports' : 'airports'].filter(function(x){ return x[0] === t.dataset.rqPort; })[0];
-        rq.day = 0; renderCarrier(); show('rq-carrier'); return;
+        rq.day = 0; renderCarrier(); goTo('rq-carrier'); return;
       }
       if ((t = e.target.closest('[data-rq-day]'))) { rq.day = +t.dataset.rqDay; renderCarrier(); return; }
-      if ((t = e.target.closest('[data-rq-sort]'))) { if (t.dataset.rqSort === 'direct') rq.direct = !rq.direct; else rq.sort = t.dataset.rqSort; renderCarrier(); return; }
+      if ((t = e.target.closest('[data-rq-sort]'))) { rq.sort = t.dataset.rqSort; renderCarrier(); return; }
+      if (e.target.closest('#rq-fbtn')) { openFilter(); return; }
+      if ((t = e.target.closest('[data-fdep]'))) { readFilter(); fd.dep = t.dataset.fdep; document.querySelectorAll('[data-fdep]').forEach(function(b){ b.classList.toggle('on', b === t); }); return; }
+      if (e.target.closest('#rq-f-reset')) { fd = { min: null, max: null, car: [], stops: [], dep: 'any', svc: [], arr: null }; drawFilter(); return; }
+      if (e.target.closest('#rq-f-apply')) { readFilter(); flt = fd; $('rq-filter').classList.remove('open'); renderCarrier(); return; }
       if ((t = e.target.closest('[data-rq-carrier]'))) {
-        rq.carrier = (sea() ? D.liners : D.airlines).filter(function(x){ return x.code === t.dataset.rqCarrier; })[0]; rq.tt = +t.dataset.rqTt;
-        renderWh(); show('rq-warehouse'); return;
+        rq.carrier = carriers().filter(function(x){ return x.code === t.dataset.rqCarrier; })[0]; rq.tt = +t.dataset.rqTt;
+        whTab = 'popular'; renderWh(); goTo('rq-warehouse'); return;
       }
-      if ((t = e.target.closest('[data-rq-wh]'))) { var w = (D.warehouses[rq.dest] || [])[+t.dataset.rqWh]; rq.wh = rq.wh && rq.wh.name === w.name ? null : w; renderWh(); return; }
-      if (e.target.closest('[data-rq-skip]')) { rq.wh = null; renderReview(); show('rq-review'); return; }
-      if (e.target.closest('#rq-wh-next')) { renderReview(); show('rq-review'); return; }
+      if ((t = e.target.closest('[data-rq-whtab]'))) { whTab = t.dataset.rqWhtab; renderWh(); return; }
+      if ((t = e.target.closest('[data-rq-wh]'))) { var w = whByName(t.dataset.rqWh).w; rq.wh = rq.wh && rq.wh.name === w.name ? null : w; renderWh(); return; }
+      if (e.target.closest('[data-rq-skip]')) { rq.wh = null; renderReview(); goTo('rq-review'); return; }
+      if (e.target.closest('#rq-wh-next')) { renderReview(); goTo('rq-review'); return; }
       if (e.target.closest('[data-goto="rq-warehouse"]')) { setTimeout(renderWh, 0); return; }
       if (e.target.closest('#rv-send')) {
         if (!$('rv-agree').checked){ $('rv-agree-row').classList.add('shake'); setTimeout(function(){ $('rv-agree-row').classList.remove('shake'); }, 500); return; }
         renderSent(); goTo('rq-sent', true); return;
       }
     });
+    $('rq-vk-in').addEventListener('change', function(){ rq.managed = this.checked; renderVK(); });
+    ['rq-a-name', 'rq-a-phone', 'rq-a-line', 'rq-a-city', 'rq-a-zip'].forEach(function(id){
+      $(id).addEventListener('input', function(){
+        if (rq.saved !== -1){ rq.saved = -1; renderSaved(); }
+        this.closest('.rq-in').classList.remove('err');
+        if (id === 'rq-a-city'){ rq.addr.city = this.value.trim(); renderVK(); }
+      });
+    });
     $('rq-port-q').addEventListener('input', portList);
-    $('rq-ready').addEventListener('change', function(){ rq.ready = this.value || rq.ready; });
     renderShip();
   })();
