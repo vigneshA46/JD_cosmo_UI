@@ -472,15 +472,16 @@
     function renderSvFreight(){
       var sea_ = sv.mode === 'sea', L = (sea_ ? D.seaLoads : D.airLoads);
       $('sv-title').textContent = sea_ ? 'Sea Freight' : 'Air Freight';
-      $('sv-hero').src = sea_ ? 'assets/images/ship.jpg' : 'assets/images/aircargo.jpg';
-      $('sv-hero-t').innerHTML = sea_ ? 'Global Sea Freight<br>Made Simple' : 'Global Air Freight<br>Made Simple';
+      $('sv-hero').src = sea_ ? 'assets/images/hero_sea.jpg' : 'assets/images/hero_air.jpg';
+      $('sv-hero-t').textContent = sea_ ? 'Global Sea Freight' : 'Global Air Freight';
+      $('sv-hero-s').textContent = sea_ ? 'Compare rates · Book trusted shipping lines · Worldwide' : 'Compare rates · Book trusted airlines · Worldwide';
       document.querySelectorAll('[data-sv-mode]').forEach(function(m){ m.classList.toggle('on', m.dataset.svMode === sv.mode); });
       var noun = sea_ ? 'port' : 'airport';
       $('sv-from').textContent = sv.from ? sv.from[0] + ' · ' + sv.from[1] : 'Select origin ' + noun; $('sv-from-s').textContent = sv.from ? sv.from[2] + (sv.fromC && !ORIG_N[sv.fromC] ? ', ' + destBy(sv.fromC).name : '') : '';
       $('sv-to').textContent = sv.to ? sv.to[0] + ' · ' + sv.to[1] : 'Select destination ' + noun; $('sv-to-s').textContent = sv.to ? sv.to[2] + ', ' + destBy(sv.toC).name : '';
       $('sv-load-l').textContent = sea_ ? 'Container type' : 'Cargo type';
       var order = sea_ ? [3, 4, 5, 1, 2, 0] : [0, 1, 2, 3];
-      $('sv-loads').innerHTML = order.map(function(i){ var l = L[i]; return '<div class="rq-load' + (i === sv.load ? ' on' : '') + '" data-sv-load="' + i + '"><b>' + l.name + '</b><small>' + l.note + '</small></div>'; }).join('');
+      $('sv-load-sel').innerHTML = order.map(function(i){ var l = L[i]; return '<option value="' + i + '"' + (i === sv.load ? ' selected' : '') + '>' + l.name + ' — ' + l.note + '</option>'; }).join('');
       $('sv-search').textContent = 'Search Rates';
       $('sv-err').textContent = '';
     }
@@ -531,6 +532,190 @@
         $('rs-card').innerHTML = '<div class="sv-route"><div><b>' + sv.from[0] + '</b><small>' + sv.from[2] + '</small></div><span class="rv-arrow">' + (sea() ? D.icons.ship : D.icons.plane) + '</span><div style="text-align:right"><b>' + sv.to[0] + '</b><small>' + sv.to[2] + '</small></div></div>' +
           kv(sea() ? 'Shipping line' : 'Airline', rq.carrier.name) + kv('Cargo', fmt(sv.kg) + ' kg · ' + esc(sv.desc || 'General cargo')) + '<div class="kv-row rv-tot"><span class="k">Total (est.)</span><span class="v">' + money(t.total) + '</span></div>';
       }
+    }
+
+    // ---- service bookings: Search / Bookings bar, My Bookings, booking flow (Shipment -> Parties -> Review -> Confirmed) ----
+    function svKind(){ return rq.svc === 'wh' ? 'wh' : sv.mode; }
+    function svStart(){ return rq.svc === 'wh' ? 'svc-wh' : 'svc-freight'; }
+    function carrierBy(code){ return D.liners.concat(D.airlines).filter(function(c){ return c.code === code; })[0]; }
+    var BOOKINGS = {
+      sea: [
+        { id: 'BK20261115001', c: 'MSK', from: 'INNSA', to: 'AEJEA', dep: '18 Nov 2026', arr: '24 Nov 2026', units: "2 × 40' HC · FCL", price: 2450, st: 'confirmed' },
+        { id: 'BK20261108012', c: 'MSC', from: 'SGSIN', to: 'DEHAM', dep: '20 Nov 2026', arr: '10 Dec 2026', units: "1 × 20' Standard · FCL", price: 1850, st: 'pending' },
+        { id: 'BK20261025008', c: 'CMA', from: 'INNSA', to: 'AEJEA', dep: '12 Nov 2026', arr: '18 Nov 2026', units: "1 × 40' HC · FCL", price: 2150, st: 'sent' },
+        { id: 'BK20260930004', c: 'HLC', from: 'PKKHI', to: 'NLRTM', dep: '02 Oct 2026', arr: '27 Oct 2026', units: "1 × 40' Standard · FCL", price: 3900, st: 'cancelled' }],
+      air: [
+        { id: 'BK20261115021', c: 'EK', from: 'BOM', to: 'DXB', dep: '15 Nov 2026', arr: '15 Nov 2026', units: '100 kg · 1.0 CBM', price: 363, st: 'confirmed' },
+        { id: 'BK20261102017', c: 'QR', from: 'BOM', to: 'LHR', dep: '04 Nov 2026', arr: '05 Nov 2026', units: '450 kg · 2.6 CBM', price: 1290, st: 'pending' },
+        { id: 'BK20261020009', c: 'SQ', from: 'BOM', to: 'SIN', dep: '22 Oct 2026', arr: '23 Oct 2026', units: '220 kg · 1.4 CBM', price: 640, st: 'cancelled' }],
+      wh: [
+        { id: 'WB20261110006', w: 'JD Cold Hub — Jebel Ali', img: 'warehouse.jpg', loc: 'JAFZA South, Dubai', dep: '10 Nov 2026', arr: '24 Nov 2026', units: '120 sq.ft · 14 days', price: 360, st: 'confirmed' },
+        { id: 'WB20261028003', w: 'Rotterdam Fresh Port', img: 'container.jpg', loc: 'Maasvlakte, Rotterdam', dep: '01 Nov 2026', arr: '30 Nov 2026', units: '240 sq.ft · 30 days', price: 2057, st: 'sent' },
+        { id: 'WB20260915002', w: 'Gulf Agri Store', img: 'container.jpg', loc: 'Al Quoz Industrial, Dubai', dep: '15 Sep 2026', arr: '22 Sep 2026', units: '60 sq.ft · 7 days', price: 75, st: 'cancelled' }]
+    };
+    var ST_L = { confirmed: 'Confirmed', pending: 'Pending', sent: 'Request Sent', cancelled: 'Cancelled' }, bklTab = 'all';
+    function renderBookings(){
+      var k = svKind(), list = BOOKINGS[k].filter(function(b){ return bklTab === 'all' || b.st === bklTab || (bklTab === 'pending' && b.st === 'sent'); });
+      $('bkl-kind').textContent = k === 'sea' ? 'Sea freight' : k === 'air' ? 'Air freight' : 'Warehouse';
+      document.querySelectorAll('[data-bkl]').forEach(function(t){ t.classList.toggle('on', t.dataset.bkl === bklTab); });
+      $('bkl-list').innerHTML = list.map(function(b){
+        var c = b.c && carrierBy(b.c), head = c ? '<span class="rqc-logo" style="background:' + c.bg + ';color:' + c.fg + '">' + c.code + '</span>' : '<span class="bkl-img"><img src="assets/images/' + b.img + '" alt=""></span>';
+        return '<div class="bkl">' + head + '<div class="bkl-b"><div class="bkl-top"><small>' + b.id + '</small><span class="bkl-st ' + b.st + '">' + ST_L[b.st] + '</span></div>' +
+          '<div class="bkl-r">' + (c ? b.from + ' → ' + b.to : '<span style="font-family:Inter,sans-serif;font-size:13.5px">' + b.w + '</span>') + '</div>' +
+          (c ? '' : '<div class="bkl-d"><span>' + b.loc + '</span></div>') +
+          '<div class="bkl-d"><span>' + (c ? 'Dep ' : 'From ') + b.dep + '</span><span>' + (c ? 'Arr ' : 'To ') + b.arr + '</span></div>' +
+          '<div class="bkl-f"><span>' + b.units + '</span><b>USD ' + fmt(b.price) + '</b></div></div></div>';
+      }).join('') || '<div class="rq-empty">No bookings here yet</div>';
+    }
+
+    // ---- booking form state ----
+    var bk = null;
+    var PARTY0 = { company: 'Al Fahim Trading LLC', address: 'Plot S30210, Jebel Ali Free Zone South, Dubai, UAE', contact: 'Ahmed Al Fahim', email: 'ahmed@alfahimtrading.ae', code: '+971', phone: '4 880 1200' };
+    var WCARGO = ['General cargo', 'Fresh produce (chilled)', 'Frozen goods', 'Pharmaceuticals', 'Hazardous / DG'];
+    function bkStart(){
+      var k = svKind(), l = load();
+      bk = { kind: k, load: sv.load, desc: sv.desc || 'General cargo', kg: k === 'wh' ? sv.whKg : sv.kg, cbm: sv.cbm, spec: '', L: 100, W: 60, H: 60,
+        qty: k === 'sea' ? (l.perKg ? 1 : Math.max(1, Math.ceil(sv.kg / l.cap))) : k === 'air' ? Math.max(1, Math.ceil(sv.kg / 50)) : Math.max(1, Math.ceil(sv.whKg / 1000)),
+        wcargo: 1, shipper: JSON.parse(JSON.stringify(PARTY0)), same: true, cons: { company: '', address: '', contact: '', email: '', code: '+971', phone: '' } };
+      var wh = k === 'wh';
+      document.querySelectorAll('.bk-title').forEach(function(t, i){ t.textContent = i === 2 ? 'Review Booking' : wh ? 'Book Storage' : 'Book Shipment'; });
+      document.querySelectorAll('[data-bk-l="1"]').forEach(function(e){ e.textContent = wh ? 'Storage' : 'Shipment'; });
+      document.querySelectorAll('[data-bk-l="2"]').forEach(function(e){ e.textContent = wh ? 'Customer' : 'Parties'; });
+      renderBk1(); goTo('bk-1');
+    }
+    function fld(id, label, val, type, extra){ return '<label class="bk-f" id="' + id + '-row"><small>' + label + '</small><input id="' + id + '" type="' + (type || 'text') + '" value="' + esc(val == null ? '' : val) + '"' + (extra || '') + '></label>'; }
+    function renderBk1(){
+      var k = bk.kind, out = '';
+      if (k === 'wh'){
+        var x = rq.sides['in'];
+        out = '<div class="bk-h">Storage Details</div><div class="bk-rv" style="box-shadow:none;background:var(--bg);padding:8px 12px">' + kv('Warehouse', x.wh.name) + kv('Space', fmt(x.plan.pallets) + ' sq.ft') + kv('Dates', dshort(new Date(x.plan.start + 'T00:00:00')) + ' – ' + dfmt(addDays(x.plan.start, x.plan.days)) + ' · ' + x.plan.days + ' days') + '</div>' +
+          '<label class="bk-f"><small>Cargo type</small><select id="bk-wcargo">' + WCARGO.map(function(c, i){ return '<option value="' + i + '"' + (i === bk.wcargo ? ' selected' : '') + '>' + c + '</option>'; }).join('') + '</select></label>' +
+          '<div class="bk-2c">' + qtyField('Packages / pallets') + fld('bk-kg', 'Total weight (kg)', bk.kg, 'number') + '</div>' +
+          '<label class="bk-f" id="bk-desc-row"><small>Cargo description</small><textarea id="bk-desc">' + esc(bk.desc) + '</textarea></label>' +
+          fld('bk-spec', 'Special handling (optional)', bk.spec, 'text', ' placeholder="e.g. Keep at 2–8 °C, stack max 2 high"');
+      } else {
+        var L = k === 'sea' ? D.seaLoads : D.airLoads, order = k === 'sea' ? [3, 4, 5, 1, 2, 0] : [0, 1, 2, 3];
+        out = '<div class="bk-h">Shipment Details</div><label class="bk-f"><small>' + (k === 'sea' ? 'Container type' : 'Cargo type') + '</small><select id="bk-load">' + order.map(function(i){ return '<option value="' + i + '"' + (i === bk.load ? ' selected' : '') + '>' + L[i].name + '</option>'; }).join('') + '</select></label>';
+        if (k === 'sea') out += qtyField('Quantity (containers)') + '<label class="bk-f" id="bk-desc-row"><small>Cargo description</small><textarea id="bk-desc">' + esc(bk.desc) + '</textarea></label>' +
+          '<div class="bk-2c">' + fld('bk-kg', 'Total gross weight (kg)', bk.kg, 'number') + fld('bk-cbm', 'Total volume (CBM)', bk.cbm, 'number') + '</div>';
+        else out += '<div class="bk-2c">' + qtyField('Pieces') + fld('bk-kg', 'Total weight (kg)', bk.kg, 'number') + '</div>' + fld('bk-cbm', 'Total volume (CBM)', bk.cbm, 'number') +
+          '<small class="bk-sub">Dimensions per piece (cm)</small><div class="bk-3c">' + fld('bk-L', 'Length', bk.L, 'number') + fld('bk-W', 'Width', bk.W, 'number') + fld('bk-H', 'Height', bk.H, 'number') + '</div>' +
+          fld('bk-desc', 'Cargo description', bk.desc);
+        out += fld('bk-spec', 'Special requirements (optional)', bk.spec, 'text', ' placeholder="e.g. Reefer, dangerous goods, stackable"');
+      }
+      $('bk1-body').innerHTML = out;
+    }
+    function qtyField(label){ return '<div class="bk-f"><small>' + label + '</small><div class="pp-step bk-step"><button data-bk-step="-1">−</button><input id="bk-qty" class="num" inputmode="numeric" value="' + bk.qty + '"><button data-bk-step="1">+</button></div></div>'; }
+    function readBk1(){
+      var v = function(id){ var e = $(id); return e ? e.value : null; };
+      if ($('bk-load')) bk.load = +v('bk-load');
+      if ($('bk-wcargo')) bk.wcargo = +v('bk-wcargo');
+      bk.qty = Math.max(1, parseInt(v('bk-qty'), 10) || 1);
+      bk.kg = parseFloat(v('bk-kg')) || 0; if ($('bk-cbm')) bk.cbm = parseFloat(v('bk-cbm')) || 0;
+      bk.desc = (v('bk-desc') || '').trim(); bk.spec = (v('bk-spec') || '').trim();
+      if ($('bk-L')){ bk.L = +v('bk-L'); bk.W = +v('bk-W'); bk.H = +v('bk-H'); }
+      $('bk-kg-row').classList.toggle('err', bk.kg <= 0); $('bk-desc-row').classList.toggle('err', !bk.desc);
+      return bk.kg > 0 && !!bk.desc;
+    }
+    function partyFields(p, pre){
+      return fld(pre + 'company', 'Company name', p.company) + fld(pre + 'address', 'Address', p.address) + fld(pre + 'contact', 'Contact person', p.contact) + fld(pre + 'email', 'Email', p.email, 'email') +
+        '<div class="bk-f" id="' + pre + 'phone-row"><small>Phone</small><div class="bk-ph"><select id="' + pre + 'code">' + ['+971', '+966', '+974', '+65', '+31', '+49', '+44', '+1', '+91'].map(function(c){ return '<option' + (c === p.code ? ' selected' : '') + '>' + c + '</option>'; }).join('') + '</select><input id="' + pre + 'phone" type="tel" value="' + esc(p.phone) + '"></div></div>';
+    }
+    function renderBk2(){
+      var wh = bk.kind === 'wh';
+      $('bk2-body').innerHTML = '<div class="bk-h">' + (wh ? 'Customer Details' : 'Shipper Details') + '</div>' + partyFields(bk.shipper, 'bs-') +
+        '<div class="bk-h">' + (wh ? 'Release / Receiving Contact' : 'Consignee Details') + '</div><label class="bk-same"><input type="checkbox" id="bk-same"' + (bk.same ? ' checked' : '') + '>Same as ' + (wh ? 'customer' : 'shipper') + '</label>' +
+        '<div id="bk-cons" style="display:' + (bk.same ? 'none' : '') + '">' + partyFields(bk.cons, 'bc-') + '</div>';
+    }
+    function readParty(pre){ var g = function(f){ return ($(pre + f).value || '').trim(); }; return { company: g('company'), address: g('address'), contact: g('contact'), email: g('email'), code: $(pre + 'code').value, phone: g('phone') }; }
+    function readBk2(){
+      bk.shipper = readParty('bs-'); bk.same = $('bk-same').checked; if (!bk.same) bk.cons = readParty('bc-');
+      var ok = true;
+      [['bs-', bk.shipper]].concat(bk.same ? [] : [['bc-', bk.cons]]).forEach(function(x){
+        ['company', 'contact', 'phone'].forEach(function(f){ var bad = !x[1][f]; $(x[0] + f + '-row').classList.toggle('err', bad); if (bad) ok = false; });
+      });
+      return ok;
+    }
+    function bkCost(){
+      if (bk.kind === 'wh'){
+        var x = rq.sides['in'], all = planCost(x.wh, x.plan), base = Math.round(x.plan.pallets * sqRate(x.wh) / 7 * x.plan.days);
+        return { a: base, b: all - base, total: all, al: 'Storage (' + fmt(x.plan.pallets) + ' sq.ft × ' + x.plan.days + ' days)', bl: 'Handling & services' };
+      }
+      var c = rq.carrier, l = (bk.kind === 'sea' ? D.seaLoads : D.airLoads)[bk.load], f = portDest()[bk.kind === 'sea' ? 'seaF' : 'airF'] * c.f, fr;
+      if (bk.kind === 'sea') fr = l.perKg ? Math.max(350, bk.kg * l.perKg * f) : bk.qty * l.rate * f; else fr = Math.max(bk.kg, 100) * l.perKg * f;
+      fr = Math.round(fr); var sur = Math.round(fr * (bk.kind === 'sea' ? 0.18 : 0.27));
+      return { a: fr, b: sur, total: fr + sur, al: (bk.kind === 'sea' ? 'Ocean freight' : 'Freight charge') + (bk.kind === 'air' ? ' (' + fmt(bk.kg) + ' kg)' : ' (' + bk.qty + ' × ' + l.short + ')'), bl: 'Surcharges & fees' };
+    }
+    function rvCard(title, edit, body){ return '<div class="bk-rv"><div class="rv-h">' + title + (edit ? ' <a data-goto="' + edit + '">Edit</a>' : '') + '</div>' + body + '</div>'; }
+    function renderBk3(){
+      var k = bk.kind, c = bkCost(), out = '', party = kv(k === 'wh' ? 'Customer' : 'Shipper', esc(bk.shipper.company)) + kv(k === 'wh' ? 'Release contact' : 'Consignee', esc(bk.same ? bk.shipper.company : bk.cons.company)) + kv('Contact', esc(bk.shipper.contact + ' · ' + bk.shipper.code + ' ' + bk.shipper.phone));
+      if (k === 'wh'){
+        var x = rq.sides['in'];
+        out = rvCard('Warehouse &amp; Dates', 'rq-warehouse', '<div class="bk-car"><span class="rqp-img" style="width:42px;height:42px"><img src="assets/images/' + x.wh.img + '" alt=""></span><b>' + x.wh.name + '</b><em>USD ' + fmt(c.total) + '</em></div>' +
+            kv('Location', x.wh.area + ', ' + destBy(rq.dest).name) + kv('From', dfmt(new Date(x.plan.start + 'T00:00:00'))) + kv('To', dfmt(addDays(x.plan.start, x.plan.days))) + kv('Space', fmt(x.plan.pallets) + ' sq.ft')) +
+          rvCard('Storage Details', 'bk-1', kv('Cargo type', WCARGO[bk.wcargo]) + kv('Packages', bk.qty) + kv('Total weight', fmt(bk.kg) + ' kg') + kv('Description', esc(bk.desc)) + (bk.spec ? kv('Special handling', esc(bk.spec)) : '')) +
+          rvCard('Customer', 'bk-2', party);
+      } else {
+        var r = rq.carrier, dep = addDays(rq.ready, rq.day * (sea() ? 2 : 1)), arr = plusDays(dep, rq.tt), l = (k === 'sea' ? D.seaLoads : D.airLoads)[bk.load];
+        out = rvCard('Route &amp; Schedule', 'rq-carrier', '<div class="bk-car"><span class="rqc-logo" style="background:' + r.bg + ';color:' + r.fg + '">' + r.code + '</span><b>' + r.name + '</b><em>USD ' + fmt(c.total) + '</em></div>' +
+            '<div class="sv-route"><div><b>' + sv.from[0] + '</b><small>' + sv.from[2] + '</small></div><span class="rv-arrow">' + (sea() ? D.icons.ship : D.icons.plane) + '</span><div style="text-align:right"><b>' + sv.to[0] + '</b><small>' + sv.to[2] + '</small></div></div>' +
+            kv('Departs', dfmt(dep) + (sea() ? '' : ' · ' + DEP[r.code])) + kv('Arrives (est.)', dfmt(arr)) + kv('Transit', rq.tt + (rq.tt === 1 ? ' day' : ' days')) + kv('Service', r.direct ? 'Direct' : '1 stop' + (r.via ? ' (' + r.via + ')' : ''))) +
+          rvCard('Shipment Details', 'bk-1', (k === 'sea' ? kv('Container', l.perKg ? 'LCL (shared)' : bk.qty + ' × ' + l.short) : kv('Cargo type', l.name) + kv('Total pieces', bk.qty)) +
+            kv('Gross weight', fmt(bk.kg) + ' kg') + kv('Volume', bk.cbm + ' CBM') + (k === 'air' ? kv('Dimensions / piece', bk.L + ' × ' + bk.W + ' × ' + bk.H + ' cm') : '') + kv('Description', esc(bk.desc)) + (bk.spec ? kv('Special requirements', esc(bk.spec)) : '')) +
+          rvCard('Parties', 'bk-2', party);
+      }
+      out += rvCard('Cost Summary', '', kv(c.al, 'USD ' + fmt(c.a)) + kv(c.bl, 'USD ' + fmt(c.b)) + '<div class="kv-row rv-tot"><span class="k">Total (est.)</span><span class="v">USD ' + fmt(c.total) + '</span></div>');
+      $('bk3-body').innerHTML = out;
+      $('bk-agree').checked = false;
+    }
+    function confirmBk(){
+      var k = bk.kind, c = bkCost(), id = (k === 'wh' ? 'WB' : 'BK') + '20261017' + String(100 + BOOKINGS[k].length * 7).slice(-3), rec;
+      if (k === 'wh'){
+        var x = rq.sides['in'];
+        rec = { id: id, w: x.wh.name, img: x.wh.img, loc: x.wh.area, dep: dfmt(new Date(x.plan.start + 'T00:00:00')), arr: dfmt(addDays(x.plan.start, x.plan.days)), units: fmt(x.plan.pallets) + ' sq.ft · ' + x.plan.days + ' days', price: c.total, st: 'pending' };
+      } else {
+        var dep = addDays(rq.ready, rq.day * (sea() ? 2 : 1)), l = (k === 'sea' ? D.seaLoads : D.airLoads)[bk.load];
+        rec = { id: id, c: rq.carrier.code, from: sv.from[0], to: sv.to[0], dep: dfmt(dep), arr: dfmt(plusDays(dep, rq.tt)), units: k === 'sea' ? (l.perKg ? bk.cbm + ' CBM · LCL' : bk.qty + ' × ' + l.short + ' · FCL') : fmt(bk.kg) + ' kg · ' + bk.cbm + ' CBM', price: c.total, st: 'pending' };
+      }
+      BOOKINGS[k].unshift(rec);
+      var head = rec.c ? (function(r){ return '<span class="rqc-logo" style="background:' + r.bg + ';color:' + r.fg + '">' + r.code + '</span><b>' + r.name + '</b>'; })(carrierBy(rec.c)) : '<span class="rqp-img" style="width:42px;height:42px"><img src="assets/images/' + rec.img + '" alt=""></span><b>' + rec.w + '</b>';
+      $('bk4-msg').textContent = k === 'wh' ? 'Your storage booking request has been submitted successfully.' : 'Your shipment booking request has been submitted successfully.';
+      $('bk4-card').innerHTML = '<div class="rs-meta" style="box-shadow:none;padding:0 0 10px 0;margin:0"><div><small>Booking ID</small><b>' + rec.id + '</b></div><span class="rs-pill">Pending Confirmation</span></div>' +
+        '<div class="bk-car">' + head + '</div>' +
+        (rec.c ? '<div class="sv-route"><div><b>' + rec.from + '</b><small>' + rec.dep + '</small></div><span class="rv-arrow">' + (sea() ? D.icons.ship : D.icons.plane) + '</span><div style="text-align:right"><b>' + rec.to + '</b><small>' + rec.arr + '</small></div></div>' : kv('Location', rec.loc) + kv('Dates', rec.dep + ' – ' + rec.arr)) +
+        kv(rec.c ? 'Cargo' : 'Space', rec.units) + '<div class="kv-row rv-tot"><span class="k">Total (est.)</span><span class="v">USD ' + fmt(rec.price) + '</span></div>';
+      $('bk4-note').textContent = 'You will receive an email notification once the ' + (k === 'wh' ? 'warehouse' : k === 'sea' ? 'shipping line' : 'airline') + ' confirms the booking.';
+      goTo('bk-4', true);
+    }
+    // handles clicks for the booking flow; returns true when it did
+    function bkClick(e){
+      var t;
+      if ((t = e.target.closest('[data-svnav]'))) {
+        var cur = document.querySelector('.screen.active').id;
+        if (t.dataset.svnav === 'bookings' && cur !== 'screen-svc-bookings'){ bklTab = 'all'; renderBookings(); goTo('svc-bookings'); }
+        if (t.dataset.svnav === 'search' && cur === 'screen-svc-bookings'){ if (stack[stack.length - 2] === svStart()) goBack(); else goTo(svStart()); }
+        return true;
+      }
+      if ((t = e.target.closest('[data-bkl]'))) { bklTab = t.dataset.bkl; renderBookings(); return true; }
+      if ((t = e.target.closest('[data-bk-step]'))) { var q = $('bk-qty'); q.value = Math.max(1, (parseInt(q.value, 10) || 1) + (+t.dataset.bkStep)); return true; }
+      if (e.target.closest('#bk1-next')) { if (readBk1()){ if (bk.kind !== 'wh'){ sv.kg = bk.kg; sv.load = bk.load; } renderBk2(); goTo('bk-2'); } return true; }
+      if (e.target.closest('#bk2-next')) { if (readBk2()){ renderBk3(); goTo('bk-3'); } return true; }
+      if (e.target.closest('#bk-confirm')) {
+        if (!$('bk-agree').checked){ $('bk-agree-row').classList.add('shake'); setTimeout(function(){ $('bk-agree-row').classList.remove('shake'); }, 500); return true; }
+        confirmBk(); return true;
+      }
+      if (e.target.closest('#bk4-view')) { stack = ['home', svStart()]; bklTab = 'all'; renderBookings(); goTo('svc-bookings'); return true; }
+      return false;
+    }
+    function bkInit(){
+      // static active tab per screen
+      document.querySelectorAll('#screen-svc-freight [data-svnav="search"], #screen-svc-wh [data-svnav="search"], #screen-svc-bookings [data-svnav="bookings"]').forEach(function(x){ x.classList.add('on'); });
+      // big hero shrinks as the page scrolls
+      ['sv-hero-box', 'sw-hero-box'].forEach(function(id){
+        var h = $(id), sc = h && h.closest('.screen-scroll'); if (!sc) return;
+        sc.addEventListener('scroll', function(){ if (sc.scrollTop > 60) h.classList.add('mini'); else if (sc.scrollTop < 12) h.classList.remove('mini'); });
+      });
+      document.addEventListener('change', function(e){ if (e.target.id === 'bk-same'){ $('bk-cons').style.display = e.target.checked ? 'none' : ''; } });
     }
 
     // ---------- step 1: shipping + delivery address ----------
@@ -643,7 +828,7 @@
           '<div class="rqc-top"><span class="rqc-logo" style="background:' + c.bg + ';color:' + c.fg + '">' + c.code + '</span><div class="rqc-n"><b>' + c.name + '</b><small>' + (c.direct ? 'Direct' : '1 transshipment' + (c.via ? ' · via ' + c.via : '')) + '</small></div>' +
           '<div class="rqc-p"><b>' + (sea() ? usd(x.price) : 'USD ' + perKg(x.price).toFixed(2)) + '</b><small>' + (sea() ? 'Freight (est.)' : 'per kg (est.) · ' + usd(x.price)) + '</small></div></div>' +
           '<div class="rqc-mid"><div><small>Departs</small><b>' + dshort(dep) + (sea() ? '' : ' ' + DEP[c.code]) + '</b></div><div class="rqc-line"><span></span><em>' + x.tt + (x.tt === 1 ? ' day' : ' days') + '</em><span></span></div><div><small>Arrives</small><b>' + dshort(arr) + '</b></div></div>' +
-          '<div class="rqc-foot">' + (c.tag ? '<span class="rqc-tag gold">' + c.tag + '</span>' : '') + '<button class="rqc-sel ghost" data-rq-cdetail="' + c.code + '" data-rq-tt="' + x.tt + '">Details</button><button class="rqc-sel" data-rq-carrier="' + c.code + '" data-rq-tt="' + x.tt + '">Select</button></div></div>';
+          '<div class="rqc-foot">' + (c.tag ? '<span class="rqc-tag gold">' + c.tag + '</span>' : '') + '<button class="rqc-sel ghost" data-rq-cdetail="' + c.code + '" data-rq-tt="' + x.tt + '">Details</button><button class="rqc-sel" data-rq-carrier="' + c.code + '" data-rq-tt="' + x.tt + '">' + (rq.svc ? 'Book' : 'Select') + '</button></div></div>';
       }).join('') || '<div class="rq-empty">No services match' + (fltCount() ? ' your filters — try another date or reset the filters' : ' on this date — try another day') + '</div>';
     }
 
@@ -683,7 +868,7 @@
 
     function pickCarrier(code, tt){
       rq.carrier = carriers().filter(function(x){ return x.code === code; })[0]; rq.tt = tt;
-      if (rq.svc){ renderReview(); goTo('rq-review'); return; }
+      if (rq.svc){ bkStart(); return; }
       whTab = 'popular'; setSide('in'); if (rq.wh && rq.plan) rq.plan.start = rq.plan.start < arrivalIso() ? arrivalIso() : rq.plan.start; setSide('out'); renderWh(); goTo('rq-warehouse');
     }
     // ---------- carrier details ----------
@@ -700,6 +885,7 @@
       $('cd-name').textContent = c.name;
       $('cd-sub').innerHTML = (c.direct ? 'Direct service' : '1 transshipment' + (c.via ? ' · via ' + c.via : '')) + ' · <span class="star">' + x[2] + '</span> <small>(' + fmt(x[3]) + ' reviews)</small>';
       $('cd-price').textContent = usd(freight(c));
+      $('cd-select').textContent = rq.svc ? 'Book Now' : 'Select';
       drawCarrier(); goTo('rq-car-detail');
     }
     function drawCarrier(){
@@ -1093,6 +1279,7 @@
         if (sv.pick === 'from'){ sv.from = r[0]; sv.fromC = r[1].code; } else { sv.to = r[0]; sv.toC = r[1].code; }
         goBack(); renderSvFreight(); return;
       }
+      if (bkClick(e)) return;
       if (e.target.closest('#sv-search')) {
         sv.kg = parseFloat($('sv-kg').value) || 0; sv.cbm = parseFloat($('sv-cbm').value) || 0; sv.desc = $('sv-desc').value.trim();
         var miss = !sv.from ? 'Select the origin ' + (sv.mode === 'sea' ? 'port' : 'airport') : !sv.to ? 'Select the destination ' + (sv.mode === 'sea' ? 'port' : 'airport') : sv.kg <= 0 ? 'Enter the cargo weight' : '';
@@ -1177,7 +1364,7 @@
       if (e.target.closest('#tr-f-reset')) { trfd = { cat: [], special: [], load: [], body: [], avail: 'any', feat: [] }; drawTrFilter(); return; }
       if (e.target.closest('#tr-f-apply')) { trf = trfd; $('tr-filter').classList.remove('open'); renderTransport(); return; }
       if (e.target.closest('[data-goto="rq-transport"]')) { setTimeout(renderTransport, 0); return; }
-      if (e.target.closest('#rq-wh-next')) { if (rq.svc === 'wh'){ if (!rq.wh) return; renderReview(); goTo('rq-review'); return; } setSide('out'); toTransport(); return; }
+      if (e.target.closest('#rq-wh-next')) { if (rq.svc === 'wh'){ if (!rq.wh) return; bkStart(); return; } setSide('out'); toTransport(); return; }
       if (e.target.closest('[data-goto="rq-warehouse"]')) { setTimeout(renderWh, 0); return; }
       if (e.target.closest('#rv-send') && rq.svc) { if (!$('rv-agree').checked){ $('rv-agree-row').classList.add('shake'); setTimeout(function(){ $('rv-agree-row').classList.remove('shake'); }, 500); return; } svSent(); goTo('rq-sent', true); return; }
       if (e.target.closest('#rv-send')) {
@@ -1194,6 +1381,8 @@
       });
     });
     $('rq-port-q').addEventListener('input', portList);
+    $('sv-load-sel').addEventListener('change', function(){ sv.load = +this.value; });
+    bkInit();
     $('tr-date').addEventListener('change', function(){ if (this.value) rq.tdate = this.value < this.min ? this.min : this.value; });
     $('wp-start').addEventListener('change', function(){ if (this.value) { plan.start = this.value < this.min ? this.min : this.value; drawPlan(); } });
     $('wp-ndays').addEventListener('input', function(){ var v = parseInt(this.value, 10); if (v > 0){ plan.days = Math.min(v, 365); $('wp-end-h').textContent = 'Until ' + dfmt(addDays(plan.start, plan.days)) + ' · ' + plan.days + ' days'; $('wp-cost').textContent = money(planCost(planW, plan), 0); } });

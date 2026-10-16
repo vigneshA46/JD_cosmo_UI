@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&family=IBM+Plex+Mono:wght@600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=789b4272">
+<link rel="stylesheet" href="assets/css/style.css?v=4c77e58a">
 </head>
 <body> 
 <!-- Product & logistics photos: Wikimedia Commons (open licences). Credits:
@@ -28,6 +28,8 @@
   mango_himsagar1: File:Himsagar mangoes of West Bengal.jpg — Billjones94 (CC BY-SA 4.0), Wikimedia Commons
   mango_himsagar2: File:A 'Himsagar' mango.jpg — Salil Kumar Mukherjee (CC BY-SA 4.0), Wikimedia Commons
   mango_himsagar3: File:'Himsagar' mango (sliced).jpg — Salil Kumar Mukherjee (CC BY-SA 4.0), Wikimedia Commons
+  hero_sea: File:MSC HARMONY III (container ship, 2006) in Port Koper (SIKOP, 2024).jpg — Petar Milošević (CC BY-SA 4.0), Wikimedia Commons
+  hero_air: File:B-LNY - Airbus A330-243F - Hong Kong Air Cargo - 1062 - VGHS.jpg — Md Shaifuzzaman Ayon (CC BY-SA 4.0), Wikimedia Commons
   rice: File:Basmati Rice India, raw.jpg — cookbookman17 (CC BY 2.0), Wikimedia Commons
   turmeric: File:Curcuma longa roots.jpg — Simon A. Eugster (CC BY-SA 3.0), Wikimedia Commons
   cardamom: File:Cardamom pods - Green BNC.jpg — Prathyush Thomas (GFDL 1.2), Wikimedia Commons
@@ -711,7 +713,7 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
     <section class="screen" id="screen-svc-freight">
       <div class="subheader"><button class="back-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2 id="sv-title">Sea Freight</h2></div>
       <div class="screen-scroll"><div class="content rq-pad">
-        <div class="sv-hero"><img id="sv-hero" src="assets/images/ship.jpg" alt=""><div><b id="sv-hero-t">Global Sea Freight<br>Made Simple</b><small>Compare rates. Book with trusted carriers. Worldwide.</small></div></div>
+        <div class="sv-hero2" id="sv-hero-box"><img id="sv-hero" src="assets/images/hero_sea.jpg" alt=""><div><b id="sv-hero-t">Global Sea Freight</b><small id="sv-hero-s">Compare rates · Book trusted carriers · Worldwide</small></div></div>
         <div class="rq-modes sv-modes"><div class="rq-mode on" data-sv-mode="sea"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20c2 1 4 1 6 0s4-1 6 0 4 1 6 0"/><path d="M4 18l-1-5h18l-2 5"/><path d="M12 4v9M7 13V8h10v5"/></svg><span>Sea Freight</span></div><div class="rq-mode" data-sv-mode="air"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg><span>Air Freight</span></div></div>
         <div class="sv-card">
           <div class="rq-l" style="margin-top:4px">From</div>
@@ -719,7 +721,7 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
           <div class="rq-l">To</div>
           <div class="rq-field" data-sv-pick="to"><span class="rqf-ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span><div class="rqf-b"><b id="sv-to">Select destination port</b><small id="sv-to-s"></small></div><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
           <div class="rq-l" id="sv-load-l">Container type</div>
-          <div class="rq-loads sv-loads" id="sv-loads"></div>
+          <label class="rq-field sv-dd"><select id="sv-load-sel"></select></label>
           <div class="rq-l">Cargo details</div>
           <div class="rq-form">
             <div class="rq-in-2"><label class="rq-in" id="sv-kg-row"><small>Weight (kg) *</small><input id="sv-kg" type="number" inputmode="decimal" value="5000"></label><label class="rq-in"><small>Volume (CBM)</small><input id="sv-cbm" type="number" inputmode="decimal" value="12"></label></div>
@@ -731,12 +733,13 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
         <div class="sv-err" id="sv-err"></div>
       </div></div>
       <div class="rq-foot"><button class="btn btn-primary" id="sv-search">Search Rates</button></div>
+          <div class="sv-nav"><span data-svnav="search"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><b>Search</b></span><span data-svnav="bookings"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 3v3h6V3M9 11h6M9 15h4"/></svg><b>Bookings</b></span></div>
     </section>
 
     <section class="screen" id="screen-svc-wh">
       <div class="subheader"><button class="back-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Warehouse</h2></div>
       <div class="screen-scroll"><div class="content rq-pad">
-        <div class="sv-hero wh"><img src="assets/images/warehouse.jpg" alt=""><div><b>Global Warehouse<br>Marketplace</b><small>Find, compare and book warehouses worldwide.</small></div></div>
+        <div class="sv-hero2" id="sw-hero-box"><img src="assets/images/warehouse.jpg" alt=""><div><b>Global Warehouse Marketplace</b><small>Find, compare and book warehouses worldwide</small></div></div>
         <div class="sv-trust"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>Verified<br>partners</span><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Real-time<br>availability</span><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4L13.4 20.6a2 2 0 01-2.8 0L3 13V3h10l7.6 7.6a2 2 0 010 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>Transparent<br>pricing</span><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1v-6h3zM3 19a2 2 0 002 2h1v-6H3z"/></svg>End-to-end<br>support</span></div>
         <div class="sv-card">
           <div class="rq-form sv-wform">
@@ -749,6 +752,49 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
         </div>
         <div class="sh" style="margin-top:20px"><div><div class="st">Warehouse Types</div><div class="ss">Choose the right facility for your cargo</div></div></div>
         <div class="sv-wts"><div class="sv-wt" data-sv-wtype="Ambient"><span class="sv-wt-img"><img src="assets/images/warehouse.jpg" alt=""></span><div><b>1. Ambient / General Warehouse</b><small>For packaged goods, textiles, machinery and general cargo.</small><em>Pallet storage · Floor storage · Loading docks</em></div><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div><div class="sv-wt" data-sv-wtype="Cold Storage"><span class="sv-wt-img"><img src="assets/images/container.jpg" alt=""></span><div><b>2. Cold Storage Warehouse</b><small>For fruits, vegetables, dairy and temperature-sensitive products.</small><em>Chilled · Refrigerated · Frozen</em></div><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div><div class="sv-wt" data-sv-wtype="Agricultural / Perishable"><span class="sv-wt-img"><img src="assets/images/warehouse.jpg" alt=""></span><div><b>3. Agricultural & Perishable</b><small>For onions, grains, fruits, spices and other agri cargo.</small><em>Ventilated · Ripening rooms · Humidity control</em></div><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div><div class="sv-wt" data-sv-wtype="Bonded"><span class="sv-wt-img"><img src="assets/images/container.jpg" alt=""></span><div><b>4. Bonded Customs Warehouse</b><small>For import/export cargo that needs customs-controlled storage.</small><em>Customs status · Bonded capacity · Documentation</em></div><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div></div>
+      </div></div>
+          <div class="sv-nav"><span data-svnav="search"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><b>Search</b></span><span data-svnav="bookings"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 3v3h6V3M9 11h6M9 15h4"/></svg><b>Bookings</b></span></div>
+    </section>
+
+    <section class="screen" id="screen-svc-bookings">
+      <div class="subheader"><button class="back-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>My Bookings</h2><span class="bkl-kind" id="bkl-kind">Sea</span></div>
+      <div class="rq-search"><div class="rq-tabs bkl-tabs"><span class="rq-tab on" data-bkl="all">All</span><span class="rq-tab" data-bkl="pending">Pending</span><span class="rq-tab" data-bkl="confirmed">Confirmed</span><span class="rq-tab" data-bkl="cancelled">Cancelled</span></div></div>
+      <div class="screen-scroll"><div class="content rq-pad"><div id="bkl-list"></div></div></div>
+      <div class="sv-nav"><span data-svnav="search"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><b>Search</b></span><span data-svnav="bookings"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 3v3h6V3M9 11h6M9 15h4"/></svg><b>Bookings</b></span></div>
+    </section>
+
+    <section class="screen" id="screen-bk-1">
+      <div class="subheader"><button class="back-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2 class="bk-title">Book Shipment</h2></div>
+      <div class="rq-steps bk-steps"><div class="rqs on"><span>1</span><small data-bk-l="1">Shipment</small></div><i class=""></i><div class="rqs "><span>2</span><small data-bk-l="2">Parties</small></div><i class=""></i><div class="rqs "><span>3</span><small data-bk-l="3">Review</small></div><i class=""></i><div class="rqs "><span>4</span><small data-bk-l="4">Confirm</small></div></div>
+      <div class="screen-scroll"><div class="content rq-pad"><div class="bk-card" id="bk1-body"></div></div></div>
+      <div class="rq-foot"><button class="btn btn-primary" id="bk1-next">Next →</button></div>
+    </section>
+
+    <section class="screen" id="screen-bk-2">
+      <div class="subheader"><button class="back-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2 class="bk-title">Book Shipment</h2></div>
+      <div class="rq-steps bk-steps"><div class="rqs done"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><small data-bk-l="1">Shipment</small></div><i class="done"></i><div class="rqs on"><span>2</span><small data-bk-l="2">Parties</small></div><i class=""></i><div class="rqs "><span>3</span><small data-bk-l="3">Review</small></div><i class=""></i><div class="rqs "><span>4</span><small data-bk-l="4">Confirm</small></div></div>
+      <div class="screen-scroll"><div class="content rq-pad"><div class="bk-card" id="bk2-body"></div></div></div>
+      <div class="rq-foot two"><button class="btn btn-secondary" data-back>Back</button><button class="btn btn-primary" id="bk2-next">Next →</button></div>
+    </section>
+
+    <section class="screen" id="screen-bk-3">
+      <div class="subheader"><button class="back-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2 class="bk-title">Review Booking</h2></div>
+      <div class="rq-steps bk-steps"><div class="rqs done"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><small data-bk-l="1">Shipment</small></div><i class="done"></i><div class="rqs done"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><small data-bk-l="2">Parties</small></div><i class="done"></i><div class="rqs on"><span>3</span><small data-bk-l="3">Review</small></div><i class=""></i><div class="rqs "><span>4</span><small data-bk-l="4">Confirm</small></div></div>
+      <div class="screen-scroll"><div class="content rq-pad"><div id="bk3-body"></div>
+        <label class="rv-agree" id="bk-agree-row"><input type="checkbox" id="bk-agree"><span>I agree to the <b>terms &amp; conditions</b> and confirm all details are correct.</span></label>
+      </div></div>
+      <div class="rq-foot two"><button class="btn btn-secondary" data-back>Back</button><button class="btn btn-primary" id="bk-confirm">Confirm Booking</button></div>
+    </section>
+
+    <section class="screen" id="screen-bk-4">
+      <div class="screen-scroll"><div class="content rq-sent">
+        <div class="rs-ok"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span></div>
+        <h2>Booking Confirmed</h2>
+        <p id="bk4-msg">Your booking request has been submitted successfully.</p>
+        <div class="rv-card" id="bk4-card"></div>
+        <p class="rq-note" id="bk4-note" style="text-align:center"></p>
+        <button class="btn btn-secondary" id="bk4-view" style="margin-top:6px">View Booking Details</button>
+        <button class="btn btn-primary" style="margin-top:10px;" data-goto="home" data-reset="true">Back to Home</button>
       </div></div>
     </section>
 
@@ -1423,6 +1469,6 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
   <div class="home-indicator"></div>
 </div>
 
-<script src="assets/js/app.js?v=3a54dc78"></script>
+<script src="assets/js/app.js?v=5ad8614a"></script>
 </body>
 </html>
