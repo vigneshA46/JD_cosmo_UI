@@ -1594,3 +1594,50 @@
   .rq-iobar{ padding-bottom:0; border-bottom:1px solid var(--border); }
   .rv-io{ font-size:10.5px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--gold-text); margin:8px 0 2px 0; }
   .rv-io:first-child{ margin-top:0; }
+
+  /* ---- carrier details ---- */
+  .rqc-sel.ghost{ margin-left:auto; background:#fff; color:var(--navy-900); border:1.5px solid var(--border-strong); }
+  .rqc-sel.ghost + .rqc-sel{ margin-left:0; }
+  .cd-head{ display:flex; align-items:center; gap:12px; }
+  .cd-head .rqc-logo{ width:48px; height:48px; border-radius:14px; font-size:13px; }
+  #cd-body .kv-row{ padding:7px 0; } #cd-body .kv-row .k{ flex-shrink:0; margin-right:12px; } #cd-body .kv-row .v{ text-align:right; }
+  #cd-body .rv-route{ margin-bottom:8px; }
+  .cd-terms{ margin:4px 0 0 0; padding-left:18px; font-size:12.5px; line-height:1.6; color:var(--navy-700); }
+
+  /* ---- independent service requests ---- */
+  .svc-mode .rq-steps, .svc-mode #screen-rq-warehouse .io-seg, .svc-mode #screen-rq-warehouse [data-rq-skip], .svc-mode #screen-rq-warehouse .rq-opt-note b{ display:none !important; }
+  .svc-mode #screen-rq-warehouse .rq-foot.two .btn-primary{ flex:1; }
+  .sv-hero{ position:relative; height:170px; border-radius:20px; overflow:hidden; }
+  .sv-hero img{ width:100%; height:100%; object-fit:cover; }
+  .sv-hero div{ position:absolute; inset:0; background:linear-gradient(90deg, rgba(2,9,20,0.88), rgba(2,9,20,0.15)); display:flex; flex-direction:column; justify-content:flex-end; padding:16px; }
+  .sv-hero b{ font-family:'Playfair Display',serif; font-size:24px; line-height:1.15; color:#fff; }
+  .sv-hero small{ font-size:11.5px; font-weight:600; color:rgba(255,255,255,0.82); margin-top:6px; }
+  .sv-modes{ margin-top:-22px; position:relative; z-index:2; margin-left:10px; margin-right:10px; }
+  .sv-card{ background:var(--surface); border-radius:20px; box-shadow:var(--shadow-card); padding:6px 14px 16px 14px; margin-top:12px; }
+  .sv-card .rq-form{ box-shadow:none; border:1.5px solid var(--border); }
+  .sv-loads{ grid-template-columns:repeat(3,1fr); }
+  .sv-err{ text-align:center; font-size:12px; font-weight:700; color:var(--red-700, #B42318); margin-top:10px; min-height:16px; }
+  .sv-sel select{ border:none; outline:none; background:none; font:inherit; font-size:13px; font-weight:800; color:var(--navy-900); padding:0; width:100%; -webkit-appearance:none; appearance:none; }
+  .sv-wform{ margin-top:8px; }
+  .sv-wbtn{ width:100%; margin:14px 0 0 0; display:flex; align-items:center; justify-content:center; gap:8px; }
+  .sv-wbtn svg{ width:17px; height:17px; stroke:currentColor; }
+  .sv-trust{ display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-top:12px; }
+  .sv-trust span{ display:flex; flex-direction:column; align-items:center; gap:4px; text-align:center; font-size:9.8px; font-weight:700; color:var(--navy-700); line-height:1.25; padding:8px 2px; border-radius:12px; background:var(--surface); box-shadow:var(--shadow-card); }
+  .sv-trust svg{ width:20px; height:20px; stroke:var(--brand-shadow); }
+  .sv-wts{ display:flex; flex-direction:column; gap:10px; }
+  .sv-wt{ display:flex; align-items:center; gap:12px; background:var(--surface); border-radius:16px; box-shadow:var(--shadow-card); padding:10px; cursor:pointer; }
+  .sv-wt-img{ width:74px; height:64px; border-radius:12px; overflow:hidden; flex-shrink:0; } .sv-wt-img img{ width:100%; height:100%; object-fit:cover; }
+  .sv-wt > div{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
+  .sv-wt b{ font-size:13px; font-weight:800; color:var(--navy-900); }
+  .sv-wt small{ font-size:10.8px; font-weight:600; color:var(--navy-500); line-height:1.35; }
+  .sv-wt em{ font-style:normal; font-size:10px; font-weight:700; color:var(--gold-text); }
+  .sv-wt > svg{ width:15px; height:15px; stroke:var(--navy-500); flex-shrink:0; }
+  .sv-route{ display:flex; align-items:center; justify-content:space-between; gap:8px; padding:10px 12px; border-radius:12px; background:var(--bg); margin-bottom:6px; }
+  .sv-route b{ display:block; font-family:var(--font-mono); font-size:15px; color:var(--navy-900); }
+  .sv-route small{ font-size:10.5px; font-weight:600; color:var(--navy-500); }
+  .sv-hero div{ padding-bottom:34px; }
+  .sv-hero.wh div{ padding-bottom:16px; }
+  .sv-sel{ position:relative; }
+  .sv-sel:after{ content:'▾'; position:absolute; right:2px; bottom:10px; font-size:12px; color:var(--navy-500); pointer-events:none; }
+  .sv-modes{ display:none !important; }
+  .sv-hero div{ padding-bottom:16px; }

@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&family=IBM+Plex+Mono:wght@600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=f11763f6">
+<link rel="stylesheet" href="assets/css/style.css?v=789b4272">
 </head>
 <body> 
 <!-- Product & logistics photos: Wikimedia Commons (open licences). Credits:
@@ -213,9 +213,9 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
         <div class="hh-top">
           <div class="app-switch">
             <div class="as-brand" data-goto="home" data-reset="true">JD</div>
-            <div class="as" data-goto="service-request"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg><span>Air</span></div>
-            <div class="as" data-goto="service-request"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20c2 1 4 1 6 0s4-1 6 0 4 1 6 0"/><path d="M4 18l-1-5h18l-2 5"/><path d="M12 4v9M7 13V8h10v5"/></svg><span>Sea</span></div>
-            <div class="as" data-goto="warehouse"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V8l9-5 9 5v13"/><path d="M7 21v-8h10v8M7 17h10"/></svg><span>Warehouse</span></div>
+            <div class="as" data-goto="svc-freight" data-svc="air"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg><span>Air</span></div>
+            <div class="as" data-goto="svc-freight" data-svc="sea"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20c2 1 4 1 6 0s4-1 6 0 4 1 6 0"/><path d="M4 18l-1-5h18l-2 5"/><path d="M12 4v9M7 13V8h10v5"/></svg><span>Sea</span></div>
+            <div class="as" data-goto="svc-wh" data-svc="wh"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V8l9-5 9 5v13"/><path d="M7 21v-8h10v8M7 17h10"/></svg><span>Warehouse</span></div>
           </div>
         </div>
         <div class="hh-srow">
@@ -562,6 +562,7 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
           <div class="rq-in" id="rq-a-country-row"><small>Country</small><div class="rq-in-sel"><span class="rq-in-flag"><img id="rq-a-flag" src="assets/images/flags/ae.png" alt=""></span><b id="rq-a-country">United Arab Emirates</b><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div></div>
           <div class="rq-in-2"><label class="rq-in"><small>Contact name</small><input id="rq-a-name" type="text" autocomplete="off"></label><label class="rq-in"><small>Phone</small><input id="rq-a-phone" type="tel" autocomplete="off"></label></div>
           <label class="rq-in" id="rq-a-line-row"><small>Street address *</small><input id="rq-a-line" type="text" placeholder="Building, street, area" autocomplete="off"></label>
+          <div class="rq-in-2"><label class="rq-in"><small>State / Province</small><input id="rq-a-state" type="text" autocomplete="off"></label><label class="rq-in"><small>District</small><input id="rq-a-district" type="text" autocomplete="off"></label></div>
           <div class="rq-in-2"><label class="rq-in" id="rq-a-city-row"><small>City *</small><input id="rq-a-city" type="text" autocomplete="off"></label><label class="rq-in"><small>Postal code</small><input id="rq-a-zip" type="text" autocomplete="off"></label></div>
         </div>
         <label class="rq-vk" id="rq-vk"><input type="checkbox" id="rq-vk-in"><span class="rq-vk-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>
@@ -606,6 +607,18 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
       </div></div>
     </section>
 
+    <section class="screen" id="screen-rq-car-detail">
+      <div class="screen-scroll">
+        <div class="whd-hero"><img id="cd-img" src="assets/images/ship.jpg" alt=""><button class="fbtn whd-back" data-back><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button></div>
+        <div class="whd-sheet">
+          <div class="cd-head"><span class="rqc-logo" id="cd-logo">MSK</span><div><div class="whd-name"><b id="cd-name"></b><span class="whd-ver">Verified</span></div><div class="whd-sub" id="cd-sub"></div></div></div>
+          <div class="whd-tabs"><span class="on" data-cd-tab="ov">Overview</span><span data-cd-tab="ch">Charges</span><span data-cd-tab="tm">Terms</span></div>
+          <div id="cd-body"></div>
+        </div>
+      </div>
+      <div class="rq-foot rv-foot"><div class="rv-tot-l"><small>Freight (est.)</small><b id="cd-price">$0</b></div><button class="btn btn-primary" id="cd-select">Select</button></div>
+    </section>
+
     <section class="screen" id="screen-rq-warehouse">
       <div class="subheader"><button class="back-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Warehouse</h2><span class="rq-skip" data-rq-skip>Skip</span></div>
       <div class="rq-steps"><div class="rqs done"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><small>Shipping</small></div><i class="done"></i><div class="rqs done"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><small>Port</small></div><i class="done"></i><div class="rqs done"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><small>Carrier</small></div><i class="done"></i><div class="rqs on"><span>4</span><small>Warehouse</small></div><i class=""></i><div class="rqs "><span>5</span><small>Transport</small></div><i class=""></i><div class="rqs "><span>6</span><small>Review</small></div></div>
@@ -632,7 +645,7 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
           <div class="wp-custom" id="wp-custom"><input type="number" id="wp-ndays" min="1" max="365" inputmode="numeric"><span>days</span></div>
           <div class="wp-hint" id="wp-end-h"></div>
           <div class="fl">Space needed</div>
-          <div class="wp-row"><div class="pp-step"><button data-wp-step="-1"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></svg></button><input id="wp-pallets" class="num" inputmode="numeric"><button data-wp-step="1"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></button></div><span class="wp-u">pallets</span></div>
+          <div class="wp-row"><div class="pp-step"><button data-wp-step="-1"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></svg></button><input id="wp-pallets" class="num" inputmode="numeric"><button data-wp-step="1"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></button></div><span class="wp-u">sq.ft</span></div>
           <div class="wp-hint" id="wp-pal-h"></div>
           <div class="fl">Extra services <small>(optional)</small></div>
           <div id="wp-svcs"></div>
@@ -652,7 +665,7 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
           <div id="whd-body"></div>
         </div>
       </div>
-      <div class="rq-foot rv-foot"><div class="rv-tot-l"><small id="whd-price-s">per pallet / week</small><b id="whd-price">$0</b></div><button class="btn btn-primary" id="whd-select">Select warehouse</button></div>
+      <div class="rq-foot rv-foot"><div class="rv-tot-l"><small id="whd-price-s">per sq.ft / week</small><b id="whd-price">$0</b></div><button class="btn btn-primary" id="whd-select">Select warehouse</button></div>
     </section>
 
     <section class="screen" id="screen-rq-transport">
@@ -692,6 +705,51 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
         </div>
       </div>
       <div class="rq-foot rv-foot"><div class="rv-tot-l"><small>Total estimated fare</small><b id="trd-total">$0</b></div><button class="btn btn-primary" id="trd-select">Select truck</button></div>
+    </section>
+
+    <!-- ========================================================= SERVICE REQUESTS (home header: Air / Sea / Warehouse) ========================================================= -->
+    <section class="screen" id="screen-svc-freight">
+      <div class="subheader"><button class="back-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2 id="sv-title">Sea Freight</h2></div>
+      <div class="screen-scroll"><div class="content rq-pad">
+        <div class="sv-hero"><img id="sv-hero" src="assets/images/ship.jpg" alt=""><div><b id="sv-hero-t">Global Sea Freight<br>Made Simple</b><small>Compare rates. Book with trusted carriers. Worldwide.</small></div></div>
+        <div class="rq-modes sv-modes"><div class="rq-mode on" data-sv-mode="sea"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20c2 1 4 1 6 0s4-1 6 0 4 1 6 0"/><path d="M4 18l-1-5h18l-2 5"/><path d="M12 4v9M7 13V8h10v5"/></svg><span>Sea Freight</span></div><div class="rq-mode" data-sv-mode="air"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg><span>Air Freight</span></div></div>
+        <div class="sv-card">
+          <div class="rq-l" style="margin-top:4px">From</div>
+          <div class="rq-field" data-sv-pick="from"><span class="rqf-ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span><div class="rqf-b"><b id="sv-from">Select origin port</b><small id="sv-from-s"></small></div><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
+          <div class="rq-l">To</div>
+          <div class="rq-field" data-sv-pick="to"><span class="rqf-ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span><div class="rqf-b"><b id="sv-to">Select destination port</b><small id="sv-to-s"></small></div><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
+          <div class="rq-l" id="sv-load-l">Container type</div>
+          <div class="rq-loads sv-loads" id="sv-loads"></div>
+          <div class="rq-l">Cargo details</div>
+          <div class="rq-form">
+            <div class="rq-in-2"><label class="rq-in" id="sv-kg-row"><small>Weight (kg) *</small><input id="sv-kg" type="number" inputmode="decimal" value="5000"></label><label class="rq-in"><small>Volume (CBM)</small><input id="sv-cbm" type="number" inputmode="decimal" value="12"></label></div>
+            <label class="rq-in"><small>Cargo description</small><input id="sv-desc" type="text" value="Fresh mangoes in cartons"></label>
+          </div>
+          <div class="rq-l">Departure date</div>
+          <label class="rq-field rq-date"><span class="rqf-ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><input type="date" id="sv-date" value="2026-10-25" min="2026-10-16"></label>
+        </div>
+        <div class="sv-err" id="sv-err"></div>
+      </div></div>
+      <div class="rq-foot"><button class="btn btn-primary" id="sv-search">Search Rates</button></div>
+    </section>
+
+    <section class="screen" id="screen-svc-wh">
+      <div class="subheader"><button class="back-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Warehouse</h2></div>
+      <div class="screen-scroll"><div class="content rq-pad">
+        <div class="sv-hero wh"><img src="assets/images/warehouse.jpg" alt=""><div><b>Global Warehouse<br>Marketplace</b><small>Find, compare and book warehouses worldwide.</small></div></div>
+        <div class="sv-trust"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>Verified<br>partners</span><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Real-time<br>availability</span><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4L13.4 20.6a2 2 0 01-2.8 0L3 13V3h10l7.6 7.6a2 2 0 010 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>Transparent<br>pricing</span><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1v-6h3zM3 19a2 2 0 002 2h1v-6H3z"/></svg>End-to-end<br>support</span></div>
+        <div class="sv-card">
+          <div class="rq-form sv-wform">
+            <label class="rq-in sv-sel"><small>Country / destination</small><select id="sw-country"></select></label>
+            <div class="rq-in-2"><label class="rq-in sv-sel"><small>Facility type</small><select id="sw-type"><option value="any">All facility types</option><option value="Cold Storage">Cold Storage</option><option value="Agricultural / Perishable">Agricultural / Perishable</option><option value="Ambient">Ambient / General</option><option value="Bonded">Bonded customs</option></select></label><label class="rq-in sv-sel"><small>Temperature</small><select id="sw-temp"><option value="any">Any temperature</option><option value="chilled">Chilled 2–8 °C</option><option value="ref">Refrigerated</option><option value="frozen">Frozen</option></select></label></div>
+            <div class="rq-in-2"><label class="rq-in sv-sel"><small>Distance from port</small><select id="sw-dist"><option value="any">Any distance</option><option value="5">Within 5 km</option><option value="25">Within 25 km</option><option value="50">Within 50 km</option></select></label><label class="rq-in sv-sel"><small>Storage duration</small><select id="sw-dur"><option value="any">Any</option><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option><option value="long">Long-term</option></select></label></div>
+            <div class="rq-in-2"><label class="rq-in sv-sel"><small>Cargo measurement</small><select id="sw-unit"><option value="any">Any</option><option value="sqm">Sq.ft / m²</option><option value="pallets">Pallets</option><option value="cbm">CBM</option><option value="cont">Containers</option></select></label><label class="rq-in"><small>Cargo weight (kg)</small><input id="sw-kg" type="number" inputmode="decimal" value="5000"></label></div>
+          </div>
+          <button class="btn btn-primary sv-wbtn" id="sw-search"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg> Search Warehouses</button>
+        </div>
+        <div class="sh" style="margin-top:20px"><div><div class="st">Warehouse Types</div><div class="ss">Choose the right facility for your cargo</div></div></div>
+        <div class="sv-wts"><div class="sv-wt" data-sv-wtype="Ambient"><span class="sv-wt-img"><img src="assets/images/warehouse.jpg" alt=""></span><div><b>1. Ambient / General Warehouse</b><small>For packaged goods, textiles, machinery and general cargo.</small><em>Pallet storage · Floor storage · Loading docks</em></div><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div><div class="sv-wt" data-sv-wtype="Cold Storage"><span class="sv-wt-img"><img src="assets/images/container.jpg" alt=""></span><div><b>2. Cold Storage Warehouse</b><small>For fruits, vegetables, dairy and temperature-sensitive products.</small><em>Chilled · Refrigerated · Frozen</em></div><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div><div class="sv-wt" data-sv-wtype="Agricultural / Perishable"><span class="sv-wt-img"><img src="assets/images/warehouse.jpg" alt=""></span><div><b>3. Agricultural & Perishable</b><small>For onions, grains, fruits, spices and other agri cargo.</small><em>Ventilated · Ripening rooms · Humidity control</em></div><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div><div class="sv-wt" data-sv-wtype="Bonded"><span class="sv-wt-img"><img src="assets/images/container.jpg" alt=""></span><div><b>4. Bonded Customs Warehouse</b><small>For import/export cargo that needs customs-controlled storage.</small><em>Customs status · Bonded capacity · Documentation</em></div><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div></div>
+      </div></div>
     </section>
 
     <section class="screen" id="screen-rq-review">
@@ -1365,6 +1423,6 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
   <div class="home-indicator"></div>
 </div>
 
-<script src="assets/js/app.js?v=e6b199e8"></script>
+<script src="assets/js/app.js?v=3a54dc78"></script>
 </body>
 </html>
