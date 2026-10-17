@@ -424,7 +424,7 @@
         if (l.perKg) return Math.max(350, kg * l.perKg * f);
         return Math.ceil(kg / l.cap) * l.rate * f;
       }
-      return Math.max(kg, 100) * l.perKg * f;
+      return Math.max(kg, 100) * l.perKg * f * (rq.svc ? DAYF[rq.day] || 1 : 1);
     }
     // door-to-door: best carrier rate + customs clearance + last-mile delivery
     function managedPrice(){
@@ -620,6 +620,114 @@
       e.stopPropagation(); e.preventDefault(); slideBack();
     }, true);
 
+    // ======================= warehouse floor map (BookMyShow-style space selection) =======================
+    var SP_ROWS = 'ABCDEFGH', SP_COLS = 10, SP_BAY = 20;   // each bay = 20 sq.ft
+    var SP_ZONE = function(r){ return r < 3 ? { k: 'cold', n: 'Cold zone · 2–8 °C', m: 1.25 } : r < 6 ? { k: 'std', n: 'Standard zone', m: 1 } : { k: 'amb', n: 'Ambient zone', m: 0.8 }; };
+    function spBooked(w, r, c){ var h = 0, s = w.name + r + '-' + c; for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 997; return h % 10 < 3; }
+    function spMul(bays){ if (!bays.length) return 1; return bays.reduce(function(a, b){ return a + SP_ZONE(SP_ROWS.indexOf(b[0])).m; }, 0) / bays.length; }
+    function spAuto(w, n){
+      // best block: free bays in one row, cold rows first for chilled warehouses
+      var order = prof(w).temp === 'chilled' ? [0, 1, 2, 3, 4, 5, 6, 7] : [3, 4, 5, 6, 7, 0, 1, 2], pick = [];
+      order.some(function(r){
+        for (var c = 1; c <= SP_COLS && pick.length < n; c++) if (!spBooked(w, r, c)) pick.push(SP_ROWS[r] + c);
+        return pick.length >= n;
+      });
+      return pick;
+    }
+    var spW = null, spSel = [];
+    function openSpace(){
+      spW = planW; spSel = (plan.bays || []).slice();
+      $('sp-wh').textContent = spW.name + ' · ' + dshort(new Date(plan.start + 'T00:00:00')) + ' – ' + dshort(addDays(plan.start, plan.days));
+      drawSpace(); goTo('wh-space');
+    }
+    function drawSpace(){
+      var out = '', cur = null;
+      for (var r = 0; r < SP_ROWS.length; r++){
+        var z = SP_ZONE(r);
+        if (!cur || cur.k !== z.k){ cur = z; out += '<div class="sp-zone ' + z.k + '"><span>' + z.n + '</span><em>' + money(sqRate(spW) * z.m) + ' / sq.ft / wk</em></div>'; }
+        out += '<div class="sp-row"><i>' + SP_ROWS[r] + '</i>';
+        for (var c = 1; c <= SP_COLS; c++){
+          var id = SP_ROWS[r] + c, bk_ = spBooked(spW, r, c), on = spSel.indexOf(id) > -1;
+          out += '<span class="sp-bay ' + z.k + (bk_ ? ' booked' : on ? ' sel' : '') + '"' + (bk_ ? '' : ' data-sp="' + id + '"') + '>' + (on ? c : '') + '</span>';
+          if (c === 5) out += '<b class="sp-aisle"></b>';
+        }
+        out += '<i>' + SP_ROWS[r] + '</i></div>';
+      }
+      $('sp-grid').innerHTML = out;
+      var sq = spSel.length * SP_BAY, min = prof(spW).min, cost = Math.round(sq * sqRate(spW) * spMul(spSel) / 7 * plan.days);
+      $('sp-sum').innerHTML = '<b>' + spSel.length + ' bay' + (spSel.length === 1 ? '' : 's') + ' · ' + fmt(sq) + ' sq.ft</b><small>' + (spSel.length ? spSel.slice().sort().join(', ') : 'Tap bays to select') + '</small>';
+      $('sp-cost').textContent = money(cost, 0);
+      $('sp-ok').disabled = sq < min;
+      $('sp-ok').textContent = sq < min ? 'Min. ' + min + ' sq.ft' : 'Confirm space';
+    }
+
+    // ======================= air results, ixigo-style =======================
+    var DAYF = [1, 0.94, 1.06, 0.97, 1.12, 0.91, 1.03];
+    var DUR = { EK: [3, 10], QR: [7, 25], AI: [3, 20], SQ: [9, 50], EY: [6, 40], LH: [3, 35] };
+    var FARES = [['saver', 'Saver', 1, 'Standard handling · Cancellation fee applies'], ['flexi', 'Flexi', 1.12, 'Free date change · Priority uplift'], ['prio', 'Priority', 1.25, 'Guaranteed space · First off-load']];
+    var ixOpen = null, ixSort = 'price';
+    function hm(t){ return ('0' + t[0]).slice(-2) + ':' + ('0' + t[1]).slice(-2); }
+    function arrOf(code){ var d = DEP[code].split(':').map(Number), u = DUR[code], m = d[0] * 60 + d[1] + u[0] * 60 + u[1]; return { t: hm([Math.floor(m / 60) % 24, m % 60]), plus: Math.floor(m / 1440) }; }
+    function renderAirIx(){
+      document.body.classList.add('ix');
+      $('rq-car-title').textContent = 'Select Airline';
+      var all = carriers().map(function(c){ return { c: c, price: freight(c), tt: c.tt }; });
+      // date strip with the lowest fare of each day
+      var days = '', base = Math.min.apply(null, all.map(function(x){ return perKg(x.price) / DAYF[rq.day]; }));
+      for (var i = 0; i < 7; i++){ var d = addDays(rq.ready, i); days += '<div class="ix-day' + (i === rq.day ? ' on' : '') + '" data-rq-day="' + i + '"><small>' + ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()] + ', ' + d.getDate() + ' ' + MON[d.getMonth()] + '</small><b>$' + (base * DAYF[i]).toFixed(2) + '</b></div>'; }
+      $('rq-days').innerHTML = days;
+      var list = all.filter(function(x){
+        var c = x.c, k = perKg(x.price), h = parseInt(DEP[c.code], 10);
+        if (flt.min != null && (k < flt.min || k > flt.max)) return false;
+        if (flt.car.length && flt.car.indexOf(c.code) < 0) return false;
+        if (flt.stops.length && flt.stops.indexOf(c.direct ? '0' : '1') < 0) return false;
+        if (flt.dep === 'am' && h >= 12 || flt.dep === 'pm' && h < 12) return false;
+        if (flt.svc.some(function(v){ return (SVC[c.code] || []).indexOf(v) < 0; })) return false;
+        return true;
+      });
+      var dur = function(c){ return DUR[c.code][0] * 60 + DUR[c.code][1]; };
+      list.sort(function(a, b){ return ixSort === 'fast' ? dur(a.c) - dur(b.c) : ixSort === 'early' ? DEP[a.c.code].localeCompare(DEP[b.c.code]) : a.price - b.price; });
+      var cheapest = list.length && list.reduce(function(m, x){ return x.price < m.price ? x : m; }), fastest = list.length && list.reduce(function(m, x){ return dur(x.c) < dur(m.c) ? x : m; });
+      $('rq-cars').innerHTML = list.map(function(x){
+        var c = x.c, a = arrOf(c.code), open = ixOpen === c.code, u = DUR[c.code];
+        return '<div class="ix-card' + (open ? ' open' : '') + '" data-ix="' + c.code + '">' +
+          '<div class="ix-top"><span class="rqc-logo" style="background:' + c.bg + ';color:' + c.fg + '">' + c.code + '</span><div class="ix-n"><b>' + c.name + '</b><small>' + CX[c.code][0] + ' · ' + CX[c.code][1] + '</small></div>' +
+          (x === cheapest ? '<span class="ix-tag green">Cheapest</span>' : x === fastest ? '<span class="ix-tag">Fastest</span>' : '') + '</div>' +
+          '<div class="ix-mid"><div><b>' + DEP[c.code] + '</b><small>' + sv.from[0] + '</small></div><div class="ix-line"><small>' + u[0] + 'h ' + u[1] + 'm</small><i></i><small>' + (c.direct ? 'Non-stop' : '1 stop · ' + c.via) + '</small></div><div style="text-align:right"><b>' + a.t + (a.plus ? '<sup>+' + a.plus + '</sup>' : '') + '</b><small>' + sv.to[0] + '</small></div>' +
+          '<div class="ix-p"><b>$' + perKg(x.price).toFixed(2) + '</b><small>/kg · ' + usd(x.price) + '</small></div></div>' +
+          '<div class="ix-perks">' + ((SVC[c.code] || []).indexOf('temp') > -1 ? '<span>❄ Cool chain</span>' : '') + (c.direct ? '<span>✓ Free reschedule</span>' : '<span>Transit via ' + c.via + '</span>') + '<span class="ix-more">' + (open ? 'Hide fares ▲' : 'View fares ▼') + '</span></div>' +
+          (open ? '<div class="ix-fares">' + FARES.map(function(f){ return '<div class="ix-fare"><div><b>' + f[1] + '</b><small>' + f[3] + '</small></div><div class="ix-fp"><b>' + usd(x.price * f[2]) + '</b><button data-ix-book="' + c.code + '|' + f[0] + '|' + x.tt + '">Book</button></div></div>'; }).join('') + '</div>' : '') +
+          '</div>';
+      }).join('') || '<div class="rq-empty">No flights match — try another date or clear the filters</div>';
+      $('ix-sort').textContent = { price: 'Cheapest', fast: 'Fastest', early: 'Earliest' }[ixSort];
+      $('ix-ns').classList.toggle('on', flt.stops.length === 1 && flt.stops[0] === '0');
+      $('ix-fc').textContent = fltCount() || '';
+    }
+
+    // ======================= full-screen intros (Sea / Air / Warehouse) + Venture Kart splash =======================
+    function playIntro(kind){
+      var host = $('appBody'), el = document.createElement('div'), title = { sea: 'Sea Freight', air: 'Air Freight', wh: 'Warehousing' }[kind], tag = { sea: 'Oceans of possibility', air: 'Faster than ever', wh: 'Space, perfectly placed' }[kind], art = '';
+      if (kind === 'sea') art = '<div class="in-sun"></div><svg class="in-ship" viewBox="0 0 200 80"><g fill="#FFC45C"><rect x="40" y="18" width="16" height="14" rx="1"/><rect x="58" y="18" width="16" height="14" rx="1" fill="#B87D2D"/><rect x="76" y="18" width="16" height="14" rx="1"/><rect x="94" y="18" width="16" height="14" rx="1" fill="#E9D3AE"/><rect x="112" y="18" width="16" height="14" rx="1" fill="#B87D2D"/><rect x="58" y="4" width="16" height="14" rx="1" fill="#E9D3AE"/><rect x="94" y="4" width="16" height="14" rx="1"/><rect x="140" y="6" width="14" height="26" rx="2" fill="#fff"/></g><path d="M20 34h164l-16 26H38z" fill="#fff"/><path d="M28 44h150" stroke="#B87D2D" stroke-width="3"/></svg>' +
+        '<div class="in-waves"><svg viewBox="0 0 400 60" preserveAspectRatio="none"><path d="M0 30 Q50 10 100 30 T200 30 T300 30 T400 30 V60 H0Z"/></svg><svg viewBox="0 0 400 60" preserveAspectRatio="none"><path d="M0 30 Q50 50 100 30 T200 30 T300 30 T400 30 V60 H0Z"/></svg></div>';
+      if (kind === 'air') art = '<i class="in-cloud c1"></i><i class="in-cloud c2"></i><i class="in-cloud c3"></i><svg class="in-trail" viewBox="0 0 400 400"><path d="M-20 380 Q140 300 420 40"/></svg><svg class="in-plane" viewBox="0 0 24 24"><path fill="#FFC45C" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 00-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg>';
+      if (kind === 'wh'){ var bx = ''; for (var i = 0; i < 12; i++) bx += '<i style="animation-delay:' + (0.05 * i).toFixed(2) + 's"></i>'; art = '<div class="in-boxes">' + bx + '</div><div class="in-door"></div>'; }
+      el.className = 'intro in-' + kind;
+      el.innerHTML = art + '<div class="in-t"><small>VENTURE KART</small><b>' + title + '</b><span>' + tag + '</span></div>';
+      host.appendChild(el);
+      setTimeout(function(){ el.classList.add('out'); }, 1700);
+      setTimeout(function(){ el.remove(); }, 2250);
+    }
+    function playSplash(short){
+      var host = $('appBody'), el = document.createElement('div'), word = 'VENTURE KART'.split('').map(function(ch, i){ return '<span style="animation-delay:' + (0.9 + i * 0.05).toFixed(2) + 's">' + (ch === ' ' ? '&nbsp;' : ch) + '</span>'; }).join('');
+      el.className = 'splash' + (short ? ' short' : '');
+      el.innerHTML = '<div class="sp-glow"></div><svg class="sp-ring" viewBox="0 0 120 120"><circle cx="60" cy="60" r="54"/></svg>' +
+        '<div class="sp-logo"><svg viewBox="0 0 64 40" class="sp-crown"><path d="M4 34L10 8l14 14L32 4l8 18L54 8l6 26z"/></svg><b>VK</b></div>' +
+        '<div class="sp-word">' + word + '</div><div class="sp-tag">Global B2B trade, simplified</div>';
+      host.appendChild(el);
+      setTimeout(function(){ el.classList.add('out'); }, short ? 1500 : 2600);
+      setTimeout(function(){ el.remove(); }, short ? 2050 : 3150);
+    }
+
     // ---- service bookings: Search / Bookings bar, My Bookings, booking flow (Shipment -> Parties -> Review -> Confirmed) ----
     function svKind(){ return rq.svc === 'wh' ? 'wh' : sv.mode; }
     function svStart(){ return rq.svc === 'wh' ? 'svc-wh' : 'svc-freight'; }
@@ -728,7 +836,7 @@
         return { a: base, b: all - base, total: all, al: 'Storage (' + fmt(x.plan.pallets) + ' sq.ft × ' + x.plan.days + ' days)', bl: 'Handling & services' };
       }
       var c = rq.carrier, l = (bk.kind === 'sea' ? D.seaLoads : D.airLoads)[bk.load], f = portDest()[bk.kind === 'sea' ? 'seaF' : 'airF'] * c.f, fr;
-      if (bk.kind === 'sea') fr = l.perKg ? Math.max(350, bk.kg * l.perKg * f) : bk.qty * l.rate * f; else fr = Math.max(bk.kg, 100) * l.perKg * f;
+      if (bk.kind === 'sea') fr = l.perKg ? Math.max(350, bk.kg * l.perKg * f) : bk.qty * l.rate * f; else fr = Math.max(bk.kg, 100) * l.perKg * f * (DAYF[rq.day] || 1) * (rq.fare || 1);
       fr = Math.round(fr); var sur = Math.round(fr * (bk.kind === 'sea' ? 0.18 : 0.27));
       return { a: fr, b: sur, total: fr + sur, al: (bk.kind === 'sea' ? 'Ocean freight' : 'Freight charge') + (bk.kind === 'air' ? ' (' + fmt(bk.kg) + ' kg)' : ' (' + bk.qty + ' × ' + l.short + ')'), bl: 'Surcharges & fees' };
     }
@@ -738,14 +846,14 @@
       if (k === 'wh'){
         var x = rq.sides['in'];
         out = rvCard('Warehouse &amp; Dates', 'rq-warehouse', '<div class="bk-car"><span class="rqp-img" style="width:42px;height:42px"><img src="assets/images/' + x.wh.img + '" alt=""></span><b>' + x.wh.name + '</b><em>USD ' + fmt(c.total) + '</em></div>' +
-            kv('Location', x.wh.area + ', ' + destBy(rq.dest).name) + kv('From', dfmt(new Date(x.plan.start + 'T00:00:00'))) + kv('To', dfmt(addDays(x.plan.start, x.plan.days))) + kv('Space', fmt(x.plan.pallets) + ' sq.ft')) +
+            kv('Location', x.wh.area + ', ' + destBy(rq.dest).name) + kv('From', dfmt(new Date(x.plan.start + 'T00:00:00'))) + kv('To', dfmt(addDays(x.plan.start, x.plan.days))) + kv('Space', fmt(x.plan.pallets) + ' sq.ft') + (x.plan.bays ? kv('Bays', x.plan.bays.slice().sort().join(', ')) : '')) +
           rvCard('Storage Details', 'bk-1', kv('Cargo type', WCARGO[bk.wcargo]) + kv('Packages', bk.qty) + kv('Total weight', fmt(bk.kg) + ' kg') + kv('Description', esc(bk.desc)) + (bk.spec ? kv('Special handling', esc(bk.spec)) : '')) +
           rvCard('Customer', 'bk-2', party);
       } else {
         var r = rq.carrier, dep = addDays(rq.ready, rq.day * (sea() ? 2 : 1)), arr = plusDays(dep, rq.tt), l = (k === 'sea' ? D.seaLoads : D.airLoads)[bk.load];
         out = rvCard('Route &amp; Schedule', 'rq-carrier', '<div class="bk-car"><span class="rqc-logo" style="background:' + r.bg + ';color:' + r.fg + '">' + r.code + '</span><b>' + r.name + '</b><em>USD ' + fmt(c.total) + '</em></div>' +
             '<div class="sv-route"><div><b>' + sv.from[0] + '</b><small>' + sv.from[2] + '</small></div><span class="rv-arrow">' + (sea() ? D.icons.ship : D.icons.plane) + '</span><div style="text-align:right"><b>' + sv.to[0] + '</b><small>' + sv.to[2] + '</small></div></div>' +
-            kv('Departs', dfmt(dep) + (sea() ? '' : ' · ' + DEP[r.code])) + kv('Arrives (est.)', dfmt(arr)) + kv('Transit', rq.tt + (rq.tt === 1 ? ' day' : ' days')) + kv('Service', r.direct ? 'Direct' : '1 stop' + (r.via ? ' (' + r.via + ')' : ''))) +
+            kv('Departs', dfmt(dep) + (sea() ? '' : ' · ' + DEP[r.code])) + kv('Arrives (est.)', dfmt(arr)) + kv('Transit', rq.tt + (rq.tt === 1 ? ' day' : ' days')) + kv('Service', r.direct ? 'Direct' : '1 stop' + (r.via ? ' (' + r.via + ')' : '')) + (rq.fareN ? kv('Fare', rq.fareN) : '')) +
           rvCard('Shipment Details', 'bk-1', (k === 'sea' ? kv('Container', l.perKg ? 'LCL (shared)' : bk.qty + ' × ' + l.short) : kv('Cargo type', l.name) + kv('Total pieces', bk.qty)) +
             kv('Gross weight', fmt(bk.kg) + ' kg') + kv('Volume', bk.cbm + ' CBM') + (k === 'air' ? kv('Dimensions / piece', bk.L + ' × ' + bk.W + ' × ' + bk.H + ' cm') : '') + kv('Description', esc(bk.desc)) + (bk.spec ? kv('Special requirements', esc(bk.spec)) : '')) +
           rvCard('Parties', 'bk-2', party);
@@ -887,6 +995,8 @@
 
     // ---------- step 3: liner / airline ----------
     function renderCarrier(){
+      if (rq.svc && !sea()) return renderAirIx();
+      document.body.classList.remove('ix');
       var list = carriers().slice();
       $('rq-car-title').textContent = sea() ? 'Select Shipping Line' : 'Select Airline';
       var days = '';
@@ -1017,7 +1127,7 @@
       });
     }
     function planCost(w, pl){
-      var c = pl.pallets * sqRate(w) / 7 * pl.days;
+      var c = pl.pallets * sqRate(w) * (pl.mul || 1) / 7 * pl.days;
       pl.svcs.forEach(function(k){ var v = WSVC.filter(function(x){ return x[0] === k; })[0]; c += v[3] === 'order' ? v[2] : v[2] * pl.pallets; });
       return Math.round(c);
     }
@@ -1099,6 +1209,7 @@
       planW = w;
       var cur = rq.wh && rq.wh.name === w.name && rq.plan ? rq.plan : null;
       plan = cur ? JSON.parse(JSON.stringify(cur)) : { start: isOut() ? isoOf(addDays(depIso(), -7)) : arrivalIso(), days: isOut() ? 7 : 14, pallets: Math.max(prof(w).min, autoPallets()), svcs: ['load'] };
+      if (!plan.bays){ plan.bays = spAuto(w, Math.ceil(plan.pallets / SP_BAY)); plan.pallets = plan.bays.length * SP_BAY; plan.mul = spMul(plan.bays); }
       $('wp-wh').innerHTML = '<span class="rqp-img"><img src="assets/images/' + w.img + '" alt=""></span><div class="rqp-b"><b>' + w.name + '</b><small>' + (isOut() ? '' : w.area + ' · ') + money(sqRate(w)) + ' / sq.ft / week</small></div>';
       $('wp-start').min = isOut() ? isoOf(addDays(depIso(), -60)) : arrivalIso(); $('wp-start').value = plan.start;
       $('wp-start-h').textContent = isOut() ? 'Your shipment departs on ' + dfmt(new Date(depIso() + 'T00:00:00')) + ' — storage should end by then' : 'Your cargo is expected at the port on ' + dfmt(new Date(arrivalIso() + 'T00:00:00'));
@@ -1114,8 +1225,8 @@
       if (!preset) $('wp-ndays').value = plan.days;
       var end = addDays(plan.start, plan.days);
       $('wp-end-h').textContent = 'Until ' + dfmt(end) + ' · ' + plan.days + (plan.days === 1 ? ' day' : ' days');
-      $('wp-pallets').value = plan.pallets;
-      $('wp-pal-h').textContent = 'Auto-filled for ' + fmt(pd() ? pd().kg : 5000) + ' kg (≈' + SQFT + ' sq.ft per tonne) · minimum ' + p.min + ' sq.ft';
+      $('wp-space-t').textContent = (plan.bays || []).length + ' bays · ' + fmt(plan.pallets) + ' sq.ft'; $('wp-space-s').textContent = (plan.bays || []).slice().sort().join(', ');
+      $('wp-pal-h').textContent = 'Best bays picked for ' + fmt(pd() ? pd().kg : 5000) + ' kg · minimum ' + p.min + ' sq.ft · tap to change on the floor map';
       $('wp-svcs').innerHTML = WSVC.filter(function(v){ return p.svcs.indexOf(v[0]) > -1; }).map(function(v){
         return '<label class="fchk wp-svc"><input type="checkbox" data-wp-svc="' + v[0] + '"' + (plan.svcs.indexOf(v[0]) > -1 ? ' checked' : '') + '><span></span>' + v[1] + '<em>' + money(v[2], 0) + ' / ' + v[3] + '</em></label>';
       }).join('');
@@ -1358,6 +1469,7 @@
       if ((t = e.target.closest('[data-goto="rq-ship"]'))) { if (rq.svc){ svcOn(null); freshSides(); } setTimeout(renderShip, 0); return; }
       if ((t = e.target.closest('[data-svc]'))) {
         var k = t.dataset.svc;
+        playIntro(k);
         // header tabs: highlight the current service; switching from a service page doesn't stack screens
         document.querySelectorAll('.svc-head .as').forEach(function(a){ a.classList.toggle('on', a.dataset.svc === k); });
         if (t.closest('.svc-head')) stack.splice(0, stack.length, 'home', k === 'wh' ? 'svc-wh' : 'svc-freight');
@@ -1373,7 +1485,17 @@
         if (sv.pick === 'from'){ sv.from = r[0]; sv.fromC = r[1].code; } else { sv.to = r[0]; sv.toC = r[1].code; }
         renderSvFreight(); slideBack(); return;
       }
+      if (e.target.closest('#screen-login [data-goto="home"]')) playSplash(true);
       if (bkClick(e)) return;
+      if (e.target.closest('#wp-space')) { openSpace(); return; }
+      if ((t = e.target.closest('[data-sp]'))) { var id = t.dataset.sp, k = spSel.indexOf(id); if (k > -1) spSel.splice(k, 1); else spSel.push(id); drawSpace(); return; }
+      if (e.target.closest('#sp-auto')) { spSel = spAuto(spW, Math.max(Math.ceil(prof(spW).min / SP_BAY), Math.ceil(autoPallets() / SP_BAY))); drawSpace(); return; }
+      if (e.target.closest('#sp-ok')) { plan.bays = spSel.slice(); plan.pallets = spSel.length * SP_BAY; plan.mul = spMul(spSel); goBack(); drawPlan(); return; }
+      if ((t = e.target.closest('[data-ix-book]'))) { var pr = t.dataset.ixBook.split('|'), f = FARES.filter(function(x){ return x[0] === pr[1]; })[0]; rq.fare = f[2]; rq.fareN = f[1]; pickCarrier(pr[0], +pr[2]); return; }
+      if ((t = e.target.closest('[data-ix]'))) { ixOpen = ixOpen === t.dataset.ix ? null : t.dataset.ix; renderAirIx(); return; }
+      if (e.target.closest('#ix-sort-b')) { ixSort = { price: 'fast', fast: 'early', early: 'price' }[ixSort]; renderAirIx(); return; }
+      if (e.target.closest('#ix-ns')) { flt.stops = flt.stops.length === 1 && flt.stops[0] === '0' ? [] : ['0']; renderAirIx(); return; }
+      if (e.target.closest('#ix-filter')) { openFilter(); return; }
       if (svhClick(e)) return;
       if ((t = e.target.closest('[data-sx-fill]'))) { var pr = t.dataset.sxFill.split('|'); sxFill(pr[0], pr[1]); return; }
       if (e.target.closest('[data-sv-swap]')) {
@@ -1428,7 +1550,7 @@
       if (e.target.closest('#cd-select')) { pickCarrier(cdC.code, cdTT); return; }
       if ((t = e.target.closest('[data-rq-cdetail]'))) { openCarrier(t.dataset.rqCdetail, +t.dataset.rqTt); return; }
       if ((t = e.target.closest('[data-cd-tab]'))) { cdTab = t.dataset.cdTab; drawCarrier(); return; }
-      if ((t = e.target.closest('[data-rq-carrier]'))) { pickCarrier(t.dataset.rqCarrier, +t.dataset.rqTt); return; }
+      if ((t = e.target.closest('[data-rq-carrier]'))) { rq.fare = 1; rq.fareN = ''; pickCarrier(t.dataset.rqCarrier, +t.dataset.rqTt); return; }
       if ((t = e.target.closest('[data-rq-whtab]'))) { whTab = t.dataset.rqWhtab; renderWh(); return; }
       if ((t = e.target.closest('[data-wh-detail]'))) { openDetail(whByName(t.dataset.whDetail).w); return; }
       if ((t = e.target.closest('[data-wh-pick]'))) { openPlan(whByName(t.dataset.whPick).w); return; }
@@ -1485,13 +1607,12 @@
     $('rq-port-q').addEventListener('input', portList);
     $('sv-load-sel').addEventListener('change', function(){ sv.load = +this.value; });
     bkInit();
+    playSplash(false);
     $('wh-q').addEventListener('input', renderWh);
     sxParallax(null, 'sv-hero-box'); sxParallax(null, 'sw-hero-box');
     $('tr-date').addEventListener('change', function(){ if (this.value) rq.tdate = this.value < this.min ? this.min : this.value; });
     $('wp-start').addEventListener('change', function(){ if (this.value) { plan.start = this.value < this.min ? this.min : this.value; drawPlan(); } });
     $('wp-ndays').addEventListener('input', function(){ var v = parseInt(this.value, 10); if (v > 0){ plan.days = Math.min(v, 365); $('wp-end-h').textContent = 'Until ' + dfmt(addDays(plan.start, plan.days)) + ' · ' + plan.days + ' days'; $('wp-cost').textContent = money(planCost(planW, plan), 0); } });
-    $('wp-pallets').addEventListener('input', function(){ var v = parseInt(this.value, 10); if (v > 0){ plan.pallets = Math.max(prof(planW).min, v); $('wp-cost').textContent = money(planCost(planW, plan), 0); } });
-    $('wp-pallets').addEventListener('blur', function(){ this.value = plan.pallets; });
     document.addEventListener('change', function(e){
       var c = e.target.closest('[data-wp-svc]'); if (!c) return;
       var k = c.dataset.wpSvc, i = plan.svcs.indexOf(k);

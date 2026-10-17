@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&family=IBM+Plex+Mono:wght@600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=192da4f5">
+<link rel="stylesheet" href="assets/css/style.css?v=19599067">
 </head>
 <body> 
 <!-- Product & logistics photos: Wikimedia Commons (open licences). Credits:
@@ -607,6 +607,7 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
         </div>
         <div class="ffoot"><button class="btn btn-primary" id="rq-f-apply">Apply Filters</button></div>
       </div></div>
+          <div class="ix-bar"><span id="ix-sort-b"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h13M3 12h9M3 18h5M17 8v12M14 17l3 3 3-3"/></svg><small>Sort</small><b id="ix-sort">Cheapest</b></span><span id="ix-ns">Non-stop</span><span id="ix-filter"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg>Filter<b id="ix-fc"></b></span></div>
     </section>
 
     <section class="screen" id="screen-rq-car-detail">
@@ -647,7 +648,7 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
           <div class="wp-custom" id="wp-custom"><input type="number" id="wp-ndays" min="1" max="365" inputmode="numeric"><span>days</span></div>
           <div class="wp-hint" id="wp-end-h"></div>
           <div class="fl">Space needed</div>
-          <div class="wp-row"><div class="pp-step"><button data-wp-step="-1"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></svg></button><input id="wp-pallets" class="num" inputmode="numeric"><button data-wp-step="1"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></button></div><span class="wp-u">sq.ft</span></div>
+          <button class="sp-open" id="wp-space"><span class="sp-mini"><i></i><i></i><i class="s"></i><i class="s"></i><i></i><i class="b"></i></span><span class="sp-ot"><b id="wp-space-t"></b><small id="wp-space-s"></small></span><em>Choose on map →</em></button>
           <div class="wp-hint" id="wp-pal-h"></div>
           <div class="fl">Extra services <small>(optional)</small></div>
           <div id="wp-svcs"></div>
@@ -826,6 +827,17 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
         <button class="btn btn-secondary" id="bk4-view" style="margin-top:6px">View Booking Details</button>
         <button class="btn btn-primary" style="margin-top:10px;" data-goto="home" data-reset="true">Back to Home</button>
       </div></div>
+    </section>
+
+    <section class="screen" id="screen-wh-space">
+      <div class="subheader"><button class="back-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="sp-h"><h2>Select space</h2><small id="sp-wh"></small></div><span class="rq-skip" id="sp-auto">Auto-select</span></div>
+      <div class="sp-legend"><span><i class="av"></i>Available</span><span><i class="sel"></i>Selected</span><span><i class="booked"></i>Booked</span><span class="sp-bayinfo">1 bay = 20 sq.ft</span></div>
+      <div class="screen-scroll"><div class="content rq-pad">
+        <div class="sp-dock"><span>LOADING DOCK</span></div>
+        <div id="sp-grid"></div>
+        <div class="sp-door">▲ Entry / exit · cold zone is nearest the dock</div>
+      </div></div>
+      <div class="sp-foot"><div class="sp-sum" id="sp-sum"></div><div class="sp-fr"><b id="sp-cost">$0</b><button class="pp-apply" id="sp-ok">Confirm space</button></div></div>
     </section>
 
     <section class="screen" id="screen-rq-review">
@@ -1499,6 +1511,6 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
   <div class="home-indicator"></div>
 </div>
 
-<script src="assets/js/app.js?v=fbe11a4e"></script>
+<script src="assets/js/app.js?v=73511807"></script>
 </body>
 </html>
