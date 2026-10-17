@@ -471,21 +471,25 @@
     function svLoad(){ return loads()[sv.load] || loads()[0]; }
     function renderSvFreight(){
       var sea_ = sv.mode === 'sea', L = (sea_ ? D.seaLoads : D.airLoads);
-      $('sv-title').textContent = sea_ ? 'Sea Freight' : 'Air Freight';
+      if ($('sv-title')) $('sv-title').textContent = sea_ ? 'Sea Freight' : 'Air Freight';
       $('sv-hero').src = sea_ ? 'assets/images/hero_sea.jpg' : 'assets/images/hero_air.jpg';
-      $('sv-hero-t').textContent = sea_ ? 'Global Sea Freight' : 'Global Air Freight';
-      $('sv-hero-s').textContent = sea_ ? 'Compare rates · Book trusted shipping lines · Worldwide' : 'Compare rates · Book trusted airlines · Worldwide';
+      $('sv-hero-t').textContent = sea_ ? 'Ship anything, anywhere' : 'Fly cargo, faster';
+      $('sv-hero-s').textContent = sea_ ? 'Compare live rates from trusted shipping lines' : 'Compare live rates from trusted cargo airlines';
+      $('sx-eyebrow').textContent = sea_ ? 'Ocean freight · FCL & LCL' : 'Air freight · General, perishable & DG';
+      $('sx-mode-ic').innerHTML = sea_ ? D.icons.ship : D.icons.plane;
+      $('sx-st1').textContent = sea_ ? D.liners.length : D.airlines.length; $('sx-st1l').textContent = sea_ ? 'Shipping lines' : 'Cargo airlines';
       document.querySelectorAll('[data-sv-mode]').forEach(function(m){ m.classList.toggle('on', m.dataset.svMode === sv.mode); });
       var noun = sea_ ? 'port' : 'airport';
-      $('sv-from').textContent = sv.from ? sv.from[0] + ' · ' + sv.from[1] : 'Select origin ' + noun; $('sv-from-s').textContent = sv.from ? sv.from[2] + (sv.fromC && !ORIG_N[sv.fromC] ? ', ' + destBy(sv.fromC).name : '') : '';
-      $('sv-to').textContent = sv.to ? sv.to[0] + ' · ' + sv.to[1] : 'Select destination ' + noun; $('sv-to-s').textContent = sv.to ? sv.to[2] + ', ' + destBy(sv.toC).name : '';
-      $('sv-load-l').textContent = sea_ ? 'Container type' : 'Cargo type';
+      $('sv-from').textContent = sv.from ? sv.from[0] : '—'; $('sv-from-s').textContent = sv.from ? sv.from[1] : 'Origin ' + noun;
+      $('sv-to').textContent = sv.to ? sv.to[0] : '—'; $('sv-to-s').textContent = sv.to ? sv.to[1] : 'Destination ' + noun; sxExtras();
+      $('sv-load-l').textContent = sea_ ? 'Container' : 'Cargo type';
       var order = sea_ ? [3, 4, 5, 1, 2, 0] : [0, 1, 2, 3];
       $('sv-load-sel').innerHTML = order.map(function(i){ var l = L[i]; return '<option value="' + i + '"' + (i === sv.load ? ' selected' : '') + '>' + l.name + ' — ' + l.note + '</option>'; }).join('');
-      $('sv-search').textContent = 'Search Rates';
       $('sv-err').textContent = '';
+      svhSetPh();
     }
     function renderSvWh(){
+      sxWh(); svhSetPh();
       $('sw-country').innerHTML = D.dests.map(function(d){ return '<option value="' + d.code + '"' + (d.code === (sv.whC || 'ae') ? ' selected' : '') + '>' + d.name + '</option>'; }).join('');
     }
     function startWhSearch(type){
@@ -533,6 +537,88 @@
           kv(sea() ? 'Shipping line' : 'Airline', rq.carrier.name) + kv('Cargo', fmt(sv.kg) + ' kg · ' + esc(sv.desc || 'General cargo')) + '<div class="kv-row rv-tot"><span class="k">Total (est.)</span><span class="v">' + money(t.total) + '</span></div>';
       }
     }
+
+    // ---- modern start pages: recent searches, popular routes, featured warehouses, parallax ----
+    var SX_RECENT = { sea: [['INNSA', 'AEJEA'], ['INNSA', 'NLRTM'], ['SGSIN', 'USLAX']], air: [['BOM', 'DXB'], ['BOM', 'LHR'], ['SIN', 'JFK']] };
+    var SX_ROUTES = { sea: [['INNSA', 'AEJEA', 'USD 1,250', '6 days', 'hero_sea.jpg'], ['INNSA', 'NLRTM', 'USD 2,900', '24 days', 'port.jpg'], ['SGSIN', 'USLAX', 'USD 2,400', '18 days', 'ship.jpg'], ['THLCH', 'DEHAM', 'USD 2,650', '28 days', 'container.jpg']],
+                      air: [['BOM', 'DXB', 'USD 1.15/kg', '1 day', 'hero_air.jpg'], ['BOM', 'LHR', 'USD 2.10/kg', '1 day', 'aircargo.jpg'], ['SIN', 'JFK', 'USD 2.60/kg', '2 days', 'hero_air.jpg'], ['BKK', 'FRA', 'USD 2.25/kg', '1 day', 'aircargo.jpg']] };
+    function sxFind(code, forWhat){ var r = svPorts(forWhat)[code]; return r; }
+    function sxFill(from, to){
+      var f = sxFind(from, 'from'), t = sxFind(to, 'to'); if (!f || !t) return;
+      sv.from = f[0]; sv.fromC = f[1].code; sv.to = t[0]; sv.toC = t[1].code; renderSvFreight();
+      var c = document.querySelector('#screen-svc-freight .sx-card'); c.classList.remove('pulse'); void c.offsetWidth; c.classList.add('pulse');
+    }
+    function sxExtras(){
+      var m = sv.mode;
+      $('sx-recent').innerHTML = SX_RECENT[m].map(function(r){ return '<span class="sx-chip" data-sx-fill="' + r[0] + '|' + r[1] + '">' + CLOCKI + r[0] + ' → ' + r[1] + '</span>'; }).join('');
+      $('sx-routes').innerHTML = SX_ROUTES[m].map(function(r){
+        return '<div class="sx-rt" data-sx-fill="' + r[0] + '|' + r[1] + '"><img src="assets/images/' + r[4] + '" alt=""><div><b>' + r[0] + ' <i>→</i> ' + r[1] + '</b><small>' + r[3] + ' · from</small><em>' + r[2] + '</em></div></div>';
+      }).join('');
+    }
+    var CLOCKI = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/></svg>';
+    function sxWh(){
+      var all = allWh().filter(function(x){ return x.c !== 'out'; });
+      document.querySelectorAll('[data-sx-count]').forEach(function(e){ var n = all.filter(function(x){ return prof(x.w).type === e.dataset.sxCount; }).length; e.textContent = n + (n === 1 ? ' place' : ' places'); });
+      $('sx-feats').innerHTML = all.slice().sort(function(a, b){ return b.w.rating - a.w.rating; }).slice(0, 5).map(function(x){
+        return '<div class="sx-ft" data-sx-feat="' + esc(x.w.name) + '"><div class="sx-ft-img"><img src="assets/images/' + x.w.img + '" alt=""><span class="star">' + x.w.rating + '</span></div><b>' + x.w.name + '</b><small>' + x.w.area.split(',').pop().trim() + ', ' + destBy(x.c).name + '</small><em>' + money(sqRate(x.w)) + ' <i>/ sq.ft / wk</i></em></div>';
+      }).join('');
+    }
+    function sxParallax(scrollId, heroId, topId){
+      var h = $(heroId), sc = h.closest('.screen-scroll'), top = null, img = h.querySelector('img'), txt = h.querySelector('.sx-hero-t');
+      sc.addEventListener('scroll', function(){
+        var y = Math.max(0, sc.scrollTop), k = Math.min(y / 220, 1);
+        img.style.transform = 'translateY(' + (y * 0.45) + 'px) scale(' + (1.08 - k * 0.12) + ')';
+        txt.style.opacity = String(1 - k * 1.2); txt.style.transform = 'translateY(' + (-k * 24) + 'px) scale(' + (1 - k * 0.08) + ')';
+      });
+    }
+
+    // ---- header search on the service pages: opens the real search page with a bottom-to-top slide ----
+    var SLID = {};   // screens opened by sliding up; they slide back down on back
+    function slideTo(id){
+      var el = $('screen-' + id), prev = document.querySelector('.screen.active'); SLID[id] = true;
+      el.classList.remove('sl-down'); el.classList.add('sl-up');
+      if (prev) prev.classList.add('sl-under');                        // the page stays put while the search slides over it
+      goTo(id);
+      setTimeout(function(){ el.classList.remove('sl-up'); if (prev) prev.classList.remove('sl-under'); }, 420);
+    }
+    function slideBack(){
+      var cur = document.querySelector('.screen.active'), id = cur.id.replace('screen-', '');
+      if (!SLID[id]) { goBack(); return; }
+      delete SLID[id];
+      var prev = $('screen-' + stack[stack.length - 2]);
+      if (prev) prev.classList.add('sl-under');                       // keep the previous page visible underneath
+      cur.classList.add('sl-down');
+      setTimeout(function(){ cur.classList.remove('sl-down'); if (prev) prev.classList.remove('sl-under'); goBack(); }, 300);
+    }
+    function svhOpen(scr){
+      if (scr.id === 'screen-svc-wh'){ startWhSearchSlide(); return; }
+      sv.pick = 'from'; rq.mode = sv.mode; portTab = 'popular'; $('rq-port-q').value = ''; renderPort();
+      slideTo('rq-port');
+      setTimeout(function(){ $('rq-port-q').focus(); }, 380);
+    }
+    function startWhSearchSlide(){
+      sv.whC = $('sw-country').value; sv.whKg = parseFloat($('sw-kg').value) || 5000;
+      whf = { type: [], temp: 'any', dist: 'any', dur: 'any', unit: 'any' };
+      freshSides(); setSide('in'); rq.dest = sv.whC; rq.portC = sv.whC; rq.port = destBy(sv.whC).ports[0]; rq.ready = '2026-10-25'; rq.tt = 0; rq.day = 0;
+      whTab = 'popular'; $('wh-q').value = ''; renderWh(); slideTo('rq-warehouse');
+      setTimeout(function(){ $('wh-q').focus(); }, 380);
+    }
+    function svhSetPh(){
+      var f = document.querySelector('#screen-svc-freight .svh-in'), w = document.querySelector('#screen-svc-wh .svh-in');
+      if (f) f.placeholder = sv.mode === 'sea' ? 'Search ports, cities or countries' : 'Search airports, cities or countries';
+      if (w) w.placeholder = 'Search warehouses, cities or types';
+    }
+    function svhClick(e){
+      var t = e.target.closest('.svh');
+      if (t){ svhOpen(t.closest('.screen')); return true; }
+      return false;
+    }
+    // back from a slid-up page slides it down (capture phase, before the normal back handler)
+    document.addEventListener('click', function(e){
+      var b = e.target.closest('[data-back]'); if (!b) return;
+      var cur = document.querySelector('.screen.active'); if (!cur || !SLID[cur.id.replace('screen-', '')]) return;
+      e.stopPropagation(); e.preventDefault(); slideBack();
+    }, true);
 
     // ---- service bookings: Search / Bookings bar, My Bookings, booking flow (Shipment -> Parties -> Review -> Confirmed) ----
     function svKind(){ return rq.svc === 'wh' ? 'wh' : sv.mode; }
@@ -1009,6 +1095,7 @@
     // ---- storage plan sheet ----
     var plan = null, planW = null;
     function openPlan(w){
+      if (rq.svc === 'wh'){ var xw = whByName(w.name); if (xw.c !== 'out' && xw.c !== rq.dest){ rq.dest = rq.portC = xw.c; rq.port = destBy(xw.c).ports[0]; } }
       planW = w;
       var cur = rq.wh && rq.wh.name === w.name && rq.plan ? rq.plan : null;
       plan = cur ? JSON.parse(JSON.stringify(cur)) : { start: isOut() ? isoOf(addDays(depIso(), -7)) : arrivalIso(), days: isOut() ? 7 : 14, pallets: Math.max(prof(w).min, autoPallets()), svcs: ['load'] };
@@ -1038,6 +1125,7 @@
     // ---- details page ----
     var whdW = null, whdTab = 'ov';
     function openDetail(w){
+      if (rq.svc === 'wh'){ var xw = whByName(w.name); if (xw.c !== 'out' && xw.c !== rq.dest){ rq.dest = rq.portC = xw.c; rq.port = destBy(xw.c).ports[0]; } }
       whdW = w; whdTab = 'ov';
       var p = prof(w), x = whByName(w.name), where = whWhere(x);
       $('whd-img').src = 'assets/images/' + w.img;
@@ -1073,7 +1161,10 @@
       $('rq-wh-next').disabled = rq.svc === 'wh' && !rq.wh;
       $('rq-wh-s').textContent = isOut() ? 'Need storage in the exporting country before shipping? Pick one below — otherwise leave empty.' : 'Store your cargo near ' + rq.port[1] + ' before final delivery. Leave empty if not needed.';
       document.querySelectorAll('[data-rq-whtab]').forEach(function(t){ t.classList.toggle('on', t.dataset.rqWhtab === whTab); });
-      $('rq-whs').innerHTML = whList().filter(whPass).map(function(x){
+      var wq = rq.svc === 'wh' ? ($('wh-q').value || '').trim().toLowerCase() : '';
+      // typing searches every warehouse, not just the current tab
+      var base = wq ? allWh().filter(function(x){ return x.c !== 'out'; }).map(function(x){ return { w: x.w, c: x.c }; }) : whList();
+      $('rq-whs').innerHTML = base.filter(whPass).filter(function(x){ return !wq || (x.w.name + ' ' + x.w.area + ' ' + prof(x.w).type + ' ' + (x.c === 'out' ? '' : destBy(x.c).name)).toLowerCase().indexOf(wq) > -1; }).map(function(x){
         var w = x.w, p = prof(w), on = rq.wh && rq.wh.name === w.name, where = whWhere(x);
         return '<div class="whc' + (on ? ' on' : '') + '"><div class="whc-top"><span class="rqw-img"><img src="assets/images/' + w.img + '" alt=""></span>' +
           '<div class="whc-b"><div class="whc-n"><b>' + w.name + '</b><span class="whd-ver sm">Verified</span></div>' +
@@ -1267,6 +1358,9 @@
       if ((t = e.target.closest('[data-goto="rq-ship"]'))) { if (rq.svc){ svcOn(null); freshSides(); } setTimeout(renderShip, 0); return; }
       if ((t = e.target.closest('[data-svc]'))) {
         var k = t.dataset.svc;
+        // header tabs: highlight the current service; switching from a service page doesn't stack screens
+        document.querySelectorAll('.svc-head .as').forEach(function(a){ a.classList.toggle('on', a.dataset.svc === k); });
+        if (t.closest('.svc-head')) stack.splice(0, stack.length, 'home', k === 'wh' ? 'svc-wh' : 'svc-freight');
         if (k === 'wh'){ svcOn('wh'); renderSvWh(); }
         else { svcOn('freight'); if (sv.mode !== k){ sv.from = sv.to = null; sv.load = k === 'sea' ? 3 : 0; } sv.mode = k; rq.mode = k; freshSides(); renderSvFreight(); }
         return;
@@ -1277,10 +1371,18 @@
       if ((t = e.target.closest('[data-sv-port]'))) {
         var all = svPorts(sv.pick), r = all[t.dataset.svPort];
         if (sv.pick === 'from'){ sv.from = r[0]; sv.fromC = r[1].code; } else { sv.to = r[0]; sv.toC = r[1].code; }
-        goBack(); renderSvFreight(); return;
+        renderSvFreight(); slideBack(); return;
       }
       if (bkClick(e)) return;
-      if (e.target.closest('#sv-search')) {
+      if (svhClick(e)) return;
+      if ((t = e.target.closest('[data-sx-fill]'))) { var pr = t.dataset.sxFill.split('|'); sxFill(pr[0], pr[1]); return; }
+      if (e.target.closest('[data-sv-swap]')) {
+        var tb = e.target.closest('[data-sv-swap]'); tb.classList.remove('spin'); void tb.offsetWidth; tb.classList.add('spin');
+        if (sv.from && sv.to){ var nt = sxFind(sv.from[0], 'to'); if (!nt){ $('sv-err').textContent = sv.from[0] + ' is not available as a destination yet'; return; } var nf = sxFind(sv.to[0], 'from'); sv.from = nf[0]; sv.fromC = nf[1].code; sv.to = nt[0]; sv.toC = nt[1].code; renderSvFreight(); }
+        return;
+      }
+      if ((t = e.target.closest('[data-sw-dur]'))) { $('sw-dur').value = t.dataset.swDur; document.querySelectorAll('[data-sw-dur]').forEach(function(d){ d.classList.toggle('on', d === t); }); return; }
+      if ((t = e.target.closest('[data-sx-feat]'))) { var fx = whByName(t.dataset.sxFeat); $('sw-country').value = fx.c; startWhSearch(); openDetail(fx.w); return; }      if (e.target.closest('#sv-search')) {
         sv.kg = parseFloat($('sv-kg').value) || 0; sv.cbm = parseFloat($('sv-cbm').value) || 0; sv.desc = $('sv-desc').value.trim();
         var miss = !sv.from ? 'Select the origin ' + (sv.mode === 'sea' ? 'port' : 'airport') : !sv.to ? 'Select the destination ' + (sv.mode === 'sea' ? 'port' : 'airport') : sv.kg <= 0 ? 'Enter the cargo weight' : '';
         $('sv-kg-row').classList.toggle('err', sv.kg <= 0);
@@ -1383,6 +1485,8 @@
     $('rq-port-q').addEventListener('input', portList);
     $('sv-load-sel').addEventListener('change', function(){ sv.load = +this.value; });
     bkInit();
+    $('wh-q').addEventListener('input', renderWh);
+    sxParallax(null, 'sv-hero-box'); sxParallax(null, 'sw-hero-box');
     $('tr-date').addEventListener('change', function(){ if (this.value) rq.tdate = this.value < this.min ? this.min : this.value; });
     $('wp-start').addEventListener('change', function(){ if (this.value) { plan.start = this.value < this.min ? this.min : this.value; drawPlan(); } });
     $('wp-ndays').addEventListener('input', function(){ var v = parseInt(this.value, 10); if (v > 0){ plan.days = Math.min(v, 365); $('wp-end-h').textContent = 'Until ' + dfmt(addDays(plan.start, plan.days)) + ' · ' + plan.days + ' days'; $('wp-cost').textContent = money(planCost(planW, plan), 0); } });
