@@ -1161,6 +1161,55 @@
       if (rq.svc){ bkStart(); return; }
       whTab = 'popular'; setSide('in'); if (rq.wh && rq.plan) rq.plan.start = rq.plan.start < arrivalIso() ? arrivalIso() : rq.plan.start; setSide('out'); renderWh(); goTo('rq-warehouse');
     }
+    // ---------- carrier company profiles ----------
+    var CN = { ae:'UAE', sa:'Saudi Arabia', qa:'Qatar', om:'Oman', sg:'Singapore', nl:'Netherlands', de:'Germany', gb:'United Kingdom', us:'United States', in:'India', cn:'China', jp:'Japan', kr:'South Korea', br:'Brazil', mx:'Mexico', za:'South Africa', eg:'Egypt', ke:'Kenya', es:'Spain', fr:'France', it:'Italy', tr:'Türkiye', au:'Australia', lk:'Sri Lanka', my:'Malaysia', vn:'Vietnam', th:'Thailand', id:'Indonesia', pk:'Pakistan', bd:'Bangladesh', ma:'Morocco', ng:'Nigeria', gh:'Ghana', cl:'Chile', pe:'Peru', co:'Colombia', ca:'Canada', nz:'New Zealand', gr:'Greece', pl:'Poland' };
+    var CPORT = { ae:['Jebel Ali','Khalifa'], sa:['Jeddah','Dammam'], qa:['Hamad'], om:['Salalah','Sohar'], sg:['Singapore'], nl:['Rotterdam'], de:['Hamburg','Bremerhaven'], gb:['Felixstowe','London Gateway','Southampton'], us:['New York','Los Angeles','Savannah','Houston'], in:['Nhava Sheva','Mundra','Chennai'], cn:['Shanghai','Ningbo','Shenzhen'], jp:['Tokyo','Yokohama'], kr:['Busan'], br:['Santos'], mx:['Manzanillo'], za:['Durban'], eg:['Port Said'], ke:['Mombasa'], es:['Valencia','Algeciras'], fr:['Le Havre'], it:['Genoa'], tr:['Mersin'], au:['Melbourne','Sydney'], lk:['Colombo'], my:['Port Klang','Tanjung Pelepas'], vn:['Cai Mep'], th:['Laem Chabang'], id:['Tanjung Priok'], pk:['Karachi'], bd:['Chittagong'], ma:['Tanger Med'], ng:['Lagos'], gh:['Tema'], cl:['San Antonio'], pe:['Callao'], co:['Cartagena'], ca:['Vancouver','Montreal'], nz:['Auckland'], gr:['Piraeus'], pl:['Gdańsk'] };
+    var CAIR = { ae:['DXB','DWC','AUH'], sa:['JED','RUH','DMM'], qa:['DOH'], om:['MCT'], sg:['SIN'], nl:['AMS'], de:['FRA','MUC','LEJ'], gb:['LHR','MAN'], us:['JFK','LAX','ORD','MIA'], in:['BOM','DEL','BLR','MAA'], cn:['PVG','CAN','PEK'], jp:['NRT','KIX'], kr:['ICN'], br:['GRU','VCP'], mx:['MEX'], za:['JNB'], eg:['CAI'], ke:['NBO'], es:['MAD'], fr:['CDG'], it:['MXP'], tr:['IST'], au:['SYD','MEL'], lk:['CMB'], my:['KUL'], vn:['SGN','HAN'], th:['BKK'], id:['CGK'], pk:['KHI','LHE'], bd:['DAC'], ma:['CMN'], ng:['LOS'], gh:['ACC'], cl:['SCL'], pe:['LIM'], co:['BOG'], ca:['YYZ','YVR'], nz:['AKL'], gr:['ATH'], pl:['WAW'] };
+    var ALLC = Object.keys(CN);
+    function pickC(home, n, seed){ var o = [home], i = seed; while (o.length < n){ var k = ALLC[i % ALLC.length]; if (o.indexOf(k) < 0) o.push(k); i += 7; } return o; }
+    var CO = {
+      MSK:{ hq:'dk', hqN:'Copenhagen, Denmark', yr:1904, fleet:'670+ vessels', cap:'4.3M TEU', about:'Integrated container logistics company connecting ports, terminals and inland transport across 130 countries.', vs:['Mærsk Mc-Kinney Møller','Madrid Mærsk','Maersk Eindhoven','Gerd Mærsk','Ane Mærsk','Maersk Hangzhou','Sealand Michigan','Maersk Kampala','Laura Mærsk','Maersk Line Vigo'], nc:36, ok:97.8, cl:14 },
+      MSC:{ hq:'ch', hqN:'Geneva, Switzerland', yr:1970, fleet:'850+ vessels', cap:'6.4M TEU', about:'The world\'s largest container shipping line by capacity, serving 520 ports on 300 trade routes.', vs:['MSC Irina','MSC Loreto','MSC Gülsün','MSC Tessa','MSC Aurora','MSC Mia','MSC Sixin','MSC Paloma','MSC Nela','MSC Celestino'], nc:40, ok:95.2, cl:18 },
+      ONE:{ hq:'sg', hqN:'Singapore', yr:2017, fleet:'240+ vessels', cap:'1.9M TEU', about:'Joint venture of NYK, MOL and K Line offering global container services with a modern magenta fleet.', vs:['ONE Innovation','ONE Infinity','ONE Harmony','ONE Triumph','ONE Apus','ONE Olympus','ONE Stork','ONE Minato'], nc:30, ok:96.4, cl:15 },
+      CMA:{ hq:'fr', hqN:'Marseille, France', yr:1978, fleet:'650+ vessels', cap:'3.7M TEU', about:'Global shipping and logistics group running LNG-powered mega-ships and 420 port calls worldwide.', vs:['CMA CGM Jacques Saadé','CMA CGM Palais Royal','CMA CGM Tage','CMA CGM Trocadéro','CMA CGM Antoine de Saint Exupéry','CMA CGM Marco Polo','APL Raffles','CMA CGM Louvre','CMA CGM Rivoli'], nc:38, ok:96.9, cl:16 },
+      HLC:{ hq:'de', hqN:'Hamburg, Germany', yr:1847, fleet:'290+ vessels', cap:'2.1M TEU', about:'German liner known for reefer expertise and quality ratings, operating 130+ liner services.', vs:['Berlin Express','Hamburg Express','Al Zubara','Sajir','Tsingtao Express','Barzan','Kiel Express','Leverkusen Express'], nc:32, ok:97.1, cl:12 },
+      EMC:{ hq:'tw', hqN:'Taipei, Taiwan', yr:1968, fleet:'210+ vessels', cap:'1.7M TEU', about:'Taiwan-based carrier with a young, green fleet covering Asia, Europe, the Americas and the Middle East.', vs:['Ever Ace','Ever Given','Ever Lunar','Ever Alot','Ever Golden','Ever Greet','Ever Lasting','Ever Apex'], nc:28, ok:94.6, cl:20 },
+      EK:{ hq:'ae', hqN:'Dubai, UAE', yr:1985, fleet:'11 freighters + 250 bellies', cap:'2.2M t/yr', hub:'DXB', about:'Cargo division of Emirates, flying to 140+ destinations via the Dubai hub with dedicated cool-chain handling.', nc:38, ok:98.1, cl:10, frag:true, mx:'3,000 kg/piece' },
+      QR:{ hq:'qa', hqN:'Doha, Qatar', yr:2003, fleet:'30+ freighters', cap:'2.5M t/yr', hub:'DOH', about:'One of the largest cargo airlines, connecting 170+ destinations through Hamad International.', nc:40, ok:97.6, cl:12, frag:true, mx:'4,000 kg/piece' },
+      AI:{ hq:'in', hqN:'Mumbai, India', yr:1932, fleet:'120+ bellies', cap:'0.4M t/yr', hub:'BOM', about:'India\'s flag carrier cargo arm, strong on perishables and pharma out of Mumbai and Delhi.', nc:24, ok:93.9, cl:21, frag:false, mx:'1,500 kg/piece' },
+      SQ:{ hq:'sg', hqN:'Singapore', yr:2001, fleet:'7 freighters + 180 bellies', cap:'1.2M t/yr', hub:'SIN', about:'Singapore Airlines\' cargo arm with IATA CEIV-certified pharma and fresh produce handling.', nc:30, ok:97.9, cl:9, frag:true, mx:'3,500 kg/piece' },
+      EY:{ hq:'ae', hqN:'Abu Dhabi, UAE', yr:2004, fleet:'5 freighters + 80 bellies', cap:'0.7M t/yr', hub:'AUH', about:'Abu Dhabi-based cargo airline with specialist products for fresh, pharma and valuables.', nc:26, ok:96.2, cl:14, frag:true, mx:'2,500 kg/piece' },
+      LH:{ hq:'de', hqN:'Frankfurt, Germany', yr:1994, fleet:'17 freighters + 300 bellies', cap:'1.6M t/yr', hub:'FRA', about:'Europe\'s leading cargo airline, operating the Frankfurt Cool Center and Live Animal Lounge.', nc:34, ok:97.3, cl:11, frag:true, mx:'4,500 kg/piece' }
+    };
+    var VTYPE = ['ULCV · 24,000 TEU', 'Neo-Panamax · 15,000 TEU', 'Post-Panamax · 10,000 TEU', 'Reefer-ready · 8,500 TEU', 'Feeder · 2,500 TEU'];
+    function flagI(k){ return ['dk','ch','tw'].indexOf(k) > -1 ? '<span class="cx-nf">' + k.toUpperCase() + '</span>' : '<img src="assets/images/flags/' + k + '.png" alt="">'; }
+    function cxSec(t, body, n){ return '<div class="cx-sec' + (n ? ' cx-lim' : '') + '"><h5>' + t + '</h5>' + body + (n ? '<button class="cx-more" data-cx-more>View more (' + n + ')</button>' : '') + '</div>'; }
+    function cxChips(a){ return '<div class="cx-chips">' + a.map(function(x){ return '<span>' + x + '</span>'; }).join('') + '</div>'; }
+    function cxRing(p, lbl, sub){ return '<div class="cx-ring"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#EEE6D8" stroke-width="3.4"/><circle cx="18" cy="18" r="15.9" fill="none" stroke="#B87D2D" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="' + p + ' 100" transform="rotate(-90 18 18)"/></svg><b>' + p + '%</b></div><div class="cx-rt"><b>' + lbl + '</b><small>' + sub + '</small></div>'; }
+    function drawCompany(c){
+      var o = CO[c.code], isSea = sea(), seed = c.code.charCodeAt(0) + c.code.charCodeAt(1), cs = pickC({ dk:'nl', ch:'it', tw:'sg' }[o.hq] || o.hq, o.nc, seed), out = '';
+      out += '<div class="cx-ov"><p>' + o.about + '</p><div class="cx-stats"><span><b>' + o.yr + '</b><small>Founded</small></span><span><b>' + o.fleet.split(' ')[0] + '</b><small>' + (isSea ? 'Vessels' : 'Fleet') + '</small></span><span><b>' + o.cap.split(' ')[0] + '</b><small>' + (isSea ? 'TEU capacity' : 'Tonnes / yr') + '</small></span><span><b>' + o.nc + '</b><small>Countries</small></span></div>' +
+        '<div class="cx-hq">' + flagI(o.hq) + '<div><small>Headquarters</small><b>' + o.hqN + '</b></div></div></div>';
+      var ok = cxRing(o.ok, 'Average success rate', (isSea ? 'Shipments delivered on schedule & damage-free' : 'On-time, damage-free deliveries') + ' · last 12 months');
+      var ins = '<div class="cx-ins">' + [['Basic carrier liability', isSea ? 'Up to USD 2 per kg (Hague-Visby)' : 'Up to 22 SDR per kg (Montreal Conv.)', 'Included'], ['All-risk cargo cover', 'Full invoice value + 10%', '0.25% of value'], [isSea ? 'Reefer breakdown cover' : 'Temperature excursion cover', 'Spoilage from equipment failure', '0.12% of value']].map(function(x){ return '<div><span><b>' + x[0] + '</b><small>' + x[1] + '</small></span><em>' + x[2] + '</em></div>'; }).join('') +
+        '</div><div class="cx-claim"><span><b>' + (isSea ? '7 days' : '14 days') + '</b><small>Notice window</small></span><span><b>' + o.cl + ' days</b><small>Avg. settlement</small></span><span><b>Online</b><small>Claim filing</small></span></div>';
+      var ctry = '<div class="cx-ctry">' + cs.map(function(k){ var p = (isSea ? CPORT : CAIR)[k] || []; return '<div>' + flagI(k) + '<span><b>' + CN[k] + '</b><small>' + p.join(' · ') + '</small></span><em>' + p.length + '</em></div>'; }).join('') + '</div>';
+      if (isSea){
+        out += cxSec('Fleet · vessels', '<div class="cx-vs">' + o.vs.map(function(v, i){ return '<div><span class="cx-vi">' + D.icons.ship + '</span><span><b>' + v + '</b><small>' + VTYPE[i % VTYPE.length] + ' · IMO 9' + (seed * 7919 + i * 131) % 1000000 + '</small></span></div>'; }).join('') + '</div>', Math.max(0, o.vs.length - 4));
+        out += cxSec('Ports & countries · ' + cs.length + ' countries', ctry, cs.length - 5);
+        out += cxSec('Types of ships', cxChips(['Ultra Large Container Vessels', 'Neo-Panamax', 'Post-Panamax', 'Reefer vessels', 'Feeder ships', 'Con-Ro']));
+        out += cxSec('Types of cargo handled', cxChips(['Dry / general', 'Reefer & perishables', 'Dangerous goods (IMDG)', 'Out-of-gauge', 'Breakbulk', 'Project cargo', 'Liquid bulk (flexitank)']));
+        out += cxSec('Container types', '<div class="cx-ctn">' + [['20\' Dry','33 m³'],['40\' Dry','67 m³'],['40\' High Cube','76 m³'],['20\' Reefer','28 m³'],['40\' Reefer HC','67 m³'],['Open Top','20\' / 40\''],['Flat Rack','20\' / 40\''],['ISO Tank','21–26 k L']].map(function(x){ return '<span><b>' + x[0] + '</b><small>' + x[1] + '</small></span>'; }).join('') + '</div>', 4);
+      } else {
+        out += cxSec('Origin', '<div class="cx-hq">' + flagI(o.hq) + '<div><small>Home country · main hub</small><b>' + CN[o.hq] + ' · ' + o.hub + '</b></div></div>' + kv('Network type', 'Hub-and-spoke via ' + o.hub) + kv('Fleet', o.fleet) + kv('Max piece weight', o.mx));
+        out += cxSec('Fragile cargo', '<div class="cx-frag ' + (o.frag ? 'y' : 'n') + '"><span class="cx-fi"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l-1 7a3 3 0 01-6 0z"/><path d="M12 12v8M8 22h8M11 4l1 2-1 2"/></svg></span><span><b>' + (o.frag ? 'Fragile goods covered' : 'Fragile goods not covered') + '</b><small>' + (o.frag ? 'Special handling labels, manual loading and fragile-risk cover available.' : 'Carried at shipper\'s risk — add all-risk cover or choose another airline.') + '</small></span><em>' + (o.frag ? '✓' : '✕') + '</em></div>');
+        out += cxSec('Restrictions', '<ul class="cx-res">' + ['Lithium batteries (UN3480) — cargo aircraft only', 'Dangerous goods need DGR declaration 48 h before departure', 'Perishables must be pre-cooled to 2–8 °C at acceptance', 'Max piece weight ' + o.mx + ', height 160 cm on main deck', 'Live animals & human remains by prior approval', 'Embargo on cargo to sanctioned destinations', 'Wet cargo must be in leak-proof packaging', 'Valuables require escort booking'].map(function(x){ return '<li>' + x + '</li>'; }).join('') + '</ul>', 4);
+        out += cxSec('Countries & airports · ' + cs.length + ' countries', ctry, cs.length - 5);
+      }
+      out += cxSec('Insurance claim options', ins);
+      out += cxSec('Performance', '<div class="cx-perf">' + ok + '</div>');
+      return out;
+    }
     // ---------- carrier details ----------
     var CX = {
       MSK: ['Maersk Eindhoven', '628W', 4.8, 1240], MSC: ['MSC Aurora', '441E', 4.5, 980], ONE: ['ONE Harmony', '105W', 4.6, 712], CMA: ['CMA CGM Tage', '0FT3E', 4.6, 865], HLC: ['Berlin Express', '22W', 4.5, 640], EMC: ['Ever Lunar', '1123-W', 4.4, 590],
@@ -1173,7 +1222,8 @@
       $('cd-img').src = sea() ? 'assets/images/ship.jpg' : 'assets/images/aircargo.jpg';
       $('cd-logo').textContent = c.code; $('cd-logo').style.background = c.bg; $('cd-logo').style.color = c.fg;
       $('cd-name').textContent = c.name;
-      $('cd-sub').innerHTML = (c.direct ? 'Direct service' : '1 transshipment' + (c.via ? ' · via ' + c.via : '')) + ' · <span class="star">' + x[2] + '</span> <small>(' + fmt(x[3]) + ' reviews)</small>';
+      document.querySelector('[data-cd-tab="sv"]').textContent = sea() ? 'This sailing' : 'This flight';
+      $('cd-sub').innerHTML = CO[c.code].hqN + ' · Since ' + CO[c.code].yr + ' · <span class="star">' + x[2] + '</span> <small>(' + fmt(x[3]) + ' reviews)</small>';
       $('cd-price').textContent = usd(freight(c));
       $('cd-select').textContent = rq.svc ? 'Book Now' : 'Select';
       drawCarrier(); goTo('rq-car-detail');
@@ -1181,7 +1231,8 @@
     function drawCarrier(){
       var c = cdC, x = CX[c.code], price = freight(c), dep = addDays(rq.ready, rq.day * (sea() ? 2 : 1)), arr = plusDays(dep, cdTT), out = '';
       document.querySelectorAll('[data-cd-tab]').forEach(function(t){ t.classList.toggle('on', t.dataset.cdTab === cdTab); });
-      if (cdTab === 'ov'){
+      if (cdTab === 'ov') out = drawCompany(c);
+      else if (cdTab === 'sv'){
         out = '<div class="rv-route"><span class="rv-arrow">' + (sea() ? D.icons.ship : D.icons.plane) + '</span><div style="flex:1;min-width:0"><small>' + (sea() ? 'Sea freight to' : 'Air freight to') + '</small><b>' + rq.port[0] + '</b><small>' + rq.port[1] + '</small></div></div>' +
           kv(sea() ? 'Vessel / voyage' : 'Flight', x[0] + ' · ' + x[1]) + kv('Departs', dfmt(dep) + (sea() ? '' : ' · ' + DEP[c.code])) + kv('Arrives (est.)', dfmt(arr)) +
           kv('Transit time', cdTT + (cdTT === 1 ? ' day' : ' days')) + kv('Service', c.direct ? 'Direct' : '1 transshipment' + (c.via ? ' via ' + c.via : '')) +
@@ -1644,6 +1695,7 @@
       if (e.target.closest('#rq-f-apply')) { readFilter(); flt = fd; $('rq-filter').classList.remove('open'); renderCarrier(); return; }
       if (e.target.closest('#cd-select')) { pickCarrier(cdC.code, cdTT); return; }
       if ((t = e.target.closest('[data-rq-cdetail]'))) { openCarrier(t.dataset.rqCdetail, +t.dataset.rqTt); return; }
+      if ((t = e.target.closest('[data-cx-more]'))) { var sec = t.parentNode; if (!t.dataset.l) t.dataset.l = t.textContent; sec.classList.toggle('open'); t.textContent = sec.classList.contains('open') ? 'View less' : t.dataset.l; return; }
       if ((t = e.target.closest('[data-cd-tab]'))) { cdTab = t.dataset.cdTab; drawCarrier(); return; }
       if ((t = e.target.closest('[data-rq-carrier]'))) { rq.fare = 1; rq.fareN = ''; pickCarrier(t.dataset.rqCarrier, +t.dataset.rqTt); return; }
       if ((t = e.target.closest('[data-rq-whtab]'))) { whTab = t.dataset.rqWhtab; renderWh(); return; }
