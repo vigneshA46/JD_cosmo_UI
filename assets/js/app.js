@@ -691,7 +691,7 @@
       $('rq-cars').innerHTML = list.map(function(x){
         var c = x.c, a = arrOf(c.code), open = ixOpen === c.code, u = DUR[c.code];
         return '<div class="ix-card' + (open ? ' open' : '') + '" data-ix="' + c.code + '">' +
-          '<div class="ix-top"><span class="rqc-logo" style="background:' + c.bg + ';color:' + c.fg + '">' + c.code + '</span><div class="ix-n"><b>' + c.name + '</b><small>' + CX[c.code][0] + ' · ' + CX[c.code][1] + '</small></div>' +
+          '<div class="ix-top"><span class="rqc-logo" style="background:' + c.bg + ';color:' + c.fg + '">' + c.code + '</span><div class="ix-n"><b>' + c.name + '</b><small>' + CX[c.code][0] + ' · ' + CX[c.code][1] + '</small></div>' + '<button class="cart-add" data-cart-add="c|' + c.code + '|' + x.tt + '" title="Add to cart">' + I_ADD + '</button>' +
           (x === cheapest ? '<span class="ix-tag green">Cheapest</span>' : x === fastest ? '<span class="ix-tag">Fastest</span>' : '') + '</div>' +
           '<div class="ix-mid"><div><b>' + DEP[c.code] + '</b><small>' + sv.from[0] + '</small></div><div class="ix-line"><small>' + u[0] + 'h ' + u[1] + 'm</small><i></i><small>' + (c.direct ? 'Non-stop' : '1 stop · ' + c.via) + '</small></div><div style="text-align:right"><b>' + a.t + (a.plus ? '<sup>+' + a.plus + '</sup>' : '') + '</b><small>' + sv.to[0] + '</small></div>' +
           '<div class="ix-p"><b>$' + perKg(x.price).toFixed(2) + '</b><small>/kg · ' + usd(x.price) + '</small></div></div>' +
@@ -726,6 +726,90 @@
       host.appendChild(el);
       setTimeout(function(){ el.classList.add('out'); }, short ? 1500 : 2600);
       setTimeout(function(){ el.remove(); }, short ? 2050 : 3150);
+    }
+
+    // ---- service bottom nav: Booking · Cart · Chat · Search ----
+    var CART = { sea: [], air: [], wh: [] };
+    var CHATS = {};
+    var I_ADD = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.7 12.4a2 2 0 002 1.6h8.6a2 2 0 002-1.6L22 7H6.2"/><path d="M13 9.5h5M15.5 7v5"/></svg>';
+    function navTo(id){
+      var cur = document.querySelector('.screen.active').id.replace('screen-', '');
+      if (cur === id) return;
+      var tabs = ['svc-cart', 'svc-chat', 'svc-bookings'];
+      if (tabs.indexOf(cur) > -1 && tabs.indexOf(id) > -1){ stack[stack.length - 1] = id; render(); }   // switch tabs without piling up history
+      else goTo(id);
+    }
+    function navBooking(){
+      var st = svStart(), i = stack.lastIndexOf(st);
+      if (i > -1){ stack.splice(i + 1); render(); } else goTo(st);
+    }
+    function cartBadge(){
+      var n = CART[svKind()].length;
+      document.querySelectorAll('.sv-cartn').forEach(function(e){ e.textContent = n || ''; });
+    }
+    function toast(msg){
+      document.querySelectorAll('.vk-toast').forEach(function(x){ x.remove(); });
+      var t = document.createElement('div'); t.className = 'vk-toast'; t.innerHTML = msg; $('appBody').appendChild(t);
+      setTimeout(function(){ t.classList.add('out'); }, 1500); setTimeout(function(){ t.remove(); }, 1900);
+    }
+    function addCarrierToCart(code, tt){
+      var k = sv.mode, c = carrierBy(code);
+      if (CART[k].some(function(x){ return x.c === code && x.from === sv.from[0] && x.to === sv.to[0] && x.day === rq.day; })){ toast('Already in your cart'); return; }
+      CART[k].push({ c: code, tt: tt, from: sv.from[0], to: sv.to[0], fromP: sv.from, toP: sv.to, fromC: sv.fromC, toC: sv.toC, ready: rq.ready, day: rq.day, load: sv.load, kg: sv.kg, cbm: sv.cbm, desc: sv.desc,
+        price: freight(c), dep: dfmt(addDays(rq.ready, rq.day * (sea() ? 2 : 1))) });
+      cartBadge(); toast(I_ADD + ' Added to cart · ' + c.name);
+    }
+    function addWhToCart(name){
+      var x = whByName(name);
+      if (CART.wh.some(function(i){ return i.name === name; })){ toast('Already in your cart'); return; }
+      CART.wh.push({ name: name, c: x.c, img: x.w.img, area: x.w.area, rate: sqRate(x.w), type: prof(x.w).type });
+      cartBadge(); toast(I_ADD + ' Added to cart · ' + name);
+    }
+    function renderCart(){
+      var k = svKind(), list = CART[k];
+      $('cart-kind').textContent = k === 'sea' ? 'Sea freight' : k === 'air' ? 'Air freight' : 'Warehouse';
+      $('cart-list').innerHTML = list.map(function(it, i){
+        if (k === 'wh') return '<div class="cart-it"><span class="bkl-img"><img src="assets/images/' + it.img + '" alt=""></span><div class="cart-b"><b>' + it.name + '</b><small>' + it.area + ', ' + destBy(it.c).name + ' · ' + it.type + '</small><em>' + money(it.rate) + ' / sq.ft / week</em></div>' +
+          '<div class="cart-act"><button class="whc-btn ghost" data-cart-rm="' + i + '">Remove</button><button class="whc-btn" data-cart-book="' + i + '">Book</button></div></div>';
+        var c = carrierBy(it.c);
+        return '<div class="cart-it"><span class="rqc-logo" style="background:' + c.bg + ';color:' + c.fg + '">' + c.code + '</span><div class="cart-b"><b>' + it.from + ' → ' + it.to + '</b><small>' + c.name + ' · ' + it.dep + ' · ' + it.tt + (it.tt === 1 ? ' day' : ' days') + '</small><em>' + usd(it.price) + '</em></div>' +
+          '<div class="cart-act"><button class="whc-btn ghost" data-cart-rm="' + i + '">Remove</button><button class="whc-btn" data-cart-book="' + i + '">Book</button></div></div>';
+      }).join('') || '<div class="cart-empty">' + I_ADD + '<b>Your cart is empty</b><small>Tap the cart icon on any ' + (k === 'wh' ? 'warehouse' : k === 'sea' ? 'shipping line' : 'flight') + ' to save it here</small><button class="whc-btn" data-svnav="booking">Start a search</button></div>';
+      $('cart-total').innerHTML = list.length && k !== 'wh' ? '<span>' + list.length + ' option' + (list.length === 1 ? '' : 's') + ' saved</span><b>' + usd(list.reduce(function(a, x){ return a + x.price; }, 0)) + '</b>' : '';
+      cartBadge();
+    }
+    function bookFromCart(i){
+      var k = svKind(), it = CART[k][i];
+      if (k === 'wh'){ $('sw-country').value = it.c; startWhSearch(); openPlan(whByName(it.name).w); return; }
+      sv.from = it.fromP; sv.to = it.toP; sv.fromC = it.fromC; sv.toC = it.toC; sv.load = it.load; sv.kg = it.kg; sv.cbm = it.cbm; sv.desc = it.desc;
+      rq.mode = sv.mode; rq.ready = it.ready; rq.day = it.day; rq.port = sv.to; rq.portC = sv.toC; rq.dest = sv.toC; rq.fare = 1; rq.fareN = '';
+      pickCarrier(it.c, it.tt);
+    }
+    var CH_SEED = {
+      sea: ['Hi! Welcome to the Venture Karts sea freight desk 🚢 How can we help with your shipment today?'],
+      air: ['Hi! Welcome to the Venture Karts air cargo desk ✈️ Need help with a flight booking or tracking?'],
+      wh: ['Hi! Welcome to the Venture Karts warehousing desk 🏬 Ask us about space, rates or availability.']
+    };
+    var CH_QUICK = { sea: ['Track my container', 'Change sailing date', 'Reefer requirements', 'Talk to an agent'], air: ['Track my cargo', 'Dangerous goods help', 'Change flight', 'Talk to an agent'], wh: ['Check availability', 'Cold storage rates', 'Extend my storage', 'Talk to an agent'] };
+    function renderChat(){
+      var k = svKind();
+      if (!CHATS[k]) CHATS[k] = CH_SEED[k].map(function(t){ return { me: false, t: t, at: '09:41' }; });
+      $('chat-title').textContent = k === 'sea' ? 'Sea freight desk' : k === 'air' ? 'Air cargo desk' : 'Warehousing desk';
+      $('chat-body').innerHTML = '<div class="ch-day">Today</div>' + CHATS[k].map(function(m){ return '<div class="ch-m' + (m.me ? ' me' : '') + '"><p>' + esc(m.t) + '</p><small>' + m.at + (m.me ? ' ✓✓' : '') + '</small></div>'; }).join('') + (CHATS[k].typing ? '<div class="ch-m ch-typing"><p><i></i><i></i><i></i></p></div>' : '');
+      $('chat-quick').innerHTML = CH_QUICK[k].map(function(q){ return '<span data-chat-q="' + q + '">' + q + '</span>'; }).join('');
+      var sc = $('chat-scroll'); sc.scrollTop = sc.scrollHeight;
+    }
+    function sendChat(text){
+      text = (text || '').trim(); if (!text) return;
+      var k = svKind(), now = new Date(), at = ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+      CHATS[k].push({ me: true, t: text, at: at }); CHATS[k].typing = true; $('chat-in').value = ''; renderChat();
+      setTimeout(function(){
+        CHATS[k].typing = false;
+        var r = /agent/i.test(text) ? 'Connecting you to an agent — Priya from our ' + (k === 'wh' ? 'warehousing' : k) + ' team will join in a moment.' :
+          /track/i.test(text) ? 'Sure! Please share your booking ID (it starts with ' + (k === 'wh' ? 'WB' : 'BK') + ') and we\'ll pull up the latest status.' :
+          'Thanks for your message! Our team is looking into it and will reply here shortly.';
+        CHATS[k].push({ me: false, t: r, at: at }); if (document.querySelector('.screen.active').id === 'screen-svc-chat') renderChat();
+      }, 1100);
     }
 
     // ---- service bookings: Search / Bookings bar, My Bookings, booking flow (Shipment -> Parties -> Review -> Confirmed) ----
@@ -884,12 +968,21 @@
     // handles clicks for the booking flow; returns true when it did
     function bkClick(e){
       var t;
+      if (e.target.closest('[data-svnav-bookings]')) { bklTab = 'all'; renderBookings(); navTo('svc-bookings'); return true; }
       if ((t = e.target.closest('[data-svnav]'))) {
-        var cur = document.querySelector('.screen.active').id;
-        if (t.dataset.svnav === 'bookings' && cur !== 'screen-svc-bookings'){ bklTab = 'all'; renderBookings(); goTo('svc-bookings'); }
-        if (t.dataset.svnav === 'search' && cur === 'screen-svc-bookings'){ if (stack[stack.length - 2] === svStart()) goBack(); else goTo(svStart()); }
+        var v = t.dataset.svnav;
+        if (v === 'booking') navBooking();
+        else if (v === 'cart'){ renderCart(); navTo('svc-cart'); }
+        else if (v === 'chat'){ renderChat(); navTo('svc-chat'); }
+        else if (v === 'search'){ svhOpen($('screen-' + svStart())); }
+        else if (v === 'bookings'){ bklTab = 'all'; renderBookings(); navTo('svc-bookings'); }
         return true;
       }
+      if ((t = e.target.closest('[data-cart-add]'))) { e.stopPropagation(); var pa = t.dataset.cartAdd.split('|'); if (pa[0] === 'wh') addWhToCart(pa[1]); else addCarrierToCart(pa[1], +pa[2]); return true; }
+      if ((t = e.target.closest('[data-cart-rm]'))) { CART[svKind()].splice(+t.dataset.cartRm, 1); renderCart(); return true; }
+      if ((t = e.target.closest('[data-cart-book]'))) { bookFromCart(+t.dataset.cartBook); return true; }
+      if ((t = e.target.closest('[data-chat-q]'))) { sendChat(t.dataset.chatQ); return true; }
+      if (e.target.closest('#chat-send')) { sendChat($('chat-in').value); return true; }
       if ((t = e.target.closest('[data-bkl]'))) { bklTab = t.dataset.bkl; renderBookings(); return true; }
       if ((t = e.target.closest('[data-bk-step]'))) { var q = $('bk-qty'); q.value = Math.max(1, (parseInt(q.value, 10) || 1) + (+t.dataset.bkStep)); return true; }
       if (e.target.closest('#bk1-next')) { if (readBk1()){ if (bk.kind !== 'wh'){ sv.kg = bk.kg; sv.load = bk.load; } renderBk2(); goTo('bk-2'); } return true; }
@@ -903,7 +996,8 @@
     }
     function bkInit(){
       // static active tab per screen
-      document.querySelectorAll('#screen-svc-freight [data-svnav="search"], #screen-svc-wh [data-svnav="search"], #screen-svc-bookings [data-svnav="bookings"]').forEach(function(x){ x.classList.add('on'); });
+      document.querySelectorAll('#screen-svc-freight [data-svnav="booking"], #screen-svc-wh [data-svnav="booking"], #screen-svc-bookings [data-svnav="booking"], #screen-svc-cart [data-svnav="cart"], #screen-svc-chat [data-svnav="chat"]').forEach(function(x){ x.classList.add('on'); });
+      $('chat-in').addEventListener('keydown', function(e){ if (e.key === 'Enter') sendChat(this.value); });
       // big hero shrinks as the page scrolls
       ['sv-hero-box', 'sw-hero-box'].forEach(function(id){
         var h = $(id), sc = h && h.closest('.screen-scroll'); if (!sc) return;
@@ -1024,7 +1118,7 @@
           '<div class="rqc-top"><span class="rqc-logo" style="background:' + c.bg + ';color:' + c.fg + '">' + c.code + '</span><div class="rqc-n"><b>' + c.name + '</b><small>' + (c.direct ? 'Direct' : '1 transshipment' + (c.via ? ' · via ' + c.via : '')) + '</small></div>' +
           '<div class="rqc-p"><b>' + (sea() ? usd(x.price) : 'USD ' + perKg(x.price).toFixed(2)) + '</b><small>' + (sea() ? 'Freight (est.)' : 'per kg (est.) · ' + usd(x.price)) + '</small></div></div>' +
           '<div class="rqc-mid"><div><small>Departs</small><b>' + dshort(dep) + (sea() ? '' : ' ' + DEP[c.code]) + '</b></div><div class="rqc-line"><span></span><em>' + x.tt + (x.tt === 1 ? ' day' : ' days') + '</em><span></span></div><div><small>Arrives</small><b>' + dshort(arr) + '</b></div></div>' +
-          '<div class="rqc-foot">' + (c.tag ? '<span class="rqc-tag gold">' + c.tag + '</span>' : '') + '<button class="rqc-sel ghost" data-rq-cdetail="' + c.code + '" data-rq-tt="' + x.tt + '">Details</button><button class="rqc-sel" data-rq-carrier="' + c.code + '" data-rq-tt="' + x.tt + '">' + (rq.svc ? 'Book' : 'Select') + '</button></div></div>';
+          '<div class="rqc-foot">' + (rq.svc ? '<button class="cart-add" data-cart-add="c|' + c.code + '|' + x.tt + '" title="Add to cart">' + I_ADD + '</button>' : '') + (c.tag ? '<span class="rqc-tag gold">' + c.tag + '</span>' : '') + '<button class="rqc-sel ghost" data-rq-cdetail="' + c.code + '" data-rq-tt="' + x.tt + '">Details</button><button class="rqc-sel" data-rq-carrier="' + c.code + '" data-rq-tt="' + x.tt + '">' + (rq.svc ? 'Book' : 'Select') + '</button></div></div>';
       }).join('') || '<div class="rq-empty">No services match' + (fltCount() ? ' your filters — try another date or reset the filters' : ' on this date — try another day') + '</div>';
     }
 
@@ -1285,7 +1379,7 @@
           cap(p) +
           '<div class="whc-feats">' + p.feats.map(function(f){ return '<span>' + f + '</span>'; }).join('') + '</div>' +
           (on && rq.plan ? '<div class="whc-plan">' + fmt(rq.plan.pallets) + ' sq.ft · ' + rq.plan.days + ' days from ' + dshort(new Date(rq.plan.start + 'T00:00:00')) + ' · <b>' + money(planCost(w, rq.plan), 0) + '</b></div>' : '') +
-          '<div class="whc-foot"><div class="whc-p"><b>' + money(sqRate(w)) + '</b> / week / sq.ft<small>Min. ' + p.min + ' sq.ft · 1 week</small></div>' +
+          '<div class="whc-foot"><div class="whc-p"><b>' + money(sqRate(w)) + '</b> / week / sq.ft<small>Min. ' + p.min + ' sq.ft · 1 week</small></div>' + (rq.svc === 'wh' ? '<button class="cart-add" data-cart-add="wh|' + esc(w.name) + '" title="Add to cart">' + I_ADD + '</button>' : '') +
           (on ? '<button class="whc-btn ghost" data-wh-remove>Remove</button>' : '<button class="whc-btn ghost" data-wh-detail="' + esc(w.name) + '">View Details</button>') + '<button class="whc-btn" data-wh-pick="' + esc(w.name) + '">' + (on ? 'Edit plan' : 'Select') + '</button></div></div>';
       }).join('') || '<div class="rq-empty">No warehouses match' + (whfCount(whf) ? ' your filters — reset the filters or try another tab' : ' here — try another tab or skip this step') + '</div>';
     }
@@ -1470,6 +1564,7 @@
       if ((t = e.target.closest('[data-svc]'))) {
         var k = t.dataset.svc;
         playIntro(k);
+        setTimeout(cartBadge, 0);
         // header tabs: highlight the current service; switching from a service page doesn't stack screens
         document.querySelectorAll('.svc-head .as').forEach(function(a){ a.classList.toggle('on', a.dataset.svc === k); });
         if (t.closest('.svc-head')) stack.splice(0, stack.length, 'home', k === 'wh' ? 'svc-wh' : 'svc-freight');

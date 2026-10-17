@@ -1992,3 +1992,59 @@
   .sp-word{ overflow:hidden; padding:0 4px; }
   #sp-auto{ white-space:nowrap; font-size:12px; }
   #screen-wh-space .subheader{ gap:8px; }
+
+  /* ---- service bottom nav (4 tabs), cart, chat ---- */
+  .sv-nav4{ grid-template-columns:repeat(4,1fr) !important; padding:6px 10px !important; }
+  .sv-nav4 span{ position:relative; }
+  .sv-cartn{ position:absolute; top:0; left:50%; margin-left:6px; min-width:16px; height:16px; padding:0 4px; border-radius:8px; background:var(--brand-highlight); color:var(--brand-secondary); font-style:normal; font-size:9.5px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+  .sv-cartn:empty{ display:none; }
+  .cart-add{ width:36px; height:34px; border-radius:10px; border:1.5px solid var(--brand-primary); background:#FBF3E6; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; transition:transform .12s; }
+  .cart-add:active{ transform:scale(.9); }
+  .cart-add svg{ width:17px; height:17px; stroke:var(--brand-shadow); }
+  .ix-top .cart-add{ margin-left:6px; width:32px; height:30px; }
+  .rqc-foot .cart-add{ margin-right:auto; }
+  .whc-foot .cart-add{ height:34px; }
+  .vk-toast{ position:absolute; left:50%; bottom:110px; transform:translateX(-50%); z-index:120; display:flex; align-items:center; gap:8px; padding:10px 16px; border-radius:14px; background:rgba(2,9,20,0.92); color:#fff; font-size:12.5px; font-weight:700; white-space:nowrap; box-shadow:0 10px 24px rgba(2,9,20,0.3); animation:svhIn .2s ease; }
+  .vk-toast svg{ width:16px; height:16px; stroke:var(--brand-highlight); }
+  .vk-toast.out{ opacity:0; transition:opacity .35s; }
+  .cart-mybk{ display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:16px; background:linear-gradient(135deg,#0B1B30,#020914); color:#fff; margin-bottom:12px; cursor:pointer; }
+  .cart-mybk svg{ width:22px; height:22px; stroke:var(--brand-highlight); }
+  .cart-mybk div{ flex:1; display:flex; flex-direction:column; } .cart-mybk b{ font-size:13.5px; } .cart-mybk small{ font-size:10.8px; color:rgba(255,255,255,0.65); font-weight:600; }
+  .cart-mybk i{ font-style:normal; font-size:20px; color:var(--brand-highlight); }
+  .cart-it{ display:flex; align-items:center; gap:12px; background:var(--surface); border-radius:18px; box-shadow:var(--shadow-card); padding:12px; margin-bottom:10px; flex-wrap:wrap; }
+  .cart-it .rqc-logo, .cart-it .bkl-img{ width:44px; height:44px; border-radius:12px; overflow:hidden; flex-shrink:0; }
+  .cart-it .bkl-img img{ width:100%; height:100%; object-fit:cover; }
+  .cart-b{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
+  .cart-b b{ font-family:var(--font-mono); font-size:14px; color:var(--navy-900); }
+  .cart-b small{ font-size:10.8px; font-weight:600; color:var(--navy-500); }
+  .cart-b em{ font-style:normal; font-family:var(--font-mono); font-size:13.5px; font-weight:800; color:var(--brand-shadow); }
+  .cart-act{ display:flex; gap:8px; width:100%; } .cart-act .whc-btn{ flex:1; }
+  .cart-empty{ display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; padding:50px 20px; }
+  .cart-empty svg{ width:46px; height:46px; stroke:var(--brand-primary); margin-bottom:6px; }
+  .cart-empty b{ font-size:15px; color:var(--navy-900); } .cart-empty small{ font-size:12px; font-weight:600; color:var(--navy-500); margin-bottom:10px; }
+  .cart-total{ display:flex; justify-content:space-between; align-items:center; padding:4px 6px; font-size:12.5px; font-weight:700; color:var(--navy-600, #3B4A5E); }
+  .cart-total b{ font-family:var(--font-mono); font-size:15px; color:var(--navy-900); }
+  .ch-h{ display:flex; align-items:center; gap:10px; }
+  .ch-h h2{ margin:0; font-size:15px; } .ch-h small{ font-size:10.5px; font-weight:600; color:var(--navy-500); display:flex; align-items:center; gap:5px; }
+  .ch-h small i{ width:7px; height:7px; border-radius:50%; background:#22A35A; }
+  .ch-av{ width:38px; height:38px; border-radius:50%; background:var(--gold-grad); color:var(--brand-secondary); font-family:'Playfair Display',serif; font-weight:700; display:flex; align-items:center; justify-content:center; }
+  .ch-body{ display:flex; flex-direction:column; gap:8px; padding-bottom:12px; }
+  .ch-day{ align-self:center; font-size:10.5px; font-weight:700; color:var(--navy-500); background:var(--surface); padding:3px 10px; border-radius:20px; margin-bottom:4px; }
+  .ch-m{ max-width:78%; align-self:flex-start; display:flex; flex-direction:column; }
+  .ch-m p{ margin:0; padding:10px 13px; border-radius:16px 16px 16px 4px; background:var(--surface); box-shadow:0 2px 6px rgba(2,9,20,0.05); font-size:13px; line-height:1.45; color:var(--navy-900); }
+  .ch-m small{ font-size:9.8px; color:var(--navy-500); margin:3px 4px 0 4px; }
+  .ch-m.me{ align-self:flex-end; align-items:flex-end; }
+  .ch-m.me p{ background:linear-gradient(135deg,#0B1B30,#020914); color:#fff; border-radius:16px 16px 4px 16px; }
+  .ch-typing p{ display:flex; gap:4px; padding:12px 14px; }
+  .ch-typing i{ width:7px; height:7px; border-radius:50%; background:var(--navy-400, #9AA4B2); animation:chDot 1s infinite; }
+  .ch-typing i:nth-child(2){ animation-delay:.15s; } .ch-typing i:nth-child(3){ animation-delay:.3s; }
+  @keyframes chDot{ 50%{ transform:translateY(-4px); opacity:.5; } }
+  .ch-quick{ display:flex; gap:6px; overflow-x:auto; padding:8px 12px; flex-shrink:0; scrollbar-width:none; }
+  .ch-quick::-webkit-scrollbar{ display:none; }
+  .ch-quick span{ flex-shrink:0; padding:7px 12px; border-radius:20px; border:1.5px solid var(--brand-primary); color:var(--brand-shadow); background:#FBF3E6; font-size:11.5px; font-weight:800; cursor:pointer; }
+  .ch-in{ display:flex; gap:8px; padding:6px 12px 10px 12px; flex-shrink:0; }
+  .ch-in input{ flex:1; height:44px; border-radius:22px; border:1.5px solid var(--border-strong); padding:0 16px; font:inherit; font-size:13.5px; outline:none; background:#fff; }
+  .ch-in input:focus{ border-color:var(--brand-primary); }
+  .ch-in button{ width:44px; height:44px; border-radius:50%; border:none; background:var(--gold-grad); display:flex; align-items:center; justify-content:center; cursor:pointer; }
+  .ch-in button svg{ width:18px; height:18px; stroke:#fff; }
+  #screen-svc-cart .sv-nav, #screen-svc-chat .sv-nav{ margin:0 14px 18px 14px; border-radius:22px; border:none; background:rgba(2,9,20,0.92); box-shadow:0 10px 26px rgba(2,9,20,0.3); }
