@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&family=IBM+Plex+Mono:wght@600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=90fe23b1">
+<link rel="stylesheet" href="assets/css/style.css?v=0af7e00d">
 </head>
 <body> 
 <!-- Product & logistics photos: Wikimedia Commons (open licences). Credits:
@@ -1072,23 +1072,12 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
     <!-- ========================================================= ORDERS ========================================================= -->
 
     <section class="screen" id="screen-orders">
-      <div class="tabheader"><h1>My Orders</h1><button class="icon-btn" data-goto="notifications"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg><span class="dot"></span></button></div>
+      <div class="o2-head"><div class="o2-top"><div><h1>My Orders</h1><small>Track and manage all your orders</small></div><div class="o2-ic"><button class="icon-btn" data-goto="cart" aria-label="Cart"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.7 12.4a1.5 1.5 0 001.5 1.1h8.9a1.5 1.5 0 001.5-1.1L22 7H6"/></svg><em class="o2-cn">4</em></button><button class="icon-btn" data-goto="notifications"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg><span class="dot"></span></button></div></div><div class="o2-seg"><div class="tab-pill active" data-tab-panel="orders-panel">Orders</div>
+          <div class="tab-pill" data-tab-panel="quotations-panel">Quotations</div></div><div class="o2-chips"><span class="on" data-o2f="all">All Orders</span><span data-o2f="proc">Processing</span><span data-o2f="tran">In Transit</span><span data-o2f="done">Delivered</span></div><div class="o2-sr2"><label><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input id="o2-q" placeholder="Search by Order ID, Product or Supplier" autocomplete="off"></label><button data-toggle-panel="orders-filter-panel"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg></button></div></div>
+      
       <div class="screen-scroll"><div class="content">
-        <div class="wallet mb" style="padding:14px 16px;">
-          <div class="wrow" style="grid-template-columns:repeat(4,1fr);margin-top:0;">
-            <div><span>Total</span><b>36</b></div><div><span>Active</span><b>8</b></div><div><span>Transit</span><b>3</b></div><div data-select-tab="quotations-panel" style="cursor:pointer;"><span>Quotes</span><b style="color:var(--brand-highlight)">5</b></div>
-          </div>
-        </div>
-        <div class="tab-pill-row mb">
-          <div class="tab-pill active" data-tab-panel="orders-panel">Orders</div>
-          <div class="tab-pill" data-tab-panel="quotations-panel">Quotations</div>
-        </div>
         <div id="orders-quotations-panels">
           <div id="orders-panel" class="tab-panel" style="display:block;">
-            <div class="search-filter-row mb">
-              <div class="search-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input placeholder="Search orders by ID or product"></div>
-              <button class="filter-btn" data-toggle-panel="orders-filter-panel"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg></button>
-            </div>
             <div id="orders-filter-panel" class="sheet-wrap">
               <div class="sheet-backdrop" data-toggle-panel="orders-filter-panel"></div>
               <div class="bottom-sheet">
@@ -1103,12 +1092,7 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
                 <div class="sheet-footer"><button class="btn btn-primary" data-toggle-panel="orders-filter-panel">Apply Filters</button></div>
               </div>
             </div>
-            <div class="stack">
-              <div class="oc" data-goto="order-details"><div class="oh"><span>Order <span class="num">ORD-1024</span></span><span>14 Sep 2026</span></div><div class="ob"><div class="oi"><img class="ph" src="assets/images/mango.jpg" alt="" loading="lazy"></div><div style="flex:1;min-width:0;"><div class="on">Alphonso Mango — Organic</div><div class="os">500 KG · Sea Freight</div><div class="ostat" style="color:var(--brand-primary);"><i style="background:var(--brand-primary);"></i>In Transit · ETA 24 Sep</div><div class="oprog"><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class=""></i><i class=""></i></div></div></div><div class="ofoot"><span class="num">$7,200</span><span class="lnk">Track <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span></div></div>
-              <div class="oc" data-goto="order-details"><div class="oh"><span>Order <span class="num">ORD-1019</span></span><span>09 Sep 2026</span></div><div class="ob"><div class="oi"><img class="ph" src="assets/images/rice.jpg" alt="" loading="lazy"></div><div style="flex:1;min-width:0;"><div class="on">1121 Sella Basmati Rice</div><div class="os">18,000 KG · Sea Freight</div><div class="ostat" style="color:var(--amber-600);"><i style="background:var(--amber-600);"></i>Processing · Packing</div><div class="oprog"><i class="d"></i><i class="d"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></div></div></div><div class="ofoot"><span class="num">$33,300</span><span class="lnk">Track <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span></div></div>
-              <div class="oc" data-goto="order-details"><div class="oh"><span>Order <span class="num">ORD-0988</span></span><span>22 Aug 2026</span></div><div class="ob"><div class="oi"><img class="ph" src="assets/images/turmeric.jpg" alt="" loading="lazy"></div><div style="flex:1;min-width:0;"><div class="on">Salem Turmeric Powder (3% curcumin)</div><div class="os">2,000 KG · Sea Freight</div><div class="ostat" style="color:var(--green-600);"><i style="background:var(--green-600);"></i>Delivered · 05 Sep</div><div class="oprog"><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i></div></div></div><div class="ofoot"><span class="num">$4,800</span><span class="lnk">Rate &amp; reorder <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span></div></div>
-              <div class="oc" data-goto="order-details"><div class="oh"><span>Order <span class="num">ORD-0971</span></span><span>10 Aug 2026</span></div><div class="ob"><div class="oi"><img class="ph" src="assets/images/cardamom.jpg" alt="" loading="lazy"></div><div style="flex:1;min-width:0;"><div class="on">Green Cardamom 8mm Bold</div><div class="os">120 KG · Air Cargo</div><div class="ostat" style="color:var(--green-600);"><i style="background:var(--green-600);"></i>Delivered · 16 Aug</div><div class="oprog"><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i></div></div></div><div class="ofoot"><span class="num">$3,420</span><span class="lnk">Rate &amp; reorder <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span></div></div>
-            </div>
+            <div id="o2-list"></div>
           </div>
           <div id="quotations-panel" class="tab-panel" style="display:none;">
             <div class="search-filter-row mb">
@@ -1139,89 +1123,62 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
     </section>
 
 
+    <section class="screen" id="screen-cart">
+      <div class="o2-hd kc-hd"><button data-back><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button><h2>My Cart</h2><span class="kc-c" id="kc-count"></span></div>
+      <div class="screen-scroll"><div class="o2-pad" id="kc-body"></div></div>
+      <div class="kc-foot" id="kc-foot"><div><small>Estimated total</small><b id="kc-total">$0</b></div><button id="kc-go"><span>Request Quote</span><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+    </section>
+
     <section class="screen" id="screen-order-details">
-      <div class="img-head"><img src="assets/images/ship.jpg" alt=""><button class="back-btn back" data-back style="background:rgba(255,255,255,0.92);"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="act"><button class="fbtn" style="width:36px;height:36px;" data-goto="message-thread"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></button></div>
-        <div class="ihb"><div class="k">Order · ORD-1024</div><div class="t">In Transit to Jebel Ali</div><div class="s">Departed Nhava Sheva on 18 Sep · ETA 24 Sep 2026</div></div></div>
-      <div class="screen-scroll"><div class="content">
-        <div class="req-prod" data-goto="product-details"><div class="rpi"><img class="ph" src="assets/images/mango.jpg" alt="" loading="lazy"></div><div style="flex:1;"><div style="font-size:14px;font-weight:800;color:var(--navy-900);">Alphonso Mango — Organic</div><div style="font-size:11.3px;color:var(--navy-500);margin-top:2px;">Alphonso · Premium · 20 kg cartons</div><div style="display:flex;gap:8px;align-items:center;margin-top:5px;"><span class="num" style="font-weight:800;color:var(--navy-900);">$7,200</span><span class="badge green">Paid</span></div></div></div>
-        <div class="section-title">Live Tracking</div>
-        <div class="track-card mb">
-          <div class="track-top"><span class="track-label">SHP-2048 · ORD-1024</span><span class="badge blue">In Transit</span></div>
-          <div class="track-status">In Transit</div>
-          <div class="track-event">Latest update: Shipment departed from origin port, Nhava Sheva, India.</div>
-          <div class="track-meta-row">
-            <div class="track-meta"><div class="tm-label">Vessel</div><div class="tm-value">MSC Sample Star</div></div>
-            <div class="track-meta"><div class="tm-label">Container</div><div class="tm-value num">MSCU-771204</div></div>
-          </div>
-          <div class="track-meta-row">
-            <div class="track-meta"><div class="tm-label">Origin Port</div><div class="tm-value">Nhava Sheva, IN</div></div>
-            <div class="track-meta"><div class="tm-label">Destination Port</div><div class="tm-value">Jebel Ali, AE</div></div>
-          </div>
-          <div class="track-meta-row" style="margin-bottom:0;">
-            <div class="track-meta"><div class="tm-label">ETD</div><div class="tm-value">18 Sep 2026</div></div>
-            <div class="track-meta"><div class="tm-label">ETA</div><div class="tm-value">24 Sep 2026</div><div class="tm-tag">Estimated</div></div>
-          </div>
-        </div>
-        <div class="section-title">Shipment Progress</div>
-        <div class="card">
-          <div class="timeline">
-            <div class="tl-step done"><div class="tl-line"></div><div class="tl-dot"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></div><div><div class="tl-title">Order Created</div><div class="tl-time">14 Sep</div></div></div>
-            <div class="tl-step done"><div class="tl-line"></div><div class="tl-dot"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></div><div><div class="tl-title">Processing / Packing</div><div class="tl-time">15-16 Sep</div></div></div>
-            <div class="tl-step done"><div class="tl-line"></div><div class="tl-dot"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></div><div><div class="tl-title">Warehouse</div><div class="tl-time">17 Sep</div></div></div>
-            <div class="tl-step done"><div class="tl-line"></div><div class="tl-dot"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></div><div><div class="tl-title">Port Received</div><div class="tl-time">17 Sep</div></div></div>
-            <div class="tl-step done"><div class="tl-line"></div><div class="tl-dot"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></div><div><div class="tl-title">Vessel Booked &amp; Loaded</div><div class="tl-time">18 Sep</div></div></div>
-            <div class="tl-step done"><div class="tl-line"></div><div class="tl-dot"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></div><div><div class="tl-title">Vessel Departed</div><div class="tl-time">18 Sep</div></div></div>
-            <div class="tl-step current"><div class="tl-line"></div><div class="tl-dot"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-6 9 6v12"/></svg></div><div><div class="tl-title">In Transit</div><div class="tl-time">Current</div></div></div>
-            <div class="tl-step"><div class="tl-line"></div><div class="tl-dot"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></div><div><div class="tl-title">Destination Port</div></div></div>
-            <div class="tl-step"><div class="tl-line"></div><div class="tl-dot"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></div><div><div class="tl-title">Customs Clearance</div></div></div>
-            <div class="tl-step"><div class="tl-line"></div><div class="tl-dot"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></div><div><div class="tl-title">Dispatched for Delivery</div></div></div>
-            <div class="tl-step"><div class="tl-dot"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></div><div><div class="tl-title">Delivered</div></div></div>
-          </div>
-        </div>
-        <div class="section-title" style="margin-top:22px;">Order Information</div>
-        <div class="card mb">
-          <div class="kv-row"><span class="k">Quantity</span><span class="v num">500 KG</span></div>
-          <div class="kv-row"><span class="k">Transport</span><span class="v">Sea Freight · Reefer</span></div>
-          <div class="kv-row"><span class="k">Origin</span><span class="v">Maharashtra, India</span></div>
-          <div class="kv-row"><span class="k">Destination</span><span class="v">Jebel Ali, Dubai</span></div>
-          <div class="kv-row"><span class="k">Order Date</span><span class="v">14 Sep 2026</span></div>
-          <div class="kv-row"><span class="k">Seller</span><span class="v">Meridian Agro Exports</span></div>
-        </div>
-        <div class="row-2"><button class="btn btn-secondary" data-goto="documents"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg> Documents</button><button class="btn btn-secondary" data-goto="support-ticket-new"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 2-3 4"/><path d="M12 17h.01"/></svg> Get help</button></div>
-      </div></div>
+      <div class="o2-hd"><button data-back><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Order Details</h2><button id="od2-share"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg></button></div>
+      <div class="screen-scroll"><div class="o2-pad" id="od2-body"></div></div>
+    </section>
+
+    <section class="screen" id="screen-ord-track">
+      <div class="o2-hd"><button data-back><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Track Shipment</h2></div>
+      <div class="screen-scroll"><div class="o2-pad" id="ot2-body"></div></div>
+    </section>
+
+    <section class="screen" id="screen-ord-ship">
+      <div class="o2-hd"><button data-back><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Shipment Details</h2></div>
+      <div class="screen-scroll"><div class="o2-pad" id="os2-body"></div></div>
+    </section>
+
+    <section class="screen" id="screen-ord-invoice">
+      <div class="o2-hd"><button data-back><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Invoice</h2></div>
+      <div class="screen-scroll"><div class="o2-pad" id="oi2-body"></div></div>
+    </section>
+
+    <section class="screen" id="screen-ord-options">
+      <div class="o2-hd"><button data-back><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Order Options</h2></div>
+      <div class="screen-scroll"><div class="o2-pad" id="oo2-body"></div></div>
     </section>
 
     <!-- ========================================================= MORE ========================================================= -->
 
     <section class="screen" id="screen-more">
-      <div class="screen-scroll">
-        <div class="acct-head">
-          <div class="acct-row"><div class="acct-av">DP</div><div style="flex:1;"><div class="acct-n">Dockside Provisions Ltd.</div><div class="acct-s">Buyer Admin · <span class="num">BYR-30215</span></div><span class="acct-pill"><svg viewBox="0 0 24 24"><path d="M12 1l2.6 2.1 3.3-.4.9 3.2 2.9 1.7-1.2 3.1 1.2 3.1-2.9 1.7-.9 3.2-3.3-.4L12 23l-2.6-2.1-3.3.4-.9-3.2-2.9-1.7 1.2-3.1L2.3 10l2.9-1.7.9-3.2 3.3.4z"/><path d="M8 12l3 3 5-6" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> Verified Business</span></div><button class="hh-icon" data-goto="profile"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 01-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 010-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 014 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 010 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg></button></div>
+      <div class="screen-scroll ac-dark"><div class="ac-pad">
+        <div class="ac-top"><h1>Account</h1><button data-goto="settings" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg></button></div>
+        <div class="ac-me" data-goto="profile"><span class="ac-av"><i><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 10H5z"/><path d="M5 21h14"/></svg></i></span><div><b>Ahmed Al Fahim</b><small>Procurement Head</small><small class="c">Dockside Provisions Ltd.</small><em>Business Account</em></div><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
+        <div class="ac-ver" data-goto="profile"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><div><b>Business Verification</b><small>Verified <i>i</i></small></div><a>View Details<svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a></div>
+        <div class="ac-tiles"><div class="ac-t" data-goto="orders" data-reset="true"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8l-9-5-9 5v8l9 5z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/></svg></span><b>My Orders</b><small>View orders</small></div><div class="ac-t" data-svnav-bookings><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20c2 1 4 1 6 0s4-1 6 0 4 1 6 0"/><path d="M4 18l-1-5h18l-2 5"/><path d="M12 4v9M7 13V8h10v5"/></svg></span><b>My Bookings</b><small>Manage trips</small></div><div class="ac-t" data-goto="orders" data-reset="true" data-select-tab="quotations-panel"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M12 7v10M14.5 9.2c-.5-.8-1.4-1.2-2.5-1.2-1.4 0-2.5.8-2.5 1.9 0 2.6 5 1.4 5 4.1 0 1.1-1.1 2-2.5 2-1.1 0-2.1-.5-2.6-1.3"/></svg></span><b>Quotations</b><small>View quotes</small></div><div class="ac-t" data-goto="documents"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5M9 12h7M9 16h7"/></svg></span><b>Documents</b><small>Bills &amp; papers</small></div></div>
+        <div class="ac-list">
+          <div class="ac-r" data-goto="profile"><span class="ac-ri2"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2M3 13h18"/></svg></span><div><b>Business Profile</b><small>Company details &amp; verification</small></div><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
+          <div class="ac-r" data-goto="address-book"><span class="ac-ri2"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.5 7-12a7 7 0 10-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg></span><div><b>Addresses &amp; Warehouses</b><small>Pickup, warehouse &amp; delivery addresses</small></div><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
+          <div class="ac-r" data-goto="payments"><span class="ac-ri2"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg></span><div><b>Payments &amp; Invoices</b><small>Transactions, invoices &amp; refunds</small></div><em class="ac-pill">$16,650</em><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
+          <div class="ac-r" data-goto="saved-products"><span class="ac-ri2"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 000-7.8z"/></svg></span><div><b>Saved Items</b><small>Products, suppliers &amp; quotes</small></div><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
+          <div class="ac-r" data-goto="warehouse"><span class="ac-ri2"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V8l9-5 9 5v13"/><path d="M7 21v-8h10v8M7 17h10"/></svg></span><div><b>Warehouse &amp; Logistics</b><small>Storage, inventory &amp; transport</small></div><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
         </div>
-        <div class="acct-stats"><div data-goto="orders" data-reset="true"><b>36</b><span>Orders</span></div><div data-goto="orders" data-reset="true" data-select-tab="quotations-panel"><b>5</b><span>Quotes</span></div><div data-goto="saved-products"><b>4</b><span>Saved</span></div><div data-goto="messages"><b>3</b><span>Messages</span></div></div>
-        <div class="content" style="padding-top:16px;">
-          <div class="menu-grp"><div class="mg-t">Trade</div>
-            <div class="mi" data-goto="orders" data-reset="true" data-select-tab="quotations-panel"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg></div><div class="mt">Quotations<span class="ms">5 awaiting your review</span></div><span class="mbadge">5</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
-            <div class="mi" data-goto="payments"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></div><div class="mt">Payments &amp; Billing<span class="ms">$16,650 pending</span></div><svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
-            <div class="mi" data-goto="documents"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></div><div class="mt">Documents<span class="ms">Invoices, B/L, certificates</span></div><svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
-            <div class="mi" data-goto="warehouse"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V8l9-5 9 5v13"/><path d="M7 21v-8h10v8M7 17h10"/></svg></div><div class="mt">Warehouse &amp; Logistics</div><svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
-            <div class="mi" data-goto="saved-products"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 000-7.8z"/></svg></div><div class="mt">Saved Products</div><svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
-          </div>
-          <div class="menu-grp"><div class="mg-t">Communication</div>
-            <div class="mi" data-goto="messages"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div class="mt">Messages</div><span class="mbadge">3</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
-            <div class="mi" data-goto="notifications"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg></div><div class="mt">Notifications</div><svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
-            <div class="mi" data-goto="support"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 2-3 4"/><path d="M12 17h.01"/></svg></div><div class="mt">Support Center</div><svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
-          </div>
-          <div class="menu-grp"><div class="mg-t">Account</div>
-            <div class="mi" data-goto="profile"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div class="mt">Company Profile</div><svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
-            <div class="mi" data-goto="address-book"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="mt">Address Book<span class="ms">3 saved addresses</span></div><svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
-            <div class="mi" data-goto="security-center"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div><div class="mt">Security Center<span class="ms">2FA enabled</span></div><svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
-            <div class="mi" data-goto="settings"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 01-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 010-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 014 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 010 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg></div><div class="mt">Settings</div><svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
-            <div class="mi" data-goto="login" data-reset="true"><div class="mic" style="background:var(--red-100);border-color:var(--red-100);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--red-700)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg></div><div class="mt" style="color:var(--red-700);">Logout</div></div>
-          </div>
-          <div class="brand-foot"><span>JD Cosmopolitan · v4.0</span></div>
+        <div class="ac-list">
+          <div class="ac-r" data-goto="messages"><span class="ac-ri2"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 01-11.6 7.1L4 20l1-4.6A8 8 0 1121 12z"/></svg></span><div><b>Messages</b><small>Chats with suppliers &amp; support</small></div><em class="ac-n">3</em><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
+          <div class="ac-r" data-goto="notifications"><span class="ac-ri2"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 01-3.4 0"/></svg></span><div><b>Notifications</b><small>Order, quote &amp; shipment alerts</small></div><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
+          <div class="ac-r" data-goto="security-center"><span class="ac-ri2"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span><div><b>Security Center</b><small>2FA enabled · 3 devices</small></div><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
+          <div class="ac-r" data-goto="support"><span class="ac-ri2"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 015 .5c0 1.7-2.5 2-2.5 3.5M12 17h.01"/></svg></span><div><b>Help &amp; Support</b><small>FAQs, tickets &amp; contact</small></div><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
+          <div class="ac-r" data-goto="settings"><span class="ac-ri2"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg></span><div><b>Settings</b><small>App preferences, language &amp; currency</small></div><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
         </div>
-      </div>
+        <div class="ac-list"><div class="ac-r red" data-goto="login" data-reset="true"><span class="ac-ri2"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l-5-5 5-5M5 12h11"/></svg></span><div><b>Sign Out</b><small>Log out from your account</small></div><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div></div>
+        <div class="ac-foot">Venture Kart · JD Cosmopolitan · v4.0</div>
+      </div></div>
       <div class="bottom-nav"><div class="nav-tab" data-goto="home" data-reset="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg><span>Home</span></div><div class="nav-tab" data-goto="all-categories" data-reset="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Categories</span></div><div class="nav-tab" data-goto="services" data-reset="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="1.5"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/></svg><span>Services</span></div><div class="nav-tab" data-goto="orders" data-reset="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="15" height="12" rx="1.5"/><path d="M16 10h4l3 3v5h-7z"/><circle cx="6" cy="19.5" r="1.6"/><circle cx="18.5" cy="19.5" r="1.6"/></svg><span>Orders</span></div><div class="nav-tab" data-goto="more" data-reset="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Account</span></div></div>
     </section>
 
@@ -1385,28 +1342,15 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
 
     <!-- ========================================================= PROFILE ========================================================= -->
     <section class="screen" id="screen-profile">
-      <div class="subheader"><button class="back-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Company Profile</h2><span class="action">Edit</span></div>
-      <div class="screen-scroll"><div class="content">
-        <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:20px;">
-          <div class="avatar-btn" style="width:64px; height:64px; font-size:20px; border-radius:18px; margin-bottom:10px;">DP</div>
-          <div style="font-weight:800; font-size:16px; color:var(--navy-900);">Dockside Provisions Ltd.</div>
-          <span class="badge blue" style="margin-top:8px;">Buyer Admin</span>
-        </div>
-        <div class="card mb">
-          <div class="kv-row"><span class="k">Business Email</span><span class="v">procurement@dockside…</span></div>
-          <div class="kv-row"><span class="k">Mobile</span><span class="v num">+971 4 xxx xxxx</span></div>
-          <div class="kv-row"><span class="k">Country</span><span class="v">United Arab Emirates</span></div>
-          <div class="kv-row"><span class="k">Business Address</span><span class="v" style="text-align:right; max-width:180px;">Deira, Dubai, UAE</span></div>
-          <div class="kv-row"><span class="k">Registration No.</span><span class="v num">DP-AE-88213</span></div>
-          <div class="kv-row"><span class="k">Tax ID</span><span class="v num">AE-TX-40092</span></div>
-          <div class="kv-row"><span class="k">Authorized Contact</span><span class="v">Ahmed Al Fahim</span></div>
-        </div>
-        <div class="section-title">Verification</div>
-        <div class="card">
-          <div class="kv-row"><span class="k">Email</span><span class="badge green">Verified</span></div>
-          <div class="kv-row"><span class="k">Mobile</span><span class="badge green">Verified</span></div>
-          <div class="kv-row"><span class="k">Business Verification</span><span class="badge amber">Pending</span></div>
-        </div>
+      <div class="bp-hd"><button data-back><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Business Profile</h2><button id="bp-edit" aria-label="Edit all"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button></div>
+      <div class="screen-scroll ac-dark"><div class="ac-pad">
+        <div class="bp-co"><span class="ac-av sm"><i><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 10H5z"/><path d="M5 21h14"/></svg></i></span><div><b>Dockside Provisions Ltd.</b><small class="ok"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>Verified</small><small>Food Import &nbsp;|&nbsp; Wholesale &nbsp;|&nbsp; Distribution</small></div></div>
+        <div class="bp-h">Company Information</div>
+        <div class="bp-card"><div class="bp-f"><div><small>Company Name <i>*</i></small><div class="bp-v"><input value="Dockside Provisions Ltd." readonly></div></div><button class="bp-pen" aria-label="Edit Company Name"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button></div><div class="bp-f"><div><small>Business Email <i>*</i></small><div class="bp-v"><input value="procurement@dockside.ae" readonly></div></div><button class="bp-pen" aria-label="Edit Business Email"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button></div><div class="bp-f"><div><small>Mobile Number <i>*</i></small><div class="bp-v"><input value="+971 4 880 1200" readonly></div></div><button class="bp-pen" aria-label="Edit Mobile Number"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button></div><div class="bp-f"><div><small>Country / Region <i>*</i></small><div class="bp-v"><img src="assets/images/flags/ae.png" alt=""><input value="United Arab Emirates" readonly></div></div><button class="bp-pen" aria-label="Edit Country / Region"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button></div><div class="bp-f"><div><small>Trade License No. <i>*</i></small><div class="bp-v"><input value="DP-AE-88213" readonly></div></div><button class="bp-pen" aria-label="Edit Trade License No."><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button></div><div class="bp-f"><div><small>TRN (Tax Registration) <i>*</i></small><div class="bp-v"><input value="100384729100003" readonly></div></div><button class="bp-pen" aria-label="Edit TRN (Tax Registration)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button></div><div class="bp-f"><div><small>Authorized Contact <i>*</i></small><div class="bp-v"><input value="Ahmed Al Fahim" readonly></div></div><button class="bp-pen" aria-label="Edit Authorized Contact"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button></div></div>
+        <div class="bp-h">Verification Status</div>
+        <div class="bp-card bp-vs"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><div><b>Verified</b><small>Your business information has been verified.</small></div><a data-goto="documents">View Documents<svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a></div>
+        <div class="bp-card bp-chk"><div><span><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>Email verified</div><div><span><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>Mobile verified</div><div><span><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>Trade license verified</div><div><span><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>TRN verified</div></div>
+        <button class="bp-save" id="bp-save">Save Changes</button>
       </div></div>
     </section>
 
@@ -1520,6 +1464,6 @@ This image was made by Loadmaster (David R. T (CC BY-SA 3.0), Wikimedia Commons
   <div class="home-indicator"></div>
 </div>
 
-<script src="assets/js/app.js?v=3c8e70d3"></script>
+<script src="assets/js/app.js?v=d51fda0d"></script>
 </body>
 </html>

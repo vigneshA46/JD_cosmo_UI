@@ -1862,3 +1862,229 @@
     });
     $c('c2-q').addEventListener('input', function(){ q = this.value.trim(); root.classList.toggle('c2-searching', !!q); rail(); panel(false); });
   })();
+
+  // ---------- Orders (redesign) ----------
+  (function(){
+    var L = document.getElementById('o2-list'); if (!L) return;
+    function $o(id){ return document.getElementById(id); }
+    function sv(p, w){ return '<svg viewBox="0 0 24 24" fill="none" stroke-width="' + (w || 2) + '" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>'; }
+    var IC = {
+      chk: sv('<path d="M5 12l5 5 9-10"/>', 3), chev: sv('<path d="M9 6l6 6-6 6"/>'),
+      ship: sv('<path d="M2 20c2 1 4 1 6 0s4-1 6 0 4 1 6 0"/><path d="M4 18l-1-5h18l-2 5"/><path d="M12 4v9M7 13V8h10v5"/>'),
+      plane: sv('<path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>', 1.8),
+      cal: sv('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M8 14h2M14 14h2M8 17h2"/>'),
+      card: sv('<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 11h6"/><circle cx="12" cy="16" r="2"/>'),
+      doc: sv('<path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5M9 12h7M9 16h7"/>'),
+      dl: sv('<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>'),
+      pin: sv('<path d="M12 22s7-6.5 7-12a7 7 0 10-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/>'),
+      clock: sv('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),
+      re: sv('<path d="M3 12a9 9 0 0115.5-6.2L21 8M21 3v5h-5M21 12a9 9 0 01-15.5 6.2L3 16M3 21v-5h5"/>'),
+      srch: sv('<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>'),
+      chat: sv('<path d="M21 12a8 8 0 01-11.6 7.1L4 20l1-4.6A8 8 0 1121 12z"/>'),
+      ret: sv('<path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 010 10h-3"/>'),
+      bell: sv('<path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 01-3.4 0"/>'),
+      globe: sv('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/>'),
+      leaf: sv('<path d="M5 21c0-9 5-15 15-16-1 10-7 15-15 16z"/><path d="M5 21l8-8"/>')
+    };
+    var ST = [['Order Created','Your order has been confirmed.'],['Processing','Supplier is preparing the goods.'],['Packing','Goods are packed for shipment.'],['Warehouse','Goods moved to the export warehouse.'],['Port','Customs clearance and port handling.'],['Vessel','Goods loaded on the vessel.'],['In Transit','Your shipment is on the way.'],['Destination','Arrived at the destination country.'],['Delivered','Order delivered successfully.']];
+    var SHORT = ['Created','Processing','Packing','Warehouse','Port','Vessel','In Transit','Destination','Delivered'];
+    var STAT = { 1:['Processing','proc'], 2:['Packing','pack'], 3:['Processing','proc'], 4:['At Port','pack'], 5:['In Transit','tran'], 6:['In Transit','tran'], 7:['In Transit','tran'], 8:['Delivered','done'] };
+    var O = [
+      { id:'VK20261017001', img:'onion', name:'Onion (Big Size)', spec:'Fresh · 26 kg Bag', qty:'26 MT (1 × 40\' FCL)', qn:26000, u:'kg', rate:0.38, sup:'Meridian Agro Exports', st:1, d:'17 Oct 2026', t:'10:24 AM', mode:'sea', pol:['Nhava Sheva (INNSA)','India'], pod:['Jebel Ali (AEJEA)','UAE'], etd:'22 Oct 2026', eta:'10 Nov 2026', ctr:'MSCU 4417825', ctype:'40\' Reefer HC', vsl:'MSC Aurora · 441E', cbm:'58.0', pay:'Paid' },
+      { id:'VK20261015008', img:'rice', name:'1121 Basmati Rice — Sella', spec:'Premium · 25 kg PP Bag', qty:'18 MT (1 × 20\' FCL)', qn:18000, u:'kg', rate:1.10, sup:'Karnal Grain Traders', st:2, d:'15 Oct 2026', t:'04:12 PM', mode:'sea', pol:['Mundra (INMUN)','India'], pod:['Dammam (SADMM)','Saudi Arabia'], etd:'26 Oct 2026', eta:'05 Nov 2026', ctr:'HLXU 2209136', ctype:'20\' Standard', vsl:'Al Zubara · 22W', cbm:'27.5', pay:'Paid' },
+      { id:'VK20261012003', img:'cardamom', name:'Green Cardamom 8mm Bold', spec:'Grade AGEB · 10 kg Carton', qty:'1,200 kg (120 cartons)', qn:1200, u:'kg', rate:28, sup:'Idukki Spice Collective', st:6, d:'12 Oct 2026', t:'11:05 AM', mode:'air', pol:['Mumbai (BOM)','India'], pod:['Dubai (DXB)','UAE'], etd:'16 Oct 2026', eta:'18 Oct 2026', ctr:'AWB 176-44102385', ctype:'Perishable (PER)', vsl:'EK 9341 · Boeing 777F', cbm:'6.2', pay:'Paid' },
+      { id:'VK20261005012', img:'mango', name:'Alphonso Mango — Organic', spec:'Export grade · 5 kg Carton', qty:'5,000 kg (1,000 cartons)', qn:5000, u:'kg', rate:1.20, sup:'Ratnagiri Fresh Farms', st:8, d:'05 Oct 2026', t:'02:14 PM', mode:'sea', pol:['Nhava Sheva (INNSA)','India'], pod:['Jebel Ali (AEJEA)','UAE'], etd:'08 Oct 2026', eta:'14 Oct 2026', ctr:'MSCU 1234567', ctype:'20\' Reefer', vsl:'Maersk Eindhoven · 628W', cbm:'32.5', pay:'Paid', del:'14 Oct 2026' },
+      { id:'VK20260922007', img:'turmeric', name:'Salem Turmeric Finger', spec:'3% curcumin · 50 kg Jute Bag', qty:'2,000 kg (40 bags)', qn:2000, u:'kg', rate:2.10, sup:'Erode Spice Mills', st:8, d:'22 Sep 2026', t:'09:40 AM', mode:'sea', pol:['Chennai (INMAA)','India'], pod:['Jebel Ali (AEJEA)','UAE'], etd:'26 Sep 2026', eta:'04 Oct 2026', ctr:'ONEU 7781204', ctype:'20\' Standard', vsl:'ONE Harmony · 105W', cbm:'14.0', pay:'Paid', del:'05 Oct 2026' }
+    ];
+    O.forEach(function(o){ o.sub = o.qn * o.rate; o.ship = Math.round(o.sub * (o.mode === 'air' ? 0.09 : 0.05)); o.tax = Math.round(o.sub * 0.05); o.tot = o.sub + o.ship + o.tax; });
+    var cur = O[2], flt = 'all', q = '';
+    function usd(n, d){ return '$' + n.toLocaleString('en-US', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); }
+    function stName(o){ return o.mode === 'air' && o.st === 5 ? 'Flight' : STAT[o.st][0]; }
+    function badge(o){ var s = STAT[o.st]; return '<span class="o2-b ' + s[1] + '">' + (s[1] === 'done' ? IC.chk : '<i></i>') + s[0] + '</span>'; }
+    function lbl(i, o){ return i === 5 && o.mode === 'air' ? 'Flight' : SHORT[i]; }
+    function mini(o){
+      var idx = o.st === 8 ? [0,1,2,3,4,8] : o.st <= 4 ? [0,1,2,3,4,-1] : [0,1,2,3,o.st,-1];
+      return '<div class="o2-mini">' + idx.map(function(i){ var done = i > -1 && i <= o.st, now = i === o.st; return '<span class="' + (done ? 'd' : '') + (now ? ' now' : '') + '"><i>' + (done ? IC.chk : '') + '</i><small>' + (i < 0 ? 'More' : lbl(i, o)) + '</small></span>'; }).join('') + '</div>';
+    }
+    function prodBox(o, big){ return '<div class="o2-pr"><img src="assets/images/' + o.img + '.jpg" alt=""><div><b>' + o.name + '</b><small>' + o.spec + '</small><small>Qty: ' + o.qty + '</small><small>Supplier: ' + o.sup + '</small>' + (big ? '' : '<div class="o2-pf"><em>' + usd(o.tot) + '</em><a>View Details' + IC.chev + '</a></div>') + '</div></div>'; }
+    function list(){
+      var a = O.filter(function(o){ var f = flt === 'all' || (flt === 'proc' && o.st <= 4) || (flt === 'tran' && o.st > 4 && o.st < 8) || (flt === 'done' && o.st === 8); return f && (!q || (o.id + o.name + o.sup).toLowerCase().indexOf(q) > -1); });
+      L.innerHTML = a.length ? a.map(function(o, i){ return '<div class="o2-c" data-o2="' + o.id + '" style="animation-delay:' + i * 50 + 'ms"><div class="o2-ch"><b>Order ID: ' + o.id + '</b><small>' + o.d + '</small></div><div class="o2-bw">' + badge(o) + '</div>' + prodBox(o) + mini(o) + '</div>'; }).join('')
+        : '<div class="o2-empty">' + IC.srch + '<b>No orders found</b><small>Try another filter or search term.</small></div>';
+      document.querySelectorAll('[data-o2f]').forEach(function(c){ c.classList.toggle('on', c.dataset.o2f === flt); });
+    }
+    function stepDate(o, i){ var base = new Date(o.d), dd = [0, 0, 1, 2, 3, 4, 5, 6, 7]; if (o.st === 8){ var e = new Date(o.del), span = (e - base) / 864e5; base = new Date(+base + (span * i / 8) * 864e5); } else base.setDate(base.getDate() + dd[i]); return base.getDate() + ' ' + base.toLocaleString('en-US', { month:'short' }) + ' 2026'; }
+    var TIMES = ['10:24 AM','02:15 PM','11:40 AM','09:05 AM','04:20 PM','06:45 AM','11:15 PM','09:40 PM','11:32 AM'];
+    function detail(){
+      var o = cur, done = o.st === 8, air = o.mode === 'air', h = '';
+      $o('od2-share').style.visibility = 'visible';
+      h += '<div class="o2-card"><div class="o2-ch"><div><b>Order ID: ' + o.id + '</b><small>Placed on ' + o.d + ', ' + o.t + '</small></div>' + badge(o) + '</div>' +
+        '<div class="o2-pr big"><img src="assets/images/' + o.img + '.jpg" alt=""><div><b>' + o.name + '</b><small>' + o.spec + '</small><small>Qty: ' + o.qty + '</small><small>Supplier: ' + o.sup + '</small><div class="o2-pf"><em>' + usd(o.tot) + '</em><button class="o2-ob" data-o2-go="reorder">Reorder</button></div></div></div>' +
+        '<div class="o2-tiles"><span>' + IC.card + '<div><small>Payment</small><b class="ok">' + o.pay + '</b></div></span><span data-goto="quotation-details">' + IC.doc + '<div><small>Quotation</small><b>View PDF</b></div></span><span ' + (o.st >= 2 ? 'data-o2-go="ord-invoice"' : 'class="off"') + '>' + IC.doc + '<div><small>Invoice</small><b>' + (o.st >= 2 ? 'View PDF' : 'Coming soon') + '</b></div></span></div></div>';
+      if (done){
+        h += '<div class="o2-card o2-addr">' + IC.pin + '<div><b>Delivery Address</b><span>Dockside Provisions Ltd. — Ahmed Al Fahim</span><span>Plot S30210, Jebel Ali Free Zone South, Dubai, UAE</span><span>+971 4 880 1200</span></div></div>' +
+          '<div class="o2-delv">' + IC.clock + '<div><b>Delivered on ' + o.del + '</b><small>Your order has been delivered successfully.</small></div></div>' +
+          '<div class="o2-btns"><button class="o2-btn pri" data-o2-go="ord-track">Track Shipment</button><button class="o2-btn" data-o2-go="ord-invoice">View Invoice</button></div>';
+      } else {
+        h += '<div class="o2-card"><div class="o2-h"><b>Order Tracking</b><a data-o2-go="ord-track">Live track' + IC.chev + '</a></div><div class="o2-tl">' + ST.map(function(s, i){ var dn = i <= o.st, now = i === o.st;
+          return '<div class="' + (dn ? 'd' : '') + (now ? ' now' : '') + '"><i>' + (dn ? IC.chk : '') + '</i><div><b>' + (i === 5 && air ? 'Flight' : s[0]) + '</b>' + (dn ? '<small class="t">' + stepDate(o, i) + ', ' + TIMES[i] + '</small>' : '') + '<small>' + (i === 5 && air ? 'Goods loaded on the aircraft.' : s[1]) + '</small></div></div>'; }).join('') + '</div></div>';
+      }
+      h += '<div class="o2-card"><div class="o2-h"><b>Shipping &amp; Logistics</b><a data-o2-go="ord-ship">View All' + IC.chev + '</a></div>' +
+        '<div class="o2-mode"><span class="o2-mi">' + (air ? IC.plane : IC.ship) + '</span><div><small>Mode</small><b>' + (air ? 'Air Freight' : 'Sea Freight') + '</b></div><em>' + o.vsl.split(' · ')[0] + '</em></div>' +
+        '<div class="o2-rt"><div><small>' + (air ? 'Airport of Loading' : 'Port of Loading') + '</small><b>' + o.pol[0].replace(/ \(.*\)/, '') + '</b><span>' + (o.pol[0].match(/\((.*)\)/) || ['', ''])[1] + ' · ' + o.pol[1] + '</span></div><i>' + (air ? IC.plane : IC.ship) + '</i><div><small>' + (air ? 'Airport of Discharge' : 'Port of Discharge') + '</small><b>' + o.pod[0].replace(/ \(.*\)/, '') + '</b><span>' + (o.pod[0].match(/\((.*)\)/) || ['', ''])[1] + ' · ' + o.pod[1] + '</span></div></div>' +
+        '<div class="o2-dt"><span>' + IC.cal + '<div><small>Est. Shipment Date</small><b>' + o.etd + '</b></div></span><span>' + IC.cal + '<div><small>' + (done ? 'Delivered On' : 'Est. Delivery Date') + '</small><b>' + (o.del || o.eta) + '</b></div></span></div></div>';
+      h += '<div class="o2-card"><div class="o2-h"><b>Order Summary</b></div>' + kv2('Item total (' + o.qty.split(' (')[0] + ' × ' + usd(o.rate, 2) + '/' + o.u + ')', usd(o.sub)) + kv2('Shipping charges', usd(o.ship)) + kv2('Tax (5%)', usd(o.tax)) + '<div class="o2-kv tot"><span>Total Paid</span><b>' + usd(o.tot) + '</b></div></div>';
+      h += '<div class="o2-card o2-sup"><div class="o2-h"><b>Supplier Details</b></div><div class="o2-sr"><span class="o2-sa">' + IC.leaf + '</span><div><b>' + o.sup + '</b><small class="v">' + IC.chk + 'Verified Supplier</small></div><button class="o2-ob" data-goto="message-thread">Contact</button></div></div>';
+      h += '<div class="o2-card o2-help" data-o2-go="ord-options"><span>' + IC.chat + '</span><div><b>Need help with this order?</b><small>Reorder, returns, support &amp; more</small></div>' + IC.chev + '</div>';
+      $o('od2-body').innerHTML = h;
+    }
+    function kv2(k, v){ return '<div class="o2-kv"><span>' + k + '</span><b>' + v + '</b></div>'; }
+    function track(){
+      var o = cur, air = o.mode === 'air', top = [[0,'Order Placed'],[2,'Packed'],[6,'In Transit'],[8,'Delivered']], ev = [], loc = { 0:'Online', 1:o.sup, 2:o.sup, 3:'Export warehouse, ' + o.pol[1], 4:o.pol[0], 5:o.pol[0], 6:air ? 'In flight' : 'At sea', 7:o.pod[0], 8:'Dockside Provisions, Jebel Ali' };
+      for (var i = o.st; i >= 0; i--) ev.push('<div class="d' + (i === o.st ? ' now' : '') + '"><i>' + IC.chk + '</i><div><b>' + (i === 5 && air ? 'Departed on Flight' : ST[i][0]) + '</b><small class="t">' + stepDate(o, i) + ', ' + TIMES[i] + '</small><small>' + (i === 5 && air ? 'Goods loaded on the aircraft.' : ST[i][1]) + '</small><small>' + loc[i] + '</small></div></div>');
+      $o('ot2-body').innerHTML = '<div class="o2-card"><div class="o2-pr sm"><img src="assets/images/' + o.img + '.jpg" alt=""><div><b>' + o.name + '</b><small>Order #' + o.id + '</small></div>' + badge(o) + '</div>' +
+        '<div class="o2-hz">' + top.map(function(x, k){ var dn = o.st >= x[0]; return '<span class="' + (dn ? 'd' : '') + '"><i>' + (dn ? IC.chk : '') + '</i><b>' + x[1] + '</b><small>' + (dn ? stepDate(o, x[0]).replace(' 2026', '') : '—') + '</small></span>'; }).join('') + '</div></div>' +
+        '<div class="o2-card"><div class="o2-h"><b>Tracking Details</b></div><div class="o2-tl ev">' + ev.join('') + '</div></div>' +
+        '<div class="o2-card o2-help" data-o2-go="ord-ship"><span>' + (air ? IC.plane : IC.ship) + '</span><div><b>Shipment by ' + (air ? 'Air' : 'Sea') + '</b><small>' + (air ? '' : 'Container No: ') + o.ctr + '</small></div>' + IC.chev + '</div>';
+    }
+    function ship(){
+      var o = cur, air = o.mode === 'air', docs = air ? ['Air Waybill','Commercial Invoice','Packing List','Phytosanitary Certificate','Certificate of Origin'] : ['Bill of Lading','Commercial Invoice','Packing List','Phytosanitary Certificate','Certificate of Origin'];
+      $o('os2-body').innerHTML = '<div class="o2-card o2-shh"><img src="assets/images/' + (air ? 'aircargo' : 'ship') + '.jpg" alt=""><div><b>' + (air ? 'Air Freight' : 'Sea Freight') + '</b><small>' + (air ? '' : 'Container No: ') + o.ctr + '</small><small>From <em>' + o.pol[0] + '</em></small><small>To <em>' + o.pod[0] + '</em></small>' + badge(o) + '</div></div>' +
+        '<div class="o2-card"><div class="o2-h"><b>Shipment Overview</b></div>' + kv2('Mode', air ? 'Air Freight' : 'Sea Freight') + kv2(air ? 'Flight' : 'Vessel / voyage', o.vsl) + kv2(air ? 'Cargo type' : 'Container type', o.ctype) + kv2('Weight', o.qty.split(' (')[0].replace(' MT', ',000 kg')) + kv2('Volume', o.cbm + ' CBM') + kv2('Departure date', o.etd) + kv2(o.st === 8 ? 'Arrival date' : 'Est. arrival', o.eta) + '</div>' +
+        '<div class="o2-card"><div class="o2-h"><b>Documents</b><small>' + docs.length + ' files</small></div>' + docs.map(function(d){ return '<div class="o2-doc">' + IC.doc + '<span>' + d + '<small>PDF · ' + (120 + d.length * 9) + ' KB</small></span><a data-o2-dl="' + d + '">Download ' + IC.dl + '</a></div>'; }).join('') + '</div>';
+    }
+    function invoice(){
+      var o = cur;
+      $o('oi2-body').innerHTML = '<div class="o2-card"><div class="o2-ch"><div class="o2-ivh">' + IC.doc + '<div><b>Invoice #INV' + o.id.slice(4) + '</b><small>' + o.d + '</small></div></div><span class="o2-b done">' + IC.chk + 'Paid</span></div>' +
+        '<div class="o2-pt"><small>From</small><div><b>JD Cosmopolitan Pvt Ltd</b><span>Global Trade &amp; Logistics · on behalf of ' + o.sup + '</span><span>GSTIN: 32AABCJ1234F1Z5</span></div></div>' +
+        '<div class="o2-pt"><small>To</small><div><b>Dockside Provisions Ltd.</b><span>Plot S30210, Jebel Ali Free Zone South, Dubai, UAE</span><span>TRN: 100384729100003</span></div></div>' +
+        '<div class="o2-it"><div class="hd"><span>Items</span><span>Qty</span><span>Rate</span><span>Amount</span></div><div><span><b>' + o.name + '</b><small>' + o.spec + '</small></span><span>' + o.qty.split(' (')[0] + '</span><span>' + usd(o.rate, 2) + '</span><span>' + usd(o.sub) + '</span></div></div>' +
+        '<div class="o2-sum">' + kv2('Subtotal', usd(o.sub)) + kv2('Shipping', usd(o.ship)) + kv2('Tax (5%)', usd(o.tax)) + '<div class="o2-kv tot"><span>Total</span><b>' + usd(o.tot) + '</b></div></div></div>' +
+        '<button class="o2-btn wide" data-o2-dl="Invoice INV' + o.id.slice(4) + '">' + IC.dl + ' Download Invoice</button>';
+    }
+    function options(){
+      var o = cur, done = o.st === 8;
+      $o('oo2-body').innerHTML = '<div class="o2-card o2-ost"><span class="' + (done ? 'ok' : '') + '">' + (done ? IC.chk : IC.clock) + '</span><div><b>' + (done ? 'Order Delivered' : 'Order ' + STAT[o.st][0]) + '</b><small>' + (done ? 'Thanks for your business!' : 'Order #' + o.id) + '</small></div></div>' +
+        '<button class="o2-btn pri wide" data-o2-go="reorder">' + IC.re + ' Reorder</button><button class="o2-btn wide" data-goto="category-products" data-category="' + o.name + '">' + IC.srch + ' View Similar Products</button>' +
+        '<div class="o2-card"><div class="o2-h"><b>Need Help?</b></div>' + [['srch','Track Another Order','Enter order ID','orders'],['chat','Contact Support','Get help from our team','support'],['ret','Return / Replacement','Check return policy','support-ticket-new'],['bell','Report an Issue','Share your concern','support-ticket-new']].map(function(x){ return '<div class="o2-hl" data-goto="' + x[3] + '">' + IC[x[0]] + '<span><b>' + x[1] + '</b><small>' + x[2] + '</small></span>' + IC.chev + '</div>'; }).join('') + '</div>' +
+        '<div class="o2-card o2-help o2-gl"><span>' + IC.globe + '</span><div><b>Global Trade. Made Simple.</b><small>From sourcing to delivery, we\'re with you.</small></div></div>';
+    }
+    function toast2(m){ var t = document.querySelector('.vk-toast'); if (t) t.remove(); t = document.createElement('div'); t.className = 'vk-toast'; t.textContent = m; $o('appBody').appendChild(t); setTimeout(function(){ t.classList.add('out'); }, 1500); setTimeout(function(){ t.remove(); }, 2000); }
+    list();
+    document.addEventListener('click', function(e){
+      var t;
+      if ((t = e.target.closest('[data-o2f]'))){ flt = t.dataset.o2f; list(); return; }
+      if ((t = e.target.closest('[data-o2]'))){ cur = O.filter(function(o){ return o.id === t.dataset.o2; })[0]; detail(); goTo('order-details'); return; }
+      if ((t = e.target.closest('[data-o2-dl]'))){ toast2('Downloading ' + t.dataset.o2Dl + '…'); return; }
+      if ((t = e.target.closest('[data-o2-go]'))){
+        var g = t.dataset.o2Go;
+        if (g === 'reorder'){ toast2('Added to a new request · ' + cur.name); setTimeout(function(){ goTo('product-details'); }, 600); return; }
+        ({ 'ord-track': track, 'ord-ship': ship, 'ord-invoice': invoice, 'ord-options': options })[g](); goTo(g); return;
+      }
+      if (e.target.closest('#od2-share')){ toast2('Order link copied'); return; }
+      if (e.target.closest('[data-goto="order-details"]:not([data-o2])')) detail();
+      if ((t = e.target.closest('.tab-pill[data-tab-panel]')) && t.closest('#screen-orders')) $o('screen-orders').classList.toggle('o2-q', t.dataset.tabPanel === 'quotations-panel');
+    }, true);
+    $o('o2-q').addEventListener('input', function(){ q = this.value.trim().toLowerCase(); list(); });
+    detail();
+  })();
+
+  // ---------- Product cart ----------
+  (function(){
+    var B = document.getElementById('kc-body'); if (!B) return;
+    function $k(id){ return document.getElementById(id); }
+    function sv(p, w){ return '<svg viewBox="0 0 24 24" fill="none" stroke-width="' + (w || 2) + '" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>'; }
+    var IC = { chk: sv('<path d="M5 12l5 5 9-10"/>', 3), trash: sv('<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>'), heart: sv('<path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 000-7.8z"/>'),
+      box: sv('<path d="M21 16V8l-9-5-9 5v8l9 5z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/>'), ship: sv('<path d="M2 20c2 1 4 1 6 0s4-1 6 0 4 1 6 0"/><path d="M4 18l-1-5h18l-2 5"/><path d="M12 4v9M7 13V8h10v5"/>'),
+      shield: sv('<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>'), cart: sv('<circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.7 12.4a1.5 1.5 0 001.5 1.1h8.9a1.5 1.5 0 001.5-1.1L22 7H6"/>'), arr: sv('<path d="M5 12h14M13 6l6 6-6 6"/>', 2.2) };
+    var C = window.VKCART = [
+      { id:1, name:'Thompson Seedless Grapes', variety:'Thompson', img:'assets/images/grapes.jpg', country:'India', cc:'in', market:'Nashik APMC', kg:3000, unitPrice:1.95, packCost:210, packText:'600 × 5 kg ventilated cartons', moq:300, sel:true },
+      { id:2, name:'1121 Basmati Rice — Sella', variety:'Premium', img:'assets/images/rice.jpg', country:'India', cc:'in', market:'Karnal Mandi', kg:18000, unitPrice:1.10, packCost:540, packText:'720 × 25 kg PP woven bags', moq:1000, sel:true },
+      { id:3, name:'Green Cardamom 8mm Bold', variety:'AGEB', img:'assets/images/cardamom.jpg', country:'India', cc:'in', market:'Bodinayakanur', kg:200, unitPrice:28, packCost:46, packText:'20 × 10 kg cartons', moq:50, sel:true },
+      { id:4, name:'Ceylon Orange Pekoe Tea', variety:'OP1', img:'assets/images/tea.jpg', country:'Sri Lanka', cc:'lk', market:'Colombo Auction', kg:500, unitPrice:5.40, packCost:60, packText:'25 × 20 kg paper sacks', moq:100, sel:false }
+    ];
+    var SAVED = [];
+    var nid = 10;
+    function usd(n){ return '$' + n.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }); }
+    function fmt(n){ return n.toLocaleString('en-US'); }
+    function line(it){ return it.kg * it.unitPrice + it.packCost; }
+    function count(){ return C.length; }
+    function badges(){ var n = count(); document.querySelectorAll('.o2-cn, #pd-cart-n, .kc-n').forEach(function(b){ b.textContent = n; b.classList.toggle('show', n > 0); b.style.display = n ? '' : 'none'; }); }
+    function step(it){ return it.kg >= 10000 ? 1000 : it.kg >= 1000 ? 500 : it.moq >= 100 ? 50 : 10; }
+    function card(it, i, saved){
+      return '<div class="kc-it' + (it.sel && !saved ? ' sel' : '') + '">' + (saved ? '' : '<span class="kc-ck" data-kc-sel="' + i + '">' + IC.chk + '</span>') +
+        '<img src="' + it.img + '" alt=""><div class="kc-b"><b data-goto="product-details">' + it.name + '</b><small><img src="assets/images/flags/' + it.cc + '.png" alt="">' + it.variety + ' · ' + it.market + '</small>' +
+        '<span class="kc-pk">' + IC.box + it.packText + '</span>' +
+        (saved ? '<div class="kc-pr"><em>' + usd(it.unitPrice) + '<i>/kg</i></em><button class="kc-mv" data-kc-move="' + i + '">Move to cart</button></div>' :
+        '<div class="kc-pr"><div class="kc-qty"><button data-kc-q="' + i + '|-1">−</button><span>' + fmt(it.kg) + ' kg</span><button data-kc-q="' + i + '|1">+</button></div><div class="kc-lt"><em>' + usd(line(it)) + '</em><i>' + usd(it.unitPrice) + '/kg</i></div></div>') +
+        '<div class="kc-act">' + (saved ? '<a data-kc-unsave="' + i + '">' + IC.trash + 'Remove</a>' : '<a data-kc-save="' + i + '">' + IC.heart + 'Save for later</a><a data-kc-rm="' + i + '">' + IC.trash + 'Remove</a>') + '</div></div></div>';
+    }
+    function render2(){
+      var sel = C.filter(function(x){ return x.sel; }), goods = 0, pack = 0;
+      sel.forEach(function(x){ goods += x.kg * x.unitPrice; pack += x.packCost; });
+      $k('kc-count').textContent = C.length ? C.length + (C.length === 1 ? ' item' : ' items') : 'Empty';
+      if (!C.length && !SAVED.length){
+        B.innerHTML = '<div class="kc-empty"><span>' + IC.cart + '</span><b>Your cart is empty</b><small>Add products from any product page to request one combined quote.</small><button class="o2-btn pri" data-goto="all-categories" data-reset="true">Browse categories</button></div>';
+        $k('kc-foot').style.display = 'none'; badges(); return;
+      }
+      var all = C.length && sel.length === C.length;
+      B.innerHTML = (C.length ? '<div class="kc-bar"><span class="kc-all' + (all ? ' on' : '') + '" data-kc-all><i>' + IC.chk + '</i>Select all (' + C.length + ')</span><a data-kc-clear>Clear selected</a></div>' : '') +
+        '<div class="kc-note">' + IC.ship + '<span><b>Freight &amp; shipping included at quote</b>Venture Karts combines your items into one shipment for the best rate.</span></div>' +
+        C.map(function(x, i){ return card(x, i); }).join('') +
+        (C.length ? '<div class="o2-card kc-sum"><div class="o2-h"><b>Price Details</b><small>' + sel.length + ' of ' + C.length + ' selected</small></div>' +
+          '<div class="o2-kv"><span>Products</span><b>' + usd(goods) + '</b></div><div class="o2-kv"><span>Packaging</span><b>' + usd(pack) + '</b></div><div class="o2-kv"><span>Freight &amp; shipping</span><b class="kc-inc">Incl. in quote</b></div>' +
+          '<div class="o2-kv tot"><span>Estimated total</span><b>' + usd(goods + pack) + '</b></div><div class="kc-safe">' + IC.shield + 'Indicative prices · suppliers confirm the final quote. Pay only after you accept it.</div></div>' : '') +
+        (SAVED.length ? '<div class="kc-sh">Saved for later (' + SAVED.length + ')</div>' + SAVED.map(function(x, i){ return card(x, i, true); }).join('') : '');
+      $k('kc-foot').style.display = C.length ? '' : 'none';
+      $k('kc-total').textContent = usd(goods + pack);
+      $k('kc-go').disabled = !sel.length;
+      $k('kc-go').querySelector('span').textContent = sel.length ? 'Request Quote · ' + sel.length + (sel.length === 1 ? ' item' : ' items') : 'Select items';
+      badges();
+    }
+    function toast3(m){ var t = document.querySelector('.vk-toast'); if (t) t.remove(); t = document.createElement('div'); t.className = 'vk-toast'; t.innerHTML = m; $k('appBody').appendChild(t); setTimeout(function(){ t.classList.add('out'); }, 1500); setTimeout(function(){ t.remove(); }, 2000); }
+    // product page: add the current configuration to the cart
+    var pc = $k('pd-cart');
+    if (pc){
+      var clone = pc.cloneNode(true); pc.parentNode.replaceChild(clone, pc);
+      clone.addEventListener('click', function(){
+        var s = window.pdSummary && window.pdSummary(); if (!s) return;
+        var ex = C.filter(function(x){ return x.name === s.name && x.variety === s.variety && x.market === s.market; })[0];
+        if (ex){ ex.kg = s.kg; ex.unitPrice = s.unitPrice; ex.packCost = s.packCost; ex.packText = s.packText || 'Standard packing'; ex.sel = true; }
+        else C.unshift({ id: nid++, name: s.name, variety: s.variety, img: s.img, country: s.country, cc: s.countryCode, market: s.market, kg: s.kg, unitPrice: s.unitPrice, packCost: s.packCost, packText: s.packText || 'Standard packing', moq: 500, sel: true });
+        render2();
+        var t = $k('pd-toast'); t.innerHTML = IC.cart + (ex ? ' Cart updated' : ' Added to cart') + ' <u data-goto="cart">View cart</u>'; t.classList.add('show'); clearTimeout(t._t); t._t = setTimeout(function(){ t.classList.remove('show'); }, 2200);
+      });
+    }
+    document.addEventListener('click', function(e){
+      var t;
+      if (!e.target.closest('#screen-cart')) return;
+      if ((t = e.target.closest('[data-kc-sel]'))){ var it = C[+t.dataset.kcSel]; it.sel = !it.sel; render2(); return; }
+      if (e.target.closest('[data-kc-all]')){ var on = !C.every(function(x){ return x.sel; }); C.forEach(function(x){ x.sel = on; }); render2(); return; }
+      if (e.target.closest('[data-kc-clear]')){ var n = C.filter(function(x){ return x.sel; }).length; if (!n) return; for (var i = C.length - 1; i >= 0; i--) if (C[i].sel) C.splice(i, 1); render2(); toast3(n + ' item' + (n > 1 ? 's' : '') + ' removed'); return; }
+      if ((t = e.target.closest('[data-kc-q]'))){ var p = t.dataset.kcQ.split('|'), x = C[+p[0]], d = +p[1] * step(x), old = x.kg; x.kg = Math.max(x.moq, x.kg + d); x.packCost = x.packCost * x.kg / old; render2(); if (x.kg === x.moq && d < 0) toast3('Minimum order is ' + fmt(x.moq) + ' kg'); return; }
+      if ((t = e.target.closest('[data-kc-rm]'))){ var r = C.splice(+t.dataset.kcRm, 1)[0]; render2(); toast3('Removed · ' + r.name); return; }
+      if ((t = e.target.closest('[data-kc-save]'))){ var s = C.splice(+t.dataset.kcSave, 1)[0]; s.sel = false; SAVED.unshift(s); render2(); toast3('Saved for later'); return; }
+      if ((t = e.target.closest('[data-kc-move]'))){ var m = SAVED.splice(+t.dataset.kcMove, 1)[0]; m.sel = true; C.push(m); render2(); toast3('Moved to cart'); return; }
+      if ((t = e.target.closest('[data-kc-unsave]'))){ SAVED.splice(+t.dataset.kcUnsave, 1); render2(); return; }
+      if (e.target.closest('#kc-go')){ var n2 = C.filter(function(x){ return x.sel; }).length; toast3('Combined quote started for ' + n2 + ' item' + (n2 > 1 ? 's' : '')); setTimeout(function(){ goTo('rq-ship'); }, 500); return; }
+    });
+    document.addEventListener('click', function(e){ if (e.target.closest('[data-goto="cart"]')) render2(); }, true);
+    render2();
+  })();
+
+  // ---------- Business profile editing ----------
+  (function(){
+    var P = document.getElementById('screen-profile'); if (!P) return;
+    function setEdit(f, on){ var i = f.querySelector('input'); i.readOnly = !on; f.classList.toggle('on', on); if (on){ i.focus(); i.setSelectionRange(i.value.length, i.value.length); } }
+    P.addEventListener('click', function(e){
+      var t = e.target.closest('.bp-pen');
+      if (t){ var f = t.closest('.bp-f'); setEdit(f, !f.classList.contains('on')); return; }
+      if (e.target.closest('#bp-edit')){ var all = P.querySelectorAll('.bp-f'), any = P.querySelector('.bp-f.on'); all.forEach(function(f){ f.classList.toggle('on', !any); f.querySelector('input').readOnly = !!any; }); return; }
+      if (e.target.closest('#bp-save')){
+        P.querySelectorAll('.bp-f.on').forEach(function(f){ setEdit(f, false); });
+        var n = P.querySelector('.bp-f input').value; document.querySelectorAll('.bp-co b').forEach(function(b){ b.textContent = n; });
+        var me = document.querySelector('.ac-me .c'); if (me) me.textContent = n;
+        var x = document.querySelector('.vk-toast'); if (x) x.remove(); x = document.createElement('div'); x.className = 'vk-toast'; x.textContent = 'Changes saved'; document.getElementById('appBody').appendChild(x); setTimeout(function(){ x.classList.add('out'); }, 1400); setTimeout(function(){ x.remove(); }, 1900);
+      }
+    });
+  })();
