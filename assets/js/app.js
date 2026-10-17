@@ -502,7 +502,7 @@
     // review / sent for service requests
     function svReview(){
       var t = svTotals(), body = '';
-      ['rv-prod', 'rv-wh', 'rv-tr'].forEach(function(id){ $(id).parentElement.style.display = 'none'; });
+      ['rv-prod', 'rv-wh', 'rv-tr', 'rv-cu'].forEach(function(id){ $(id).parentElement.style.display = 'none'; });
       $('rv-ship').parentElement.style.display = '';
       if (rq.svc === 'wh'){
         $('rv-wh').parentElement.style.display = '';
@@ -564,12 +564,24 @@
       }).join('');
     }
     function sxParallax(scrollId, heroId, topId){
-      var h = $(heroId), sc = h.closest('.screen-scroll'), top = null, img = h.querySelector('img'), txt = h.querySelector('.sx-hero-t');
-      sc.addEventListener('scroll', function(){
-        var y = Math.max(0, sc.scrollTop), k = Math.min(y / 220, 1);
-        img.style.transform = 'translateY(' + (y * 0.45) + 'px) scale(' + (1.08 - k * 0.12) + ')';
-        txt.style.opacity = String(1 - k * 1.2); txt.style.transform = 'translateY(' + (-k * 24) + 'px) scale(' + (1 - k * 0.08) + ')';
-      });
+      // the photo fills the whole screen behind the page; the form card stays put and the photo shrinks as you scroll
+      var h = $(heroId), sc = h.closest('.screen-scroll'), wrap = h.parentNode, scr = h.closest('.screen'), head = scr.querySelector('.svc-head'),
+          img = h.querySelector('img'), txt = h.querySelector('.sx-hero-t'), H = 0, W = 0, raf = 0;
+      function size(){
+        var hh = head ? head.offsetHeight : 0; W = hh + 250; H = Math.max(W + 1, sc.clientHeight + 120);
+        wrap.style.height = W + 'px'; txt.style.top = (W - 78) + 'px'; upd();
+      }
+      function upd(){
+        raf = 0; if (!H) return;
+        var y = Math.max(0, sc.scrollTop), k = Math.min(y / (H - W), 1);
+        h.style.height = Math.max(W, H - y) + 'px';
+        img.style.transform = 'scale(' + (1.12 - k * 0.08) + ')';
+        if (head) head.classList.toggle('hd-solid', y > W - (head.offsetHeight + 40));
+      }
+      sc.addEventListener('scroll', function(){ if (!raf) raf = requestAnimationFrame(upd); }, { passive: true });
+      window.addEventListener('resize', size);
+      new MutationObserver(function(){ if (scr.classList.contains('active')) requestAnimationFrame(size); }).observe(scr, { attributes: true, attributeFilter: ['class'] });
+      size();
     }
 
     // ---- header search on the service pages: opens the real search page with a bottom-to-top slide ----
@@ -731,11 +743,11 @@
     // ---- service bottom nav: Booking · Cart · Chat · Search ----
     var CART = { sea: [], air: [], wh: [] };
     var CHATS = {};
-    var I_ADD = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.7 12.4a2 2 0 002 1.6h8.6a2 2 0 002-1.6L22 7H6.2"/><path d="M13 9.5h5M15.5 7v5"/></svg>';
+    var I_ADD = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4z"/><path d="M12 7v6M9 10h6"/></svg>';
     function navTo(id){
       var cur = document.querySelector('.screen.active').id.replace('screen-', '');
       if (cur === id) return;
-      var tabs = ['svc-cart', 'svc-chat', 'svc-bookings'];
+      var tabs = ['svc-cart', 'svc-chat', 'svc-bookings', 'svc-offers'];
       if (tabs.indexOf(cur) > -1 && tabs.indexOf(id) > -1){ stack[stack.length - 1] = id; render(); }   // switch tabs without piling up history
       else goTo(id);
     }
@@ -754,16 +766,16 @@
     }
     function addCarrierToCart(code, tt){
       var k = sv.mode, c = carrierBy(code);
-      if (CART[k].some(function(x){ return x.c === code && x.from === sv.from[0] && x.to === sv.to[0] && x.day === rq.day; })){ toast('Already in your cart'); return; }
+      if (CART[k].some(function(x){ return x.c === code && x.from === sv.from[0] && x.to === sv.to[0] && x.day === rq.day; })){ toast('Already saved'); return; }
       CART[k].push({ c: code, tt: tt, from: sv.from[0], to: sv.to[0], fromP: sv.from, toP: sv.to, fromC: sv.fromC, toC: sv.toC, ready: rq.ready, day: rq.day, load: sv.load, kg: sv.kg, cbm: sv.cbm, desc: sv.desc,
         price: freight(c), dep: dfmt(addDays(rq.ready, rq.day * (sea() ? 2 : 1))) });
-      cartBadge(); toast(I_ADD + ' Added to cart · ' + c.name);
+      cartBadge(); toast(I_ADD + ' Saved · ' + c.name);
     }
     function addWhToCart(name){
       var x = whByName(name);
-      if (CART.wh.some(function(i){ return i.name === name; })){ toast('Already in your cart'); return; }
+      if (CART.wh.some(function(i){ return i.name === name; })){ toast('Already saved'); return; }
       CART.wh.push({ name: name, c: x.c, img: x.w.img, area: x.w.area, rate: sqRate(x.w), type: prof(x.w).type });
-      cartBadge(); toast(I_ADD + ' Added to cart · ' + name);
+      cartBadge(); toast(I_ADD + ' Saved · ' + name);
     }
     function renderCart(){
       var k = svKind(), list = CART[k];
@@ -774,7 +786,7 @@
         var c = carrierBy(it.c);
         return '<div class="cart-it"><span class="rqc-logo" style="background:' + c.bg + ';color:' + c.fg + '">' + c.code + '</span><div class="cart-b"><b>' + it.from + ' → ' + it.to + '</b><small>' + c.name + ' · ' + it.dep + ' · ' + it.tt + (it.tt === 1 ? ' day' : ' days') + '</small><em>' + usd(it.price) + '</em></div>' +
           '<div class="cart-act"><button class="whc-btn ghost" data-cart-rm="' + i + '">Remove</button><button class="whc-btn" data-cart-book="' + i + '">Book</button></div></div>';
-      }).join('') || '<div class="cart-empty">' + I_ADD + '<b>Your cart is empty</b><small>Tap the cart icon on any ' + (k === 'wh' ? 'warehouse' : k === 'sea' ? 'shipping line' : 'flight') + ' to save it here</small><button class="whc-btn" data-svnav="booking">Start a search</button></div>';
+      }).join('') || '<div class="cart-empty">' + I_ADD + '<b>Nothing saved yet</b><small>Tap the save icon on any ' + (k === 'wh' ? 'warehouse' : k === 'sea' ? 'shipping line' : 'flight') + ' to save it here</small><button class="whc-btn" data-svnav="booking">Start a search</button></div>';
       $('cart-total').innerHTML = list.length && k !== 'wh' ? '<span>' + list.length + ' option' + (list.length === 1 ? '' : 's') + ' saved</span><b>' + usd(list.reduce(function(a, x){ return a + x.price; }, 0)) + '</b>' : '';
       cartBadge();
     }
@@ -791,6 +803,25 @@
       wh: ['Hi! Welcome to the Venture Karts warehousing desk 🏬 Ask us about space, rates or availability.']
     };
     var CH_QUICK = { sea: ['Track my container', 'Change sailing date', 'Reefer requirements', 'Talk to an agent'], air: ['Track my cargo', 'Dangerous goods help', 'Change flight', 'Talk to an agent'], wh: ['Check availability', 'Cold storage rates', 'Extend my storage', 'Talk to an agent'] };
+    // ---- Offers tab ----
+    var OFFERS = {
+      sea: [['SEAFIRST', '15% off', 'First sea freight booking', 'Up to USD 300 off ocean freight on your first FCL or LCL booking.', '31 Oct 2026', 'gold'], ['GULF40', 'USD 120 off', '40\' containers to the Gulf', 'Any 40\' FCL to Jebel Ali, Dammam, Jeddah or Hamad Port.', '15 Nov 2026', 'navy'], ['REEFER10', '10% off', 'Reefer containers', 'Temperature-controlled 20\' & 40\' reefers on all liners.', '30 Nov 2026', 'green']],
+      air: [['FLYFAST', '12% off', 'Express air cargo', 'Next-flight-out express on any airline, up to USD 250 off.', '31 Oct 2026', 'gold'], ['FRESH8', '8% off', 'Perishable (PER) cargo', 'Fruits, vegetables & flowers in cool-chain ULDs.', '20 Nov 2026', 'green'], ['WKND50', 'USD 50 off', 'Weekend departures', 'Fly your cargo on Saturday or Sunday departures.', '30 Nov 2026', 'navy']],
+      wh: [['STORE20', '20% off', 'First 30 days of storage', 'Cold or ambient storage at any partner warehouse.', '31 Oct 2026', 'gold'], ['LONGSTAY', '15% off', 'Stays of 90+ days', 'Lock in a lower rate for long-term inventory.', '31 Dec 2026', 'navy'], ['FREELOAD', 'Free', 'Loading & unloading', 'No handling charges on bookings above 500 sq.ft.', '15 Nov 2026', 'green']]
+    };
+    var OFF_ALL = [['VKREFER', 'USD 100 credit', 'Refer a business', 'You and your referral each get USD 100 freight credit.'], ['CORP5', '5% cashback', 'Pay with a corporate card', 'Cashback on bookings above USD 2,000, up to USD 150.']];
+    var offApplied = {};
+    function renderOffers(){
+      var k = svKind(), nm = k === 'sea' ? 'Sea freight' : k === 'air' ? 'Air freight' : 'Warehouse';
+      $('off-kind').textContent = nm;
+      $('off-body').innerHTML =
+        '<div class="off-hero"><div><small>FESTIVE TRADE SALE</small><b>Save up to 25%</b><span>on ' + nm.toLowerCase() + ' bookings this season</span><em>Ends in 06d : 14h : 22m</em></div><i>%</i></div>' +
+        '<div class="off-h">' + nm + ' offers</div>' +
+        OFFERS[k].map(function(o){ var on = offApplied[k] === o[0];
+          return '<div class="off-c ' + o[5] + '"><div class="off-l"><b>' + o[1] + '</b><small>' + o[2] + '</small></div><div class="off-r"><p>' + o[3] + '</p><div class="off-f"><span class="off-code">' + o[0] + '</span><button class="' + (on ? 'on' : '') + '" data-off="' + o[0] + '">' + (on ? '✓ Applied' : 'Apply') + '</button></div><small>Valid till ' + o[4] + ' · T&amp;C apply</small></div></div>'; }).join('') +
+        '<div class="off-h">More ways to save</div>' +
+        OFF_ALL.map(function(o){ return '<div class="off-m"><span>%</span><div><b>' + o[2] + ' · ' + o[1] + '</b><small>' + o[3] + '</small></div><button data-off-copy="' + o[0] + '">' + o[0] + '</button></div>'; }).join('');
+    }
     function renderChat(){
       var k = svKind();
       if (!CHATS[k]) CHATS[k] = CH_SEED[k].map(function(t){ return { me: false, t: t, at: '09:41' }; });
@@ -975,12 +1006,15 @@
         else if (v === 'cart'){ renderCart(); navTo('svc-cart'); }
         else if (v === 'chat'){ renderChat(); navTo('svc-chat'); }
         else if (v === 'search'){ svhOpen($('screen-' + svStart())); }
+        else if (v === 'offers'){ renderOffers(); navTo('svc-offers'); }
         else if (v === 'bookings'){ bklTab = 'all'; renderBookings(); navTo('svc-bookings'); }
         return true;
       }
       if ((t = e.target.closest('[data-cart-add]'))) { e.stopPropagation(); var pa = t.dataset.cartAdd.split('|'); if (pa[0] === 'wh') addWhToCart(pa[1]); else addCarrierToCart(pa[1], +pa[2]); return true; }
       if ((t = e.target.closest('[data-cart-rm]'))) { CART[svKind()].splice(+t.dataset.cartRm, 1); renderCart(); return true; }
       if ((t = e.target.closest('[data-cart-book]'))) { bookFromCart(+t.dataset.cartBook); return true; }
+      if ((t = e.target.closest('[data-off]'))) { var kk = svKind(); offApplied[kk] = offApplied[kk] === t.dataset.off ? null : t.dataset.off; renderOffers(); if (offApplied[kk]) toast('Code ' + t.dataset.off + ' applied to your next booking'); return true; }
+      if ((t = e.target.closest('[data-off-copy]'))) { toast('Code ' + t.dataset.offCopy + ' copied'); return true; }
       if ((t = e.target.closest('[data-chat-q]'))) { sendChat(t.dataset.chatQ); return true; }
       if (e.target.closest('#chat-send')) { sendChat($('chat-in').value); return true; }
       if ((t = e.target.closest('[data-bkl]'))) { bklTab = t.dataset.bkl; renderBookings(); return true; }
@@ -996,7 +1030,7 @@
     }
     function bkInit(){
       // static active tab per screen
-      document.querySelectorAll('#screen-svc-freight [data-svnav="booking"], #screen-svc-wh [data-svnav="booking"], #screen-svc-bookings [data-svnav="booking"], #screen-svc-cart [data-svnav="cart"], #screen-svc-chat [data-svnav="chat"]').forEach(function(x){ x.classList.add('on'); });
+      document.querySelectorAll('#screen-svc-freight [data-svnav="booking"], #screen-svc-wh [data-svnav="booking"], #screen-svc-bookings [data-svnav="bookings"], #screen-svc-cart [data-svnav="cart"], #screen-svc-chat [data-svnav="chat"], #screen-svc-offers [data-svnav="offers"]').forEach(function(x){ x.classList.add('on'); });
       $('chat-in').addEventListener('keydown', function(e){ if (e.key === 'Enter') sendChat(this.value); });
       // big hero shrinks as the page scrolls
       ['sv-hero-box', 'sw-hero-box'].forEach(function(id){
@@ -1525,6 +1559,44 @@
       $('trd-total').textContent = money(p.total, 0);
       goTo('rq-truck');
     }
+    // ---------- step 6: customs clearance ----------
+    var CU = { ae:[5, 5, 'VAT'], sa:[5, 15, 'VAT'], qa:[5, 0, 'VAT'], sg:[0, 9, 'GST'], nl:[8.8, 9, 'VAT'], de:[8.8, 7, 'VAT'], gb:[0, 0, 'VAT'], us:[2.5, 0, 'MPF/HMF'] };
+    var CU_TYPES = ['Fresh fruits & vegetables', 'Grains & pulses', 'Spices & condiments', 'Processed food', 'Textiles', 'General cargo'];
+    var CU_INC = [['CIF', 'Cost, Insurance & Freight'], ['FOB', 'Free On Board'], ['EXW', 'Ex Works'], ['CFR', 'Cost & Freight'], ['DAP', 'Delivered At Place'], ['DDP', 'Delivered Duty Paid']];
+    var cuTab = 'new';
+    function hsFor(n){ n = (n || '').toLowerCase(); var m = [['mango', '0804.50'], ['grape', '0806.10'], ['rice', '1006.30'], ['cardamom', '0908.31'], ['onion', '0703.10'], ['pepper', '0904.11'], ['turmeric', '0910.30'], ['tea', '0902.40']]; for (var i = 0; i < m.length; i++) if (n.indexOf(m[i][0]) > -1) return m[i][1]; return ''; }
+    function cuEstimate(f){
+      var r = CU[rq.dest] || [5, 5, 'VAT'], fr = rq.managed ? 0 : freight(rq.carrier), cif = f.value + (f.inc === 'FOB' || f.inc === 'EXW' ? fr + f.value * 0.01 : 0);
+      var duty = cif * r[0] / 100, tax = (cif + duty) * r[1] / 100, hand = 140 + (sea() ? 60 : 30);
+      return { duty: duty, tax: tax, hand: hand, total: duty + tax + hand, dr: r[0], tr: r[1], tn: r[2], cif: cif };
+    }
+    function cuForm(){
+      var p = pd() || {}, d = dest(), f = rq.cu && rq.cu.f;
+      if (!f) f = { type: /mango|grape|onion|fruit|banana/i.test(p.name || '') ? 0 : 5, hs: hsFor(p.name), value: Math.round((p.goods || 0) + (p.packCost || 0)), inc: 'CIF' };
+      return f;
+    }
+    function toCustoms(){ cuTab = 'new'; renderCustoms(); goTo('rq-customs'); }
+    function renderCustoms(){
+      var f = cuForm(), d = dest(), est = rq.cu && rq.cu.est;
+      document.querySelectorAll('[data-cu-tab]').forEach(function(t){ t.classList.toggle('on', t.dataset.cuTab === cuTab); });
+      $('cu-new').style.display = cuTab === 'new' ? '' : 'none'; $('cu-track').style.display = cuTab === 'track' ? '' : 'none';
+      $('cu-country').innerHTML = '<img src="assets/images/flags/' + d.code + '.png" alt="">' + d.name + '<small>Import</small>';
+      $('cu-port').innerHTML = (sea() ? D.icons.ship : D.icons.plane) + (rq.port ? rq.port[1] + ' <small>' + rq.port[0] + '</small>' : 'Any ' + (sea() ? 'port' : 'airport') + ' in ' + d.name);
+      $('cu-type').innerHTML = CU_TYPES.map(function(x, i){ return '<option value="' + i + '"' + (i === f.type ? ' selected' : '') + '>' + x + '</option>'; }).join('');
+      $('cu-hs').value = f.hs; $('cu-val').value = f.value.toLocaleString('en-US');
+      $('cu-inc').innerHTML = CU_INC.map(function(x){ return '<option value="' + x[0] + '"' + (x[0] === f.inc ? ' selected' : '') + '>' + x[0] + ' — ' + x[1] + '</option>'; }).join('');
+      drawCuEst(est);
+    }
+    function readCu(){ return { type: +$('cu-type').value, hs: $('cu-hs').value.trim(), value: parseFloat(($('cu-val').value || '0').replace(/,/g, '')) || 0, inc: $('cu-inc').value }; }
+    function drawCuEst(est){
+      var box = $('cu-est');
+      if (!est){ box.innerHTML = ''; box.style.display = 'none'; $('cu-next').textContent = 'Get estimate first'; $('cu-next').disabled = true; return; }
+      box.style.display = '';
+      box.innerHTML = '<div class="cu-el"><b>Estimated Customs Charges</b>' + cuRow('Duty (' + est.dr + '%)', est.duty) + cuRow(est.tn + ' (' + est.tr + '%)', est.tax) + cuRow('Handling &amp; documentation', est.hand) + '<small class="cu-cif">On assessable value ' + money(est.cif) + '</small></div>' +
+        '<div class="cu-er"><small>Total Estimated Cost</small><b>' + money(est.total) + '</b><em>(Subject to final assessment)</em></div>';
+      $('cu-next').textContent = 'Add & continue'; $('cu-next').disabled = false;
+    }
+    function cuRow(k, v){ return '<div><span>' + k + '</span><i>' + money(v) + '</i></div>'; }
     function toTransport(){ setSide('out'); trSort = 'best'; renderTransport(); goTo('rq-transport'); }
 
     // ---------- review + sent ----------
@@ -1533,7 +1605,7 @@
       var p = pd(), fr = rq.managed ? managedPrice() : freight(rq.carrier), o = { whO: 0, whI: 0, trO: 0, trI: 0 };
       if (!rq.managed) ['out', 'in'].forEach(function(sd){ var x = rq.sides[sd], K = sd === 'out' ? 'O' : 'I';
         if (x.wh && x.plan) o['wh' + K] = planCost(x.wh, x.plan); if (x.truck) o['tr' + K] = trPrice(x.truck, sd, x).total; });
-      o.p = p; o.fr = fr; o.wh = o.whO + o.whI; o.tr = o.trO + o.trI; o.total = p.goods + p.packCost + fr + o.wh + o.tr;
+      o.p = p; o.fr = fr; o.wh = o.whO + o.whI; o.tr = o.trO + o.trI; o.cu = !rq.managed && rq.cu && rq.cu.on && rq.cu.est ? rq.cu.est.total : 0; o.total = p.goods + p.packCost + fr + o.wh + o.tr + o.cu;
       return o;
     }
     function kv(k, v){ return '<div class="kv-row"><span class="k">' + k + '</span><span class="v">' + v + '</span></div>'; }
@@ -1543,7 +1615,7 @@
     // steps 2-4 are skipped when Venture Karts handles the delivery
     function markSteps(){
       document.querySelectorAll('#screen-rq-review .rqs').forEach(function(el, i){
-        if (i < 1 || i > 4) return;
+        if (i < 1 || i > 5) return;
         el.classList.toggle('skip', rq.managed); el.classList.toggle('done', !rq.managed);
         el.querySelector('span').innerHTML = rq.managed ? '–' : CHECK;
       });
@@ -1570,6 +1642,9 @@
       }
       $('rv-wh').parentElement.style.display = rq.managed ? 'none' : '';
       $('rv-tr').parentElement.style.display = rq.managed ? 'none' : '';
+      $('rv-cu').parentElement.style.display = rq.managed ? 'none' : '';
+      var ce = rq.cu && rq.cu.on && rq.cu.est;
+      $('rv-cu').innerHTML = ce ? kv('Clearance', 'Venture Karts licensed broker') + kv('Import into', dest().name + (rq.port ? ' · ' + rq.port[0] : '')) + kv('Cargo', CU_TYPES[rq.cu.f.type] + (rq.cu.f.hs ? ' · HS ' + esc(rq.cu.f.hs) : '')) + kv('Incoterm', rq.cu.f.inc) + kv('Duty + ' + ce.tn, money(ce.duty + ce.tax)) + kv('Handling & docs', money(ce.hand)) : '<div class="rv-none">Not needed · you will clear customs yourself</div>';
       syncSide();
       var SIDE_L = { out: 'Outbound · exporting country', 'in': 'Inbound · importing country' };
       $('rv-wh').innerHTML = ['out', 'in'].map(function(sd){
@@ -1586,7 +1661,7 @@
           '<div class="rv-none">Not needed</div>');
       }).join('');
       $('rv-cost').innerHTML = kv('Product', money(p.goods)) + kv('Packaging', money(p.packCost)) +
-        (rq.managed ? kv('Door-to-door delivery', money(t.fr)) : kv((sea() ? 'Ocean' : 'Air') + ' freight (est.)', money(t.fr)) + (t.whO ? kv('Warehouse · outbound', money(t.whO)) : '') + (t.whI ? kv('Warehouse · inbound', money(t.whI)) : '') + (t.trO ? kv('Transport · outbound', money(t.trO)) : '') + (t.trI ? kv('Transport · inbound', money(t.trI)) : '')) +
+        (rq.managed ? kv('Door-to-door delivery', money(t.fr)) : kv((sea() ? 'Ocean' : 'Air') + ' freight (est.)', money(t.fr)) + (t.whO ? kv('Warehouse · outbound', money(t.whO)) : '') + (t.whI ? kv('Warehouse · inbound', money(t.whI)) : '') + (t.trO ? kv('Transport · outbound', money(t.trO)) : '') + (t.trI ? kv('Transport · inbound', money(t.trI)) : '') + (t.cu ? kv('Customs clearance (est.)', money(t.cu)) : '')) +
         '<div class="kv-row rv-tot"><span class="k">Total (est.)</span><span class="v">' + money(t.total) + '</span></div>';
       $('rv-total').textContent = money(t.total);
     }
@@ -1596,7 +1671,7 @@
       $('rs-id').textContent = 'RQ-20261016-' + (1000 + Math.floor(t.total) % 9000);
       var right = rq.managed ? [esc(rq.addr.city || dest().name), 'Door delivery'] : [rq.port[0], rq.port[2]];
       $('rs-card').innerHTML = '<div class="rv-ph"><span class="rqp-img"><img src="' + t.p.img + '" alt=""></span><div class="rqp-b"><b>' + t.p.name + '</b><small>' + fmt(t.p.kg) + ' kg · ' + (rq.managed ? 'Venture Karts door-to-door' : rq.carrier.name) + '</small></div></div>' +
-        routeBar(right[0], right[1]) + kv('Deliver to', esc(addrShort())) + (rq.managed ? '' : kv('Warehouse', [rq.sides.out.wh, rq.sides['in'].wh].filter(Boolean).map(function(w){ return w.name; }).join(' + ') || 'Not required') + kv('Transport', [rq.sides.out.truck, rq.sides['in'].truck].filter(Boolean).map(function(w){ return w.name; }).join(' + ') || 'Not required')) +
+        routeBar(right[0], right[1]) + kv('Deliver to', esc(addrShort())) + (rq.managed ? '' : kv('Warehouse', [rq.sides.out.wh, rq.sides['in'].wh].filter(Boolean).map(function(w){ return w.name; }).join(' + ') || 'Not required') + kv('Transport', [rq.sides.out.truck, rq.sides['in'].truck].filter(Boolean).map(function(w){ return w.name; }).join(' + ') || 'Not required') + kv('Customs', t.cu ? 'Included · ' + money(t.cu) : 'Not required')) +
         '<div class="kv-row rv-tot"><span class="k">Total (est.)</span><span class="v">' + money(t.total) + '</span></div>';
     }
 
@@ -1718,8 +1793,14 @@
       if (e.target.closest('[data-wh-remove]')) { rq.wh = null; rq.plan = null; renderWh(); return; }
       if (e.target.closest('[data-tr-remove]')) { rq.truck = null; renderTransport(); return; }
       if (e.target.closest('[data-rq-skip]')) { rq.wh = rq.plan = null; setSide(isOut() ? 'in' : 'out'); rq.wh = rq.plan = null; setSide('out'); toTransport(); return; }
-      if (e.target.closest('[data-tr-skip]')) { rq.truck = null; setSide(isOut() ? 'in' : 'out'); rq.truck = null; setSide('out'); renderReview(); goTo('rq-review'); return; }
-      if (e.target.closest('#tr-next')) { renderReview(); goTo('rq-review'); return; }
+      if (e.target.closest('[data-tr-skip]')) { rq.truck = null; setSide(isOut() ? 'in' : 'out'); rq.truck = null; setSide('out'); toCustoms(); return; }
+      if (e.target.closest('#tr-next')) { toCustoms(); return; }
+      if ((t = e.target.closest('[data-cu-tab]'))) { if (cuTab === 'new') rq.cu = { f: readCu(), est: rq.cu && rq.cu.est }; cuTab = t.dataset.cuTab; renderCustoms(); return; }
+      if (e.target.closest('#cu-calc')) { var cf = readCu(); if (!cf.value){ $('cu-val').closest('.cu-f').classList.add('shake'); setTimeout(function(){ $('cu-val').closest('.cu-f').classList.remove('shake'); }, 500); return; } rq.cu = { f: cf, est: cuEstimate(cf) }; drawCuEst(rq.cu.est); setTimeout(function(){ $('cu-est').scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 50); return; }
+      if (e.target.closest('#cu-trk-go')) { $('cu-tl').style.display = ''; return; }
+      if (e.target.closest('#cu-skip') || e.target.closest('#cu-skip2')) { rq.cu = null; renderReview(); goTo('rq-review'); return; }
+      if (e.target.closest('#cu-next')) { if (rq.cu && rq.cu.est){ rq.cu.on = true; renderReview(); goTo('rq-review'); } return; }
+      if (e.target.closest('[data-goto="rq-customs"]')) { setTimeout(renderCustoms, 0); return; }
       if ((t = e.target.closest('[data-tr-trip]'))) { rq.trip = t.dataset.trTrip; renderTransport(); return; }
       if ((t = e.target.closest('[data-tr-sort]'))) { trSort = t.dataset.trSort; renderTransport(); return; }
       if ((t = e.target.closest('[data-tr-pick]'))) { var tk = TRUCKS.filter(function(x){ return x.code === t.dataset.trPick; })[0]; rq.truck = rq.truck && rq.truck.code === tk.code ? null : tk; renderTransport(); return; }
@@ -2086,5 +2167,14 @@
         var me = document.querySelector('.ac-me .c'); if (me) me.textContent = n;
         var x = document.querySelector('.vk-toast'); if (x) x.remove(); x = document.createElement('div'); x.className = 'vk-toast'; x.textContent = 'Changes saved'; document.getElementById('appBody').appendChild(x); setTimeout(function(){ x.classList.add('out'); }, 1400); setTimeout(function(){ x.remove(); }, 1900);
       }
+    });
+  })();
+
+  // ---------- quotation: let Venture Karts handle the order ----------
+  (function(){
+    var c = document.getElementById('qv-card'); if (!c) return;
+    c.addEventListener('click', function(){
+      var on = c.classList.toggle('on');
+      document.getElementById('qv-accept').textContent = on ? 'Accept with Venture Karts · $6,941' : 'Accept Quotation';
     });
   })();
