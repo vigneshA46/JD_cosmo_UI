@@ -1768,3 +1768,97 @@
     });
     renderShip();
   })();
+
+  // ---------- Categories (redesign) ----------
+  (function(){
+    var root = document.getElementById('screen-all-categories'); if (!root) return;
+    function I(n){ return 'assets/images/' + n + '.jpg'; }
+    var CATS = [
+      { k:'Fruits', img:'mango', ban:'orchard', tag:'Fresh & export-grade', n:180, c:14, from:'1.05', unit:'kg', o:['in','ph','th','mx','br','eg','pe','za'],
+        subs:[['Mango','mango'],['Grapes','grapes'],['Pomegranate','pomegranate'],['Banana','banana'],['Citrus','lemon'],['Coconut','coconut']],
+        p:[['Alphonso Mango — Organic','mango','in','Ratnagiri',1.20,1.36,4.6,'500 kg'],['Thompson Seedless Grapes','grapes','in','Nashik',1.95,2.20,4.5,'300 kg'],['Bhagwa Pomegranate','pomegranate','in','Solapur',1.60,1.80,4.4,'400 kg'],['Cavendish Banana','banana','ph','Davao',0.62,0.70,4.3,'1 MT']] },
+      { k:'Grains', img:'rice', ban:'rice', tag:'Rice, wheat & millets', n:140, c:11, from:'0.48', unit:'kg', o:['in','th','vn','pk','us','br'],
+        subs:[['Basmati Rice','rice'],['Non-Basmati','rice'],['Wheat','🌾'],['Maize','🌽'],['Millets','🌾'],['Barley','🌾']],
+        p:[['1121 Basmati Rice — Sella','rice','in','Karnal',1.10,1.25,4.7,'1 MT'],['Jasmine Rice Hom Mali','rice','th','Ubon',0.95,1.05,4.5,'1 MT'],['Sona Masoori Raw Rice','rice','in','Raichur',0.72,0.80,4.4,'1 MT']] },
+      { k:'Spices', img:'chilli', ban:'spicemarket', tag:'Whole, ground & blends', n:220, c:12, from:'2.10', unit:'kg', o:['in','vn','id','lk','tr','ma'],
+        subs:[['Chilli','chilli'],['Turmeric','turmeric'],['Cumin','cumin'],['Cardamom','cardamom'],['Black Pepper','pepper'],['Coriander','🌿']],
+        p:[['Green Cardamom 8mm Bold','cardamom','in','Idukki',28.0,30.5,4.8,'50 kg'],['Teja S17 Dry Chilli','chilli','in','Guntur',2.80,3.10,4.5,'500 kg'],['Salem Turmeric Finger','turmeric','in','Erode',2.10,2.35,4.4,'500 kg'],['Malabar Black Pepper','pepper','in','Kochi',6.40,7.00,4.6,'200 kg']] },
+      { k:'Nuts', img:'cashew', ban:'cashew', tag:'Kernels & dry fruits', n:95, c:9, from:'4.20', unit:'kg', o:['in','vn','ci','us','tr','gh'],
+        subs:[['Cashew','cashew'],['Almond','almond'],['Coconut','coconut'],['Walnut','🌰'],['Pistachio','🥜'],['Peanut','🥜']],
+        p:[['Cashew Kernels W240','cashew','in','Kollam',7.80,8.40,4.7,'200 kg'],['California Almonds NPS','almond','us','Fresno',6.20,6.70,4.6,'500 kg'],['Desiccated Coconut','coconut','lk','Kurunegala',2.40,2.70,4.3,'1 MT']] },
+      { k:'Pulses', img:'chickpea', ban:'chickpea', tag:'Lentils, beans & gram', n:80, c:10, from:'0.85', unit:'kg', o:['in','ca','au','tr','et','mx'],
+        subs:[['Chickpea','chickpea'],['Lentils','🫘'],['Pigeon Pea','🫘'],['Mung Bean','🫛'],['Kidney Bean','🫘'],['Black Gram','🫘']],
+        p:[['Kabuli Chickpea 12mm','chickpea','in','Indore',1.25,1.40,4.5,'1 MT'],['Red Lentils — Football','chickpea','ca','Saskatoon',0.92,1.02,4.4,'1 MT']] },
+      { k:'Oilseeds', img:'sesame', ban:'sesame', tag:'Seeds for oil & food', n:60, c:8, from:'1.15', unit:'kg', o:['in','et','ng','tz','cn','ar'],
+        subs:[['Sesame','sesame'],['Groundnut','🥜'],['Mustard','🌼'],['Sunflower','🌻'],['Flaxseed','🌾'],['Soybean','🫘']],
+        p:[['Hulled White Sesame 99.95%','sesame','in','Gujarat',1.85,2.05,4.6,'1 MT'],['Natural Sesame Seeds','sesame','et','Humera',1.40,1.55,4.3,'1 MT']] },
+      { k:'Beverages', img:'tea', ban:'tea', tag:'Tea, coffee & cocoa', n:70, c:9, from:'3.20', unit:'kg', o:['in','lk','ke','vn','co','br'],
+        subs:[['Tea','tea'],['Coffee','coffee'],['Cocoa','🍫'],['Herbal Tea','🌿']],
+        p:[['Assam CTC Tea BOP','tea','in','Dibrugarh',3.20,3.55,4.5,'100 kg'],['Arabica Coffee Plantation A','coffee','in','Chikmagalur',6.90,7.40,4.7,'300 kg'],['Ceylon Orange Pekoe','tea','lk','Nuwara Eliya',5.40,5.90,4.6,'100 kg']] },
+      { k:'Vegetables', img:'onion', ban:'onion', tag:'Fresh & dehydrated', n:110, c:10, from:'0.30', unit:'kg', o:['in','eg','nl','cn','mx','pk'],
+        subs:[['Onion','onion'],['Green Chilli','chilli'],['Potato','🥔'],['Garlic','🧄'],['Tomato','🍅'],['Ginger','🫚']],
+        p:[['Nashik Red Onion 55mm+','onion','in','Lasalgaon',0.32,0.36,4.4,'5 MT'],['Fresh Green Chilli G4','chilli','in','Guntur',1.10,1.25,4.2,'1 MT']] },
+      { k:'Textiles', img:'cotton', ban:'cotton', tag:'Fibre, yarn & fabric', n:75, c:8, from:'1.60', unit:'kg', o:['in','us','bd','pk','eg','tr'],
+        subs:[['Raw Cotton','cotton'],['Cotton Yarn','🧵'],['Jute','🧺'],['Silk','🧣'],['Fabric','👕']],
+        p:[['Shankar-6 Raw Cotton','cotton','in','Rajkot',1.60,1.75,4.5,'10 MT'],['Giza 86 Long Staple Cotton','cotton','eg','Delta',2.90,3.15,4.6,'5 MT']] },
+      { k:'Minerals', img:'granite', ban:'granite', tag:'Stone, slabs & ores', n:50, c:7, from:'38', unit:'m²', o:['in','br','it','cn','tr','gr'],
+        subs:[['Granite','granite'],['Marble','🪨'],['Quartz','💎'],['Sandstone','🧱'],['Slate','🪨']],
+        p:[['Black Galaxy Granite Slab','granite','in','Ongole',48,54,4.6,'200 m²'],['Absolute Black Granite','granite','in','Chamarajanagar',38,42,4.5,'200 m²']] }
+    ];
+    var CNM = { in:'India', ph:'Philippines', th:'Thailand', mx:'Mexico', br:'Brazil', eg:'Egypt', pe:'Peru', za:'South Africa', vn:'Vietnam', pk:'Pakistan', us:'USA', id:'Indonesia', lk:'Sri Lanka', tr:'Türkiye', ma:'Morocco', ci:'Côte d’Ivoire', gh:'Ghana', ca:'Canada', au:'Australia', et:'Ethiopia', ng:'Nigeria', tz:'Tanzania', cn:'China', ar:'Argentina', ke:'Kenya', co:'Colombia', nl:'Netherlands', bd:'Bangladesh', it:'Italy', gr:'Greece' };
+    var cur = 0, q = '';
+    var SHIP = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20c2 1 4 1 6 0s4-1 6 0 4 1 6 0"/><path d="M4 18l-1-5h18l-2 5"/><path d="M12 4v9M7 13V8h10v5"/></svg>';
+    var ARR = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+    var STAR = '<svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>';
+    function thumb(v){ return v.length > 3 ? '<img src="' + I(v) + '" alt="" loading="lazy">' : '<i>' + v + '</i>'; }
+    function sub(s){ return '<div class="c2-sub" data-goto="category-products" data-category="' + s[0] + '"><span class="c2-st' + (s[1].length > 3 ? '' : ' em') + '">' + thumb(s[1]) + '</span><b>' + s[0] + '</b></div>'; }
+    function prod(p, cat){ var off = Math.round((1 - p[4] / p[5]) * 100), u = cat ? cat.unit : 'kg';
+      return '<div class="c2-p" data-goto="product-details"><div class="c2-pi"><img src="' + I(p[1]) + '" alt="" loading="lazy"><span class="c2-off">' + off + '% off</span><span class="c2-rt">' + STAR + p[6] + '</span></div>' +
+        '<div class="c2-pb"><b>' + p[0] + '</b><small><img src="assets/images/flags/' + p[2] + '.png" alt="">' + p[3] + '</small><div class="c2-pr"><em>$' + (p[4] < 10 ? p[4].toFixed(2) : p[4]) + '</em><span>/' + u + '</span><s>$' + (p[5] < 10 ? p[5].toFixed(2) : p[5]) + '</s></div><div class="c2-moq">MOQ ' + p[7] + '</div><div class="c2-incl">' + SHIP + 'Incl. Freight &amp; Shipping</div></div></div>'; }
+    function rail(){
+      $c('c2-chips').innerHTML = CATS.map(function(c, i){ return '<span class="' + (i === cur && !q ? 'on' : '') + '" data-c2="' + i + '"><img src="' + I(c.img) + '" alt="">' + c.k + '</span>'; }).join('');
+      $c('c2-rail').innerHTML = CATS.map(function(c, i){ return '<div class="c2-ri' + (i === cur && !q ? ' on' : '') + '" data-c2="' + i + '"><span><img src="' + I(c.img) + '" alt="" loading="lazy"></span><b>' + c.k + '</b></div>'; }).join('');
+    }
+    function panel(anim){
+      var c = CATS[cur], el = $c('c2-panel'), h;
+      if (q){
+        var ql = q.toLowerCase(), subs = [], ps = [];
+        CATS.forEach(function(x){ x.subs.forEach(function(s){ if ((s[0] + ' ' + x.k).toLowerCase().indexOf(ql) > -1) subs.push(s); }); x.p.forEach(function(p){ if ((p[0] + ' ' + x.k + ' ' + p[3]).toLowerCase().indexOf(ql) > -1) ps.push([p, x]); }); });
+        h = '<div class="c2-sh">Results for “' + q.replace(/</g, '&lt;') + '”</div>' +
+          (subs.length ? '<div class="c2-h"><b>Types</b><small>' + subs.length + '</small></div><div class="c2-subs">' + subs.map(sub).join('') + '</div>' : '') +
+          (ps.length ? '<div class="c2-h"><b>Products</b><small>' + ps.length + '</small></div><div class="c2-ps">' + ps.map(function(x){ return prod(x[0], x[1]); }).join('') + '</div>' : '') +
+          (!subs.length && !ps.length ? '<div class="c2-empty"><i>🔍</i><b>No matches</b><small>Try “mango”, “rice” or “pepper”</small></div>' : '');
+      } else {
+        h = '<div class="c2-hero"><img src="' + I(c.ban) + '" alt=""><div class="c2-hc"><span class="c2-tag">' + c.tag + '</span><h2>' + c.k + '</h2>' +
+            '<div class="c2-stats"><span><b>' + c.n + '+</b>products</span><span><b>' + c.c + '</b>countries</span><span><b>$' + c.from + '</b>from /' + c.unit + '</span></div>' +
+            '</div><button class="c2-all" data-goto="category-products" data-category="' + c.k + '">Explore all ' + ARR + '</button></div>' +
+          '<div class="c2-h"><b>Shop by type</b><small>' + c.subs.length + ' types</small></div><div class="c2-subs">' + c.subs.map(sub).join('') + '</div>' +
+          '<div class="c2-h"><b>Top origins</b></div><div class="c2-orig">' + c.o.map(function(k){ return '<span data-goto="category-products" data-category="' + c.k + ' · ' + CNM[k] + '"><img src="assets/images/flags/' + k + '.png" alt="">' + CNM[k] + '</span>'; }).join('') + '</div>' +
+          '<div class="c2-h"><b>Trending in ' + c.k + '</b><a data-goto="category-products" data-category="' + c.k + '">See all</a></div><div class="c2-ps">' + c.p.map(function(p){ return prod(p, c); }).join('') + '</div>';
+      }
+      el.innerHTML = '<div class="c2-in' + (anim ? ' anim' : '') + '">' + h + '</div>'; el.scrollTop = 0;
+    }
+    function $c(id){ return document.getElementById(id); }
+    rail(); panel(false);
+    var wrap = $c('c2-wrap');
+    function setRail(open){ wrap.classList.toggle('closed', !open); try { localStorage.setItem('c2rail', open ? '1' : '0'); } catch (er) {} }
+    try { if (localStorage.getItem('c2rail') === '0') wrap.classList.add('closed'); } catch (er) {}
+    // swipe left to close the rail, swipe right to open it
+    var sx = null, sy = 0;
+    wrap.addEventListener('pointerdown', function(e){ sx = e.clientX; sy = e.clientY; });
+    wrap.addEventListener('pointerup', function(e){
+      if (sx == null) return; var dx = e.clientX - sx, dy = e.clientY - sy, x0 = sx - wrap.getBoundingClientRect().left; sx = null;
+      if (Math.abs(dx) < 45 || Math.abs(dy) > Math.abs(dx) * 0.7) return;
+      var closed = wrap.classList.contains('closed');
+      if (dx < 0 && !closed && x0 < 140) setRail(false);
+      else if (dx > 0 && closed && x0 < 120) setRail(true);
+    });
+    wrap.addEventListener('pointercancel', function(){ sx = null; });
+    root.addEventListener('click', function(e){
+      var t = e.target.closest('[data-c2]');
+      if (t){ cur = +t.dataset.c2; q = ''; $c('c2-q').value = ''; root.classList.remove('c2-searching'); rail(); panel(true); root.querySelectorAll('.c2-ri.on, #c2-chips .on').forEach(function(x){ x.scrollIntoView({ block:'nearest', inline:'center', behavior:'smooth' }); }); return; }
+      if (e.target.closest('#c2-tog')){ setRail(wrap.classList.contains('closed')); return; }
+      if (e.target.closest('#c2-x')){ q = ''; $c('c2-q').value = ''; root.classList.remove('c2-searching'); rail(); panel(true); }
+    });
+    $c('c2-q').addEventListener('input', function(){ q = this.value.trim(); root.classList.toggle('c2-searching', !!q); rail(); panel(false); });
+  })();
