@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Venture Kart Color Systems</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Playfair+Display:wght@700&family=IBM+Plex+Mono:wght@600&display=swap" rel="stylesheet">
+<style>
+*{ box-sizing:border-box; margin:0; padding:0; }
+body{ font-family:Inter,system-ui,sans-serif; background:#F2F2F0; color:#101828; padding:36px 16px 70px; }
+.pg{ max-width:1520px; margin:0 auto 24px; }
+.pg h1{ font-size:30px; font-weight:900; letter-spacing:-.5px; }
+.pg > p{ font-size:14px; color:#475467; margin-top:6px; max-width:820px; line-height:1.55; }
+.rules{ display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+.rules span{ font-size:12px; font-weight:600; color:#344054; background:#fff; border:1px solid #E4E7EC; padding:6px 11px; border-radius:20px; }
+.rules b{ color:#101828; }
+.tabs{ display:flex; gap:8px; margin-top:16px; flex-wrap:wrap; }
+.tabs span{ padding:8px 15px; border-radius:20px; background:#fff; border:1px solid #E4E7EC; font-size:12.5px; font-weight:700; cursor:pointer; }
+.tabs span.on{ background:#101828; color:#fff; border-color:#101828; }
+.wall{ max-width:1520px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fill,minmax(350px,1fr)); gap:40px 26px; }
+.th{ display:flex; flex-direction:column; align-items:center; }
+.meta{ width:330px; margin-top:14px; }
+.meta h2{ font-size:16px; font-weight:900; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.meta h2 em{ font-style:normal; font-size:9.5px; font-weight:800; text-transform:uppercase; letter-spacing:.6px; padding:3px 8px; border-radius:6px; background:#101828; color:#fff; }
+.meta h2 em.l{ background:#E0F2FE; color:#075985; } .meta h2 em.d{ background:#1D2939; color:#FEC84B; }
+.meta p{ font-size:12px; color:#475467; margin-top:4px; line-height:1.45; }
+.ratio{ display:flex; height:28px; border-radius:9px; overflow:hidden; margin-top:9px; box-shadow:0 0 0 1px rgba(16,24,40,.08); }
+.ratio span{ display:flex; align-items:center; justify-content:center; font-size:9.5px; font-weight:800; }
+.scale{ display:flex; margin-top:6px; border-radius:7px; overflow:hidden; height:14px; } .scale i{ flex:1; }
+.chk{ display:flex; flex-wrap:wrap; gap:5px; margin-top:8px; }
+.chk span{ font-size:10.5px; font-weight:700; padding:3px 7px; border-radius:6px; background:#ECFDF3; color:#067647; }
+.chk span.w{ background:#FEF3F2; color:#B42318; }
+/* phone */
+.ph{ width:330px; height:714px; border-radius:50px; padding:10px; background:#0C111D; box-shadow:0 0 0 2px #344054, 0 30px 60px rgba(16,24,40,.28); }
+.sc{ position:relative; width:100%; height:100%; border-radius:40px; overflow:hidden; background:var(--bg); display:flex; flex-direction:column; }
+.isl{ position:absolute; top:9px; left:50%; transform:translateX(-50%); width:96px; height:28px; border-radius:16px; background:#000; z-index:9; }
+.sb{ height:42px; display:flex; justify-content:space-between; align-items:center; padding:6px 26px 0 30px; font-size:13px; font-weight:700; color:var(--hdrFg); background:var(--hdrBg); flex:none; }
+.sb i{ font-style:normal; font-size:10px; letter-spacing:2px; }
+.hd{ background:var(--hdrBg); padding:6px 14px 12px; flex:none; border-bottom:1.5px solid var(--hdrLine); }
+.row{ display:flex; gap:7px; align-items:center; }
+.av{ width:36px; height:36px; border-radius:50%; background:var(--accent); color:var(--onAccent); font-family:'Playfair Display',serif; font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; flex:none; }
+.svc{ flex:1; height:36px; border-radius:11px; display:flex; align-items:center; justify-content:center; gap:5px; font-size:12px; font-weight:700; color:var(--chipFg); background:var(--chipBg); border:1px solid var(--chipLine); }
+.svc svg{ width:14px; height:14px; stroke:var(--chipIc); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.srch{ margin-top:9px; display:flex; gap:7px; }
+.srch div{ flex:1; min-width:0; white-space:nowrap; overflow:hidden; height:38px; border-radius:12px; background:var(--fieldBg); border:1px solid var(--fieldLine); display:flex; align-items:center; gap:8px; padding:0 11px; font-size:12px; color:var(--text2); font-weight:500; }
+.srch svg{ width:15px; height:15px; stroke:var(--text2); fill:none; stroke-width:2; flex:none; }
+.bell{ width:38px; height:38px; border-radius:12px; background:var(--chipBg); border:1px solid var(--chipLine); display:flex; align-items:center; justify-content:center; position:relative; flex:none; }
+.bell svg{ width:16px; height:16px; stroke:var(--chipIc); fill:none; stroke-width:2; }
+.bell:after{ content:""; position:absolute; top:8px; right:9px; width:6px; height:6px; border-radius:50%; background:var(--danger); box-shadow:0 0 0 1.5px var(--chipBg); }
+.body{ flex:1; overflow:hidden; position:relative; }
+.cats{ display:flex; gap:9px; padding:11px 12px; background:var(--surface); border-bottom:1px solid var(--outline); }
+.cat{ display:flex; flex-direction:column; align-items:center; gap:4px; font-size:10.5px; font-weight:600; color:var(--text); }
+.cat span{ width:52px; height:52px; border-radius:50%; overflow:hidden; border:1.5px solid var(--outline); padding:2px; background:var(--surface); }
+.cat span img{ width:100%; height:100%; object-fit:cover; border-radius:50%; display:block; }
+.cat .all{ background:var(--primary); border-color:var(--primary); display:flex; align-items:center; justify-content:center; padding:0; }
+.cat .all svg{ width:20px; height:20px; stroke:var(--onPrimary); fill:none; stroke-width:2; }
+.cat.on{ font-weight:800; }
+.hero{ margin:12px; height:150px; border-radius:18px; overflow:hidden; position:relative; }
+.hero img{ width:100%; height:100%; object-fit:cover; }
+.hero:after{ content:""; position:absolute; inset:0; background:linear-gradient(90deg, var(--scrim) 0%, var(--scrim) 30%, transparent 100%); opacity:.9; }
+.hero div{ position:absolute; left:16px; top:0; bottom:0; z-index:1; display:flex; flex-direction:column; justify-content:center; color:#fff; }
+.hero small{ font-size:9.5px; font-weight:800; letter-spacing:1.2px; color:var(--eyebrow); }
+.hero b{ font-family:var(--display); font-size:21px; font-weight:800; margin:4px 0 2px; letter-spacing:-.2px; }
+.hero span{ font-size:10.5px; opacity:.92; }
+.hero em{ margin-top:9px; align-self:flex-start; font-style:normal; font-size:11px; font-weight:800; padding:7px 14px; border-radius:20px; background:var(--accent); color:var(--onAccent); }
+.dots{ display:flex; justify-content:center; gap:4px; margin:-2px 0 10px; } .dots i{ width:5px; height:5px; border-radius:3px; background:var(--outline2); } .dots i:last-child{ width:16px; background:var(--primary); }
+.sh{ display:flex; justify-content:space-between; align-items:center; padding:0 14px; }
+.sh b{ font-family:var(--display); font-size:18px; font-weight:800; color:var(--text); letter-spacing:-.2px; }
+.sh span{ font-size:10.5px; font-weight:700; color:var(--link); }
+.ship{ margin:9px 12px 12px; padding:10px; border-radius:16px; background:var(--surface); display:flex; gap:10px; border:1px solid var(--outline); box-shadow:0 1px 3px rgba(16,24,40,.06); }
+.ship img{ width:52px; height:52px; border-radius:11px; object-fit:cover; }
+.ship div{ flex:1; min-width:0; }
+.ship b{ font-size:12px; font-weight:800; color:var(--text); display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ship small{ font-size:10px; color:var(--text2); font-weight:500; }
+.st{ float:right; font-size:9px; font-weight:800; padding:2px 6px; border-radius:6px; background:var(--infoBg); color:var(--info); }
+.trk{ display:flex; align-items:center; gap:6px; margin-top:6px; font-size:9.5px; font-weight:800; color:var(--text); }
+.trk i{ flex:1; height:4px; border-radius:2px; background:var(--surface2); position:relative; overflow:hidden; }
+.trk i:after{ content:""; position:absolute; left:0; top:0; bottom:0; width:62%; background:var(--primary); border-radius:2px; }
+.deal{ margin:0 12px; padding:13px 0 13px 13px; border-radius:18px; background:var(--dealBg); border:1px solid var(--dealLine); }
+.deal .dh{ display:flex; justify-content:space-between; align-items:center; padding-right:13px; }
+.deal .dh b{ font-family:var(--display); font-size:17px; color:var(--dealFg); font-weight:800; }
+.deal .dh small{ display:flex; align-items:center; gap:5px; font-size:10px; font-weight:600; color:var(--dealFg2); margin-top:3px; }
+.deal .dh small em{ font-style:normal; font-family:'IBM Plex Mono',monospace; font-size:10.5px; padding:2px 6px; border-radius:6px; background:var(--timerBg); color:var(--timerFg); }
+.deal .go{ width:30px; height:30px; border-radius:50%; background:var(--accent); color:var(--onAccent); display:flex; align-items:center; justify-content:center; font-weight:900; }
+.dl{ display:flex; gap:8px; margin-top:10px; }
+.dc{ width:118px; flex:none; background:var(--surface); border-radius:14px; padding:6px; border:1px solid var(--outline); }
+.dc .di{ position:relative; height:68px; border-radius:10px; overflow:hidden; }
+.dc .di img{ width:100%; height:100%; object-fit:cover; }
+.dc .di span{ position:absolute; left:4px; top:4px; font-size:8.5px; font-weight:900; color:#fff; background:var(--danger); padding:2px 5px; border-radius:5px; }
+.dc b{ display:block; font-size:10.5px; font-weight:700; color:var(--text); margin-top:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.dc em{ font-style:normal; font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; color:var(--text); }
+.dc em s{ color:var(--text2); font-size:9px; margin-left:3px; }
+.dc i{ display:block; margin-top:4px; font-style:normal; font-size:8px; font-weight:700; color:var(--success); background:var(--successBg); padding:3px 5px; border-radius:6px; }
+.nav{ position:absolute; left:10px; right:10px; bottom:12px; height:56px; border-radius:20px; background:var(--navBg); display:flex; justify-content:space-around; align-items:center; box-shadow:0 8px 24px rgba(16,24,40,.18); border:1px solid var(--navLine); z-index:5; }
+.nav span{ display:flex; flex-direction:column; align-items:center; gap:2px; font-size:9.5px; font-weight:600; color:var(--navFg); padding:5px 8px; border-radius:12px; }
+.nav svg{ width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.nav span.on{ color:var(--navOn); background:var(--navOnBg); font-weight:800; }
+.home{ position:absolute; bottom:4px; left:50%; transform:translateX(-50%); width:110px; height:4px; border-radius:2px; background:var(--text); opacity:.85; z-index:6; }
+.th.hide{ display:none; }
+.src{ max-width:1520px; margin:40px auto 0; font-size:12px; color:#667085; line-height:1.6; }
+.src a{ color:#344054; }
+</style></head><body>
+<div class="pg">
+  <h1>Venture Kart — colour systems</h1>
+  <p>Every theme below is built as a proper design system, not just recoloured. The same rules are applied to all 12 so they stay consistent across the whole app:</p>
+  <div class="rules">
+    <span><b>60 / 30 / 10</b> — neutral surfaces · brand · one accent</span>
+    <span><b>Tonal brand scale</b> 50→900, no random shades</span>
+    <span><b>Accent = actions only</b> (CTA, timer, active)</span>
+    <span><b>Fixed status colours</b> success · danger · info</span>
+    <span><b>WCAG AA</b> 4.5:1 text contrast, checked live</span>
+    <span><b>White cards</b> + 1px outline, soft shadow</span>
+  </div>
+  <div class="tabs" id="tabs"><span class="on" data-f="all">All 12</span><span data-f="Classic">Classic</span><span data-f="Bold">Bold</span><span data-f="Light">Light</span><span data-f="Sea">Sea blue</span><span data-f="Current">Current</span></div>
+</div>
+<div class="wall" id="wall"></div>
+<div class="src">References used for the rules: 60-30-10 colour rule (<a href="https://uxplanet.org/the-60-30-10-rule-a-foolproof-way-to-choose-colors-for-your-ui-design-d15625e56d25">UX Planet</a>, <a href="https://rometheme.net/blog/uncategorized/the-60-30-10-color-rule-in-ui-design/">Rometheme</a>), Material Design 3 colour roles — primary / on-primary / containers / surfaces (<a href="https://developer.android.com/reference/kotlin/androidx/compose/material3/ColorScheme">Android ColorScheme</a>, <a href="https://docs.flutter.dev/release/breaking-changes/new-color-scheme-roles">Flutter M3 roles</a>), WCAG 2.1 AA contrast.</div>
+<script>
+var IMG = 'assets/images/';
+// semantic roles per theme (Material-3 style). scale = brand tonal ramp 50..900
+var SER = "'Playfair Display',serif", SANS = 'Inter,sans-serif';
+function mk(o){ // builds the full role set from a few classic inputs
+  var dark = o.dark, r = {
+    bg:o.bg, surface:o.surface || '#FFFFFF', surface2:o.surface2, outline:o.outline, outline2:o.outline2, text:o.text, text2:o.text2,
+    primary:o.brand, onPrimary:'#FFFFFF', accent:o.cta, onAccent:o.onCta || '#FFFFFF', link:o.link || o.cta, eyebrow:o.metalLight, scrim:o.scrim, display:o.display || SER,
+    hdrBg:o.hdr || o.brand, hdrFg:'#FFFFFF', hdrLine:o.metal, chipBg:'rgba(255,255,255,.06)', chipLine:'rgba(255,255,255,.14)', chipFg:'#FFFFFF', chipIc:o.metalLight,
+    fieldBg:o.surface || '#FFFFFF', fieldLine:'transparent',
+    dealBg:o.deal || o.brand, dealLine:'transparent', dealFg:'#FFFFFF', dealFg2:'rgba(255,255,255,.72)', timerBg:o.metalLight, timerFg:o.brandDeep || o.brand,
+    navBg:o.nav || o.brandDeep || o.brand, navLine:'transparent', navFg:'rgba(255,255,255,.55)', navOn:o.metalLight, navOnBg:'rgba(255,255,255,.08)',
+    success:'#067647', successBg:'#ECFDF3', danger:o.danger || '#B42318', info:o.info || '#1D4E89', infoBg:o.infoBg || '#EEF3FA' };
+  if (o.lightHeader){ Object.assign(r, { dealBg:o.surface2, dealLine:o.outline, dealFg:o.text, dealFg2:o.text2, timerBg:o.brand, timerFg:'#FFFFFF', accent:o.cta, hdrBg:o.surface || '#FFFFFF', hdrFg:o.text, hdrLine:o.metal, chipBg:o.surface2, chipLine:'transparent', chipFg:o.text, chipIc:o.brand, fieldBg:o.surface2, navBg:o.surface || '#FFFFFF', navLine:o.outline, navFg:o.text2, navOn:o.brand, navOnBg:o.surface2 }); }
+  return r;
+}
+var T = [
+  { n:'Navy & Gold', tags:['Current','Classic'], d:'Your current identity, tightened: navy brand scale, one brushed-gold accent for actions, warm ivory surfaces.',
+    scale:['#EEF2F7','#D5DEEA','#A9BBD3','#6F8BB0','#3D5A82','#1F3A5F','#132A47','#0D1F36','#08192B','#020914'],
+    r:mk({ bg:'#F6F4EF', surface2:'#EFEBE3', outline:'#E7E1D6', outline2:'#D9D2C4', text:'#0D1B2E', text2:'#5B6576', brand:'#0D1F36', brandDeep:'#08192B', cta:'#9A6420', link:'#8A5A1C', metal:'#B87D2D', metalLight:'#F5C26B', scrim:'rgba(8,25,43,.85)' }) },
+  { n:'Black Tie', tags:['Classic','Bold'], d:'Jet black, pure white and champagne gold — the most formal palette there is. Timeless, bold, unmistakably premium.',
+    scale:['#FAF8F3','#EFE9DC','#E2D6BC','#CDB98E','#B89B62','#9C7E45','#6E5A33','#3A3428','#1C1B19','#0A0A0A'],
+    r:mk({ bg:'#FAF8F3', surface2:'#F1ECE1', outline:'#E8E1D2', outline2:'#D6CCB6', text:'#0A0A0A', text2:'#5E5A52', brand:'#0A0A0A', brandDeep:'#000000', cta:'#8C6D35', link:'#7A5E2B', metal:'#C9A96E', metalLight:'#E2CB95', scrim:'rgba(0,0,0,.82)' }) },
+  { n:'Bordeaux', tags:['Classic','Bold'], d:'Deep wine-burgundy with antique gold on cream — rich, heritage, like a fine trading house letterhead.',
+    scale:['#FBF3F4','#F3DDE0','#E5B7BD','#CF8792','#B35A68','#8E3445','#6E2233','#561A28','#3F121D','#2A0B13'],
+    r:mk({ bg:'#FAF6EF', surface2:'#F2EBDF', outline:'#E9DFCF', outline2:'#D8CAB3', text:'#2A0B13', text2:'#6B5B5E', brand:'#561A28', brandDeep:'#3F121D', cta:'#8C6528', link:'#6E2233', metal:'#B48A4A', metalLight:'#E3C48A', scrim:'rgba(42,11,19,.85)' }) },
+  { n:'Racing Green', tags:['Classic','Bold'], d:'British racing green with polished brass on parchment — understated luxury, fits agri-commodity trade perfectly.',
+    scale:['#F1F6F2','#D9E7DC','#B0CDB7','#7FAA89','#4E8560','#2C6441','#1D4D30','#163D26','#0F2C1B','#081C11'],
+    r:mk({ bg:'#F7F4EC', surface2:'#EFEADD', outline:'#E5DECD', outline2:'#D3C9B2', text:'#0F2C1B', text2:'#5C6659', brand:'#163D26', brandDeep:'#0F2C1B', cta:'#87672A', link:'#1D4D30', metal:'#B08D4A', metalLight:'#DFC286', scrim:'rgba(8,28,17,.85)' }) },
+  { n:'Admiralty', tags:['Classic','Sea','Bold'], d:'Naval navy, crisp white and a single signal-red — maritime tradition; bold and trustworthy for shipping.',
+    scale:['#EEF2F8','#D3DDEC','#A7BBD9','#7194C0','#4570A6','#28508A','#1B3C6E','#142E57','#0E2142','#08152C'],
+    r:mk({ bg:'#F7F8FA', surface2:'#EEF1F5', outline:'#E3E7ED', outline2:'#CDD4DE', text:'#0E2142', text2:'#5A6578', brand:'#142E57', brandDeep:'#0E2142', cta:'#B3261E', link:'#B3261E', metal:'#C9D3E1', metalLight:'#FFFFFF', scrim:'rgba(8,21,44,.85)', danger:'#B3261E' }) },
+  { n:'Oxford Ink', tags:['Classic','Sea'], d:'Ink-blue and ivory with a brass hairline — scholarly and calm; a softer, more refined take on navy.',
+    scale:['#F0F3F8','#D9E0EC','#B3C1D8','#8098BB','#56739C','#3A5680','#2B4266','#22344F','#18263A','#0F1826'],
+    r:mk({ bg:'#FBF9F4', surface2:'#F2EFE7', outline:'#E7E2D7', outline2:'#D5CEBF', text:'#18263A', text2:'#5F6876', brand:'#22344F', brandDeep:'#18263A', cta:'#86662C', link:'#2B4266', metal:'#A88449', metalLight:'#D9BD86', scrim:'rgba(15,24,38,.85)' }) },
+  { n:'Espresso & Cream', tags:['Classic'], d:'Deep espresso brown, cream and burnished copper — warm, artisanal, like leather and wood; great for spices & coffee.',
+    scale:['#FAF5F0','#EFE3D6','#DCC5AC','#C2A07D','#A07A55','#7D5A3C','#5F432D','#4A3423','#33241A','#21170F'],
+    r:mk({ bg:'#FBF7F0', surface2:'#F2EADD', outline:'#E9DECB', outline2:'#D7C7AC', text:'#21170F', text2:'#6A5D51', brand:'#33241A', brandDeep:'#21170F', cta:'#9A4F24', link:'#8A4520', metal:'#B87333', metalLight:'#E2A86E', scrim:'rgba(33,23,15,.85)' }) },
+  { n:'Platinum Navy', tags:['Classic','Bold'], d:'Midnight navy with platinum-silver instead of gold — cooler, more corporate and modern-classic.',
+    scale:['#F2F4F7','#E1E5EB','#C3CBD6','#9AA6B6','#6F7E93','#4C5B72','#334259','#233148','#172236','#0C1424'],
+    r:mk({ bg:'#F5F6F8', surface2:'#ECEEF2', outline:'#E1E4EA', outline2:'#CBD0D9', text:'#0C1424', text2:'#5A6475', brand:'#172236', brandDeep:'#0C1424', cta:'#56657D', link:'#334259', metal:'#AEB7C4', metalLight:'#DDE2EA', scrim:'rgba(12,20,36,.85)', display:SANS }) },
+  { n:'Ivory Classic', tags:['Classic','Light'], d:'Light & luxurious: ivory everywhere, navy serif type and gold hairlines — no dark panels, still very premium.',
+    scale:['#FFFDF8','#FBF6EA','#F3E9D2','#E6D3AC','#D2B57E','#B8924F','#94733C','#5E4D2F','#2C3448','#141B2D'],
+    r:mk({ bg:'#FBF8F1', surface:'#FFFFFF', surface2:'#F4EFE3', outline:'#E9E1CF', outline2:'#D9CDB2', text:'#141B2D', text2:'#646A76', brand:'#141B2D', brandDeep:'#141B2D', cta:'#141B2D', link:'#8C6A2F', metal:'#C9A45C', metalLight:'#C9A45C', scrim:'rgba(20,27,45,.82)', lightHeader:true, deal:'#141B2D' }) },
+  { n:'Coastal Light', tags:['Light','Sea'], d:'White-first with a confident sea blue — the clean modern option you asked for, kept restrained (one blue only).',
+    scale:['#EFF8FF','#D1E9FF','#B2DDFF','#84CAFF','#53B1FD','#2E90FA','#1570EF','#175CD3','#1849A9','#194185'],
+    r:{ bg:'#F8FAFC', surface:'#FFFFFF', surface2:'#EEF2F6', outline:'#E4E7EC', outline2:'#D0D5DD', text:'#101828', text2:'#667085',
+      primary:'#175CD3', onPrimary:'#FFFFFF', accent:'#175CD3', onAccent:'#FFFFFF', link:'#175CD3', eyebrow:'#B2DDFF', scrim:'rgba(16,24,40,.78)', display:SANS,
+      hdrBg:'#FFFFFF', hdrFg:'#101828', hdrLine:'#EEF2F6', chipBg:'#F2F4F7', chipLine:'transparent', chipFg:'#344054', chipIc:'#175CD3', fieldBg:'#F2F4F7', fieldLine:'transparent',
+      dealBg:'#194185', dealLine:'transparent', dealFg:'#FFFFFF', dealFg2:'rgba(255,255,255,.75)', timerBg:'#FFFFFF', timerFg:'#194185',
+      navBg:'#FFFFFF', navLine:'#EAECF0', navFg:'#98A2B3', navOn:'#175CD3', navOnBg:'#EFF8FF',
+      success:'#067647', successBg:'#ECFDF3', danger:'#D92D20', info:'#175CD3', infoBg:'#EFF8FF' } },
+  { n:'Ocean Navy', tags:['Sea','Bold'], d:'Deep ocean navy chrome with a strong sea-blue for actions — the established shipping-line look.',
+    scale:['#EAF2FB','#CCE0F5','#99C1EB','#5E9BDE','#2F7BD1','#1565C0','#0F4F99','#0B3D78','#082C57','#051D3A'],
+    r:mk({ bg:'#F5F7FA', surface2:'#E9EEF5', outline:'#E3E8EF', outline2:'#CDD5E0', text:'#0B1B33', text2:'#5D6B82', brand:'#082C57', brandDeep:'#051D3A', cta:'#1565C0', link:'#1565C0', metal:'#5E9BDE', metalLight:'#99C1EB', scrim:'rgba(5,29,58,.85)', display:SANS }) },
+  { n:'Onyx & Brass', tags:['Classic','Bold'], d:'Full dark luxury: onyx surfaces, brass accents, serif headings — like a premium watch or private-bank app.',
+    scale:['#F7F3EA','#E9DDC2','#D6C095','#C1A268','#A98646','#866A37','#5F4C2A','#2E2B26','#1A1917','#0D0D0C'],
+    r:{ bg:'#0D0D0C', surface:'#181715', surface2:'#24221F', outline:'#2C2A26', outline2:'#3A3731', text:'#F4EFE4', text2:'#A39C8E',
+      primary:'#C1A268', onPrimary:'#14110B', accent:'#C1A268', onAccent:'#14110B', link:'#D6C095', eyebrow:'#D6C095', scrim:'rgba(13,13,12,.85)', display:SER,
+      hdrBg:'#0D0D0C', hdrFg:'#F4EFE4', hdrLine:'#3A3020', chipBg:'#181715', chipLine:'#2C2A26', chipFg:'#F4EFE4', chipIc:'#C1A268', fieldBg:'#181715', fieldLine:'#2C2A26',
+      dealBg:'#181715', dealLine:'#3A3020', dealFg:'#F4EFE4', dealFg2:'#A39C8E', timerBg:'#C1A268', timerFg:'#14110B',
+      navBg:'#181715', navLine:'#2C2A26', navFg:'#7D776B', navOn:'#C1A268', navOnBg:'rgba(193,162,104,.12)',
+      success:'#47CD89', successBg:'rgba(71,205,137,.12)', danger:'#F04438', info:'#D6C095', infoBg:'rgba(214,192,149,.12)' } }
+];
+// ---- WCAG contrast ----
+function rgb(c){ c = c.trim(); if (c[0] !== '#') return null; if (c.length === 4) c = '#' + c[1]+c[1]+c[2]+c[2]+c[3]+c[3]; return [1,3,5].map(function(i){ return parseInt(c.substr(i,2),16)/255; }); }
+function lum(c){ var a = rgb(c); if (!a) return null; a = a.map(function(v){ return v <= .03928 ? v/12.92 : Math.pow((v+.055)/1.055, 2.4); }); return .2126*a[0]+.7152*a[1]+.0722*a[2]; }
+function cr(a, b){ var x = lum(a), y = lum(b); if (x == null || y == null) return null; return (Math.max(x,y)+.05)/(Math.min(x,y)+.05); }
+function ic(p){ return '<svg viewBox="0 0 24 24">' + p + '</svg>'; }
+var I = { plane:ic('<path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>'), ship:ic('<path d="M2 20c2 1 4 1 6 0s4-1 6 0 4 1 6 0"/><path d="M4 18l-1-5h18l-2 5"/><path d="M12 4v9M7 13V8h10v5"/>'), wh:ic('<path d="M3 21V8l9-5 9 5v13"/><path d="M7 21v-8h10v8M7 17h10"/>'), srch:ic('<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>'), bell:ic('<path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 01-3.4 0"/>'), grid:ic('<rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/>'),
+  home:ic('<path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/>'), bag:ic('<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2"/>'), truck:ic('<path d="M1 5h13v11H1zM14 9h4l4 4v3h-8z"/><circle cx="5.5" cy="18" r="2"/><circle cx="17.5" cy="18" r="2"/>'), user:ic('<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>') };
+function phone(t){
+  var css = Object.keys(t.r).map(function(k){ return '--' + k + ':' + t.r[k]; }).join(';');
+  return '<div class="ph"><div class="sc" style="' + css + '"><div class="isl"></div><div class="sb"><span>9:41</span><i>●●● ▮</i></div>' +
+    '<div class="hd"><div class="row"><span class="av">JD</span><span class="svc">' + I.plane + 'Air</span><span class="svc">' + I.ship + 'Sea</span><span class="svc">' + I.wh + 'Warehouse</span></div>' +
+    '<div class="srch"><div>' + I.srch + 'Search mango, basmati, cardamom</div><span class="bell">' + I.bell + '</span></div></div>' +
+    '<div class="body"><div class="cats"><div class="cat on"><span class="all">' + I.grid + '</span>All</div><div class="cat"><span><img src="' + IMG + 'mango.jpg"></span>Fruits</div><div class="cat"><span><img src="' + IMG + 'rice.jpg"></span>Grains</div><div class="cat"><span><img src="' + IMG + 'chilli.jpg"></span>Spices</div><div class="cat"><span><img src="' + IMG + 'cashew.jpg"></span>Nuts</div></div>' +
+    '<div class="hero"><img src="' + IMG + 'orchard.jpg"><div><small>PRE-BOOK 2027</small><b>Alphonso Season</b><span>Reserve mango volumes before March</span><em>Reserve  ›</em></div></div><div class="dots"><i></i><i></i><i></i></div>' +
+    '<div class="sh"><b>Active Shipment</b><span>All orders ›</span></div>' +
+    '<div class="ship"><img src="' + IMG + 'mango.jpg"><div><span class="st">In transit</span><b>Alphonso Mango · 500 KG</b><small>ORD-1024 · MSC Sample Star</small><div class="trk">INNSA<i></i>AEJEA</div></div></div>' +
+    '<div class="deal"><div class="dh"><div><b>Deals of the Day</b><small>Ends in <em>05:34:39</em></small></div><span class="go">›</span></div><div class="dl">' +
+    [['cardamom','8% OFF','Green Cardamom','$28.50','$31'],['cashew','7% OFF','Cashew Kernels','$7.10','$7.6'],['chilli','10% OFF','Teja Chilli','$2.80','$3.1']].map(function(d){ return '<div class="dc"><div class="di"><img src="' + IMG + d[0] + '.jpg"><span>' + d[1] + '</span></div><b>' + d[2] + '</b><em>' + d[3] + '<s>' + d[4] + '</s></em><i>Incl. Freight &amp; Shipping</i></div>'; }).join('') +
+    '</div></div></div>' +
+    '<div class="nav"><span class="on">' + I.home + 'Home</span><span>' + I.grid + 'Categories</span><span>' + I.bag + 'Services</span><span>' + I.truck + 'Orders</span><span>' + I.user + 'Account</span></div><div class="home"></div></div></div>';
+}
+function meta(t, i){
+  var r = t.r, isHdrHex = r.hdrBg[0] === '#';
+  var checks = [['Body text', cr(r.text, r.surface)], ['Secondary text', cr(r.text2, r.surface)], ['Button text', cr(r.onAccent, r.accent)], ['Header text', isHdrHex ? cr(r.hdrFg, r.hdrBg) : null], ['Brand on surface', cr(r.primary, r.surface)]];
+  var tag = t.tags.map(function(x){ return '<em class="' + (x === 'Light' ? 'l' : x === 'Bold' ? 'd' : '') + '">' + x + '</em>'; }).join('');
+  return '<div class="meta"><h2>' + (i + 1) + ' · ' + t.n + tag + '</h2><p>' + t.d + '</p>' +
+    '<div class="ratio"><span style="flex:6;background:' + r.bg + ';color:' + r.text2 + '">60% surface</span><span style="flex:3;background:' + r.primary + ';color:' + r.onPrimary + '">30% brand</span><span style="flex:1;background:' + r.accent + ';color:' + r.onAccent + '">10%</span></div>' +
+    '<div class="scale">' + t.scale.map(function(c){ return '<i style="background:' + c + '"></i>'; }).join('') + '</div>' +
+    '<div class="chk">' + checks.filter(function(c){ return c[1]; }).map(function(c){ var ok = c[1] >= 4.5 || (c[0] === 'Brand on surface' && c[1] >= 3); return '<span class="' + (ok ? '' : 'w') + '">' + (ok ? '✓ ' : '! ') + c[0] + ' ' + c[1].toFixed(1) + ':1</span>'; }).join('') + '</div></div>';
+}
+var f = 'all';
+function draw(){
+  document.getElementById('wall').innerHTML = T.map(function(t, i){ return '<div class="th' + (f === 'all' || t.tags.indexOf(f) > -1 ? '' : ' hide') + '">' + phone(t) + meta(t, i) + '</div>'; }).join('');
+  document.querySelectorAll('#tabs span').forEach(function(s){ s.classList.toggle('on', s.dataset.f === f); });
+}
+document.getElementById('tabs').addEventListener('click', function(e){ var s = e.target.closest('[data-f]'); if (s){ f = s.dataset.f; draw(); } });
+draw();
+</script>
+</body></html>

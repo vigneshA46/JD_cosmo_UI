@@ -12,8 +12,9 @@
     if (scroller) scroller.scrollTop = 0;
   }
 
+  var tabHist = [];
   function goTo(id, reset){
-    if (reset){ stack = [id]; } else { stack.push(id); }
+    if (reset){ if (stack[stack.length - 1] !== id){ tabHist.push(stack.slice()); if (tabHist.length > 20) tabHist.shift(); } stack = [id]; } else { stack.push(id); }
     if (id === 'home'){ closeHomeSearch(); }
     render();
   }
@@ -35,6 +36,7 @@
   }
 
   document.addEventListener('click', function(e){
+    if (e.target.closest('[data-tabback]')){ if (stack.length > 1) goBack(); else if (tabHist.length){ stack = tabHist.pop(); render(); } else goTo('home', true); return; }
     var backBtn = e.target.closest('[data-back]');
     if (backBtn){ goBack(); return; }
     var openSearch = e.target.closest('[data-open-search]');
@@ -1579,7 +1581,7 @@
     function renderCustoms(){
       var f = cuForm(), d = dest(), est = rq.cu && rq.cu.est;
       document.querySelectorAll('[data-cu-tab]').forEach(function(t){ t.classList.toggle('on', t.dataset.cuTab === cuTab); });
-      $('cu-new').style.display = cuTab === 'new' ? '' : 'none'; $('cu-track').style.display = cuTab === 'track' ? '' : 'none';
+      
       $('cu-country').innerHTML = '<img src="assets/images/flags/' + d.code + '.png" alt="">' + d.name + '<small>Import</small>';
       $('cu-port').innerHTML = (sea() ? D.icons.ship : D.icons.plane) + (rq.port ? rq.port[1] + ' <small>' + rq.port[0] + '</small>' : 'Any ' + (sea() ? 'port' : 'airport') + ' in ' + d.name);
       $('cu-type').innerHTML = CU_TYPES.map(function(x, i){ return '<option value="' + i + '"' + (i === f.type ? ' selected' : '') + '>' + x + '</option>'; }).join('');
@@ -2066,7 +2068,21 @@
       if (e.target.closest('[data-goto="order-details"]:not([data-o2])')) detail();
       if ((t = e.target.closest('.tab-pill[data-tab-panel]')) && t.closest('#screen-orders')) $o('screen-orders').classList.toggle('o2-q', t.dataset.tabPanel === 'quotations-panel');
     }, true);
-    $o('o2-q').addEventListener('input', function(){ q = this.value.trim().toLowerCase(); list(); });
+    var qf = 'all';
+    function qList(){
+      var qq = $o('o2-q').value.trim().toLowerCase(), n = 0;
+      document.querySelectorAll('#quotations-panel .oc').forEach(function(c){
+        var st = (c.querySelector('.badge') || {}).textContent || '', ok = (qf === 'all' || st.trim() === qf) && (!qq || c.textContent.toLowerCase().indexOf(qq) > -1);
+        c.style.display = ok ? '' : 'none'; if (ok) n++;
+      });
+      var em = $o('q2-empty'); if (em) em.style.display = n ? 'none' : '';
+      document.querySelectorAll('[data-q2f]').forEach(function(c){ c.classList.toggle('on', c.dataset.q2f === qf); });
+    }
+    document.addEventListener('click', function(e){
+      var t = e.target.closest('[data-q2f]'); if (t){ qf = t.dataset.q2f; qList(); return; }
+      if ((t = e.target.closest('.o2-seg .tab-pill[data-tab-panel]'))){ var isQ = t.dataset.tabPanel === 'quotations-panel'; $o('o2-q').value = ''; q = ''; $o('o2-q').placeholder = isQ ? 'Search quotations by ID, product or supplier' : 'Search by Order ID, Product or Supplier'; setTimeout(function(){ list(); qList(); }, 0); }
+    });
+    $o('o2-q').addEventListener('input', function(){ q = this.value.trim().toLowerCase(); if ($o('screen-orders').classList.contains('o2-q')) qList(); else list(); });
     detail();
   })();
 
@@ -2176,5 +2192,53 @@
     c.addEventListener('click', function(){
       var on = c.classList.toggle('on');
       document.getElementById('qv-accept').textContent = on ? 'Accept with Venture Karts · $6,941' : 'Accept Quotation';
+    });
+  })();
+
+  // ---------- Services page: search + category chips ----------
+  (function(){
+    var S = document.getElementById('screen-services'), q = document.getElementById('s2-q'); if (!S || !q) return;
+    var CAT = { 'vessel':'freight', 'air':'freight', 'container':'freight', 'warehouse':'storage', 'inland':'storage', 'insurance':'comp', 'customs':'comp', 'cbm':'comp' };
+    var items = [].slice.call(S.querySelectorAll('.svc, .service-card')), f = 'all';
+    items.forEach(function(el){ var t = el.textContent.toLowerCase(); el.dataset.s2c = Object.keys(CAT).filter(function(k){ return t.indexOf(k) > -1; }).map(function(k){ return CAT[k]; })[0] || 'comp'; });
+    function apply(){
+      var v = q.value.trim().toLowerCase(), n = 0;
+      items.forEach(function(el){ var ok = (f === 'all' || el.dataset.s2c === f) && (!v || el.textContent.toLowerCase().indexOf(v) > -1); el.style.display = ok ? '' : 'none'; if (ok) n++; });
+      S.querySelectorAll('.content > .sh').forEach(function(h){ var g = h.nextElementSibling, vis = g && [].some.call(g.children, function(c){ return c.style.display !== 'none'; }); h.style.display = vis ? '' : 'none'; });
+      var hero = S.querySelector('.svc-hero'); if (hero) hero.style.display = v || f !== 'all' ? 'none' : '';
+      document.getElementById('s2-empty').style.display = n ? 'none' : '';
+      S.classList.toggle('s2-searching', !!v);
+      S.querySelectorAll('[data-s2f]').forEach(function(c){ c.classList.toggle('on', c.dataset.s2f === f); });
+    }
+    q.addEventListener('input', apply);
+    S.addEventListener('click', function(e){
+      var t = e.target.closest('[data-s2f]'); if (t){ f = t.dataset.s2f; apply(); return; }
+      if (e.target.closest('#s2-x')){ q.value = ''; apply(); }
+    });
+  })();
+
+  // ---------- rich page headers (account sub-pages): search + keyword chips ----------
+  (function(){
+    document.querySelectorAll('.pgh[data-items]').forEach(function(h){
+      var scr = h.closest('.screen'), sel = h.dataset.items, q = h.querySelector('.ph2-q'), k = '';
+      var body = scr.querySelector('.screen-scroll .content') || scr.querySelector('.screen-scroll');
+      var em = document.createElement('div'); em.className = 'o2-empty'; em.style.display = 'none'; em.innerHTML = '<b>Nothing found</b><small>Try a different word or filter.</small>'; if (body) body.appendChild(em);
+      function apply(){
+        var v = q ? q.value.trim().toLowerCase() : '', n = 0, re = k ? new RegExp(k, 'i') : null;
+        scr.querySelectorAll('.screen-scroll ' + sel).forEach(function(el){ var t = el.textContent.toLowerCase(), ok = (!re || re.test(t)) && (!v || t.indexOf(v) > -1); el.style.display = ok ? '' : 'none'; if (ok) n++; });
+        em.style.display = n ? 'none' : '';
+        h.classList.toggle('ph2-on', !!v);
+        h.querySelectorAll('[data-phk]').forEach(function(c){ c.classList.toggle('on', c.dataset.phk === k); });
+      }
+      if (q) q.addEventListener('input', apply);
+      h.addEventListener('click', function(e){
+        var c = e.target.closest('[data-phk]'); if (c){ k = c.dataset.phk; apply(); return; }
+        if (e.target.closest('.ph2-x')){ q.value = ''; apply(); }
+      });
+    });
+    document.addEventListener('click', function(e){
+      if (!e.target.closest('[data-ph-read]')) return;
+      document.querySelectorAll('#screen-notifications .notif-card.unread').forEach(function(c){ c.classList.remove('unread'); });
+      var sm = document.querySelector('#screen-notifications .ph2-t small'); if (sm) sm.innerHTML = 'All caught up · last 7 days';
     });
   })();
