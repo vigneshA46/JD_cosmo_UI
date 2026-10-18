@@ -1,4 +1,4 @@
-  var stack = ['login'];
+  var stack = ['auth-login'];
 
   function render(){
     var current = stack[stack.length - 1];
@@ -742,6 +742,7 @@
       setTimeout(function(){ el.remove(); }, short ? 2050 : 3150);
     }
 
+    window.vkSplash = playSplash;
     // ---- service bottom nav: Booking · Cart · Chat · Search ----
     var CART = { sea: [], air: [], wh: [] };
     var CHATS = {};
@@ -2241,4 +2242,307 @@
       document.querySelectorAll('#screen-notifications .notif-card.unread').forEach(function(c){ c.classList.remove('unread'); });
       var sm = document.querySelector('#screen-notifications .ph2-t small'); if (sm) sm.innerHTML = 'All caught up · last 7 days';
     });
+  })();
+
+  // ---------- Auth: Buyer / Seller login, OTP, password reset, registration ----------
+  (function(){
+    if (!document.getElementById('screen-auth-login')) return;
+    function $a(id){ return document.getElementById(id); }
+    function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]; }); }
+    var CROWN = '<svg viewBox="0 0 64 40"><path d="M4 34L10 8l14 14L32 4l8 18L54 8l6 26z"/><rect x="4" y="35.5" width="56" height="3.5" rx="1.5"/></svg>';
+    var CK = '<svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>';
+    var CTRY = [['in','India','+91'],['ae','United Arab Emirates','+971'],['sa','Saudi Arabia','+966'],['qa','Qatar','+974'],['om','Oman','+968'],['sg','Singapore','+65'],['gb','United Kingdom','+44'],['us','United States','+1'],['nl','Netherlands','+31'],['de','Germany','+49'],['lk','Sri Lanka','+94'],['vn','Vietnam','+84'],['th','Thailand','+66'],['ke','Kenya','+254'],['eg','Egypt','+20'],['br','Brazil','+55']];
+    var AU = { role:'buyer', chosen:false, step:0, d:{}, docs:{}, verified:false, otpFor:'login', timer:null };
+    var STEPS = { none:['Verify','Account type','Details','Documents','Review'], buyer:['Verify','Account type','Business','Documents','Review'], seller:['Verify','Account type','Business','Documents','Products','Review'] };
+    function steps(){ return STEPS[AU.chosen ? AU.role : 'none']; }
+    var BTYPES = ['Individual','Company','Importer','Wholesaler','Retailer','Manufacturer','Farmer'];
+    var STYPES = ['Individual','Farmer','Trader','Wholesaler','Manufacturer','Exporter','Distributor'];
+    var CATS = ['Fruits','Vegetables','Grains','Pulses','Spices','Nuts','Oilseeds','Beverages','Textiles','Minerals'];
+    var PACKS = ['Carton boxes','PP woven bags','Jute bags','Jumbo bags (FIBC)','Wooden crates','Drums','Bulk / loose','Custom packing'];
+    var ROLE_N = { buyer:'Buyer', seller:'Seller' };
+    function portal(){ return stack[stack.length - 1] === 'auth-reg' || stack.indexOf('auth-reg') > -1 ? (AU.chosen ? ROLE_N[AU.role] + ' Registration' : 'Create your account') : 'Global B2B Trade Portal'; }
+
+    function logo(){
+      document.querySelectorAll('[data-au-logo]').forEach(function(el){
+        var big = el.classList.contains('big');
+        el.innerHTML = '<span class="au-crown">' + CROWN + '</span><b>VENTURE KART</b>' + '<small>One Platform. Every Market. One Global Network.</small>';
+      });
+      document.querySelectorAll('[data-au-logo-mini]').forEach(function(el){ el.innerHTML = '<span class="au-crown">' + CROWN + '</span><div><b>VENTURE KART</b><small>' + (el.closest('#screen-auth-reg') ? (AU.chosen ? ROLE_N[AU.role] + ' Registration' : 'Create your account') : ROLE_N[AU.role] + ' Portal') + '</small></div>'; });
+    }
+    function setRole(r){
+      AU.role = r;
+      document.querySelectorAll('[data-au-role]').forEach(function(c){ c.classList.toggle('on', c.dataset.auRole === r); });
+      document.querySelectorAll('[data-au-sw]').forEach(function(c){ c.classList.toggle('on', c.dataset.auSw === r); });
+      logo();
+    }
+    function err(input, msg){
+      var f = input.closest('.au-f'), e = f && f.querySelector('.au-err');
+      if (e) e.textContent = msg || '';
+      if (f){ f.classList.toggle('bad', !!msg); if (msg){ f.classList.remove('shake'); void f.offsetWidth; f.classList.add('shake'); } }
+      return !msg;
+    }
+    function strength(v){ var s = 0; if (v.length >= 8) s++; if (/[a-z]/.test(v) && /[A-Z]/.test(v)) s++; if (/\d/.test(v)) s++; if (/[^\w\s]/.test(v)) s++; return s; }
+    function drawStrength(inp){
+      var box = $a(inp.dataset.auStrength); if (!box) return;
+      var s = inp.value ? strength(inp.value) : 0, lbl = ['Too short','Weak','Fair','Good','Strong'][s];
+      box.querySelectorAll('i').forEach(function(i, k){ i.className = k < s ? 'on s' + s : ''; });
+      box.querySelector('small').textContent = inp.value ? lbl : '';
+    }
+    function toast(m){ var t = document.querySelector('.vk-toast'); if (t) t.remove(); t = document.createElement('div'); t.className = 'vk-toast'; t.textContent = m; $a('appBody').appendChild(t); setTimeout(function(){ t.classList.add('out'); }, 1500); setTimeout(function(){ t.remove(); }, 2000); }
+
+    // ---- OTP ----
+    function openOtp(forWhat, to){
+      AU.otpFor = forWhat; $a('ao-to').textContent = to || '+91 98765 43210'; $a('ao-err').textContent = '';
+      $a('ao-t').textContent = forWhat === 'reg' ? 'Verify your mobile number' : forWhat === 'regmail' ? 'Verify your email' : forWhat === 'reset' ? 'Enter reset code' : 'Verify your OTP';
+      $a('ao-step').textContent = forWhat === 'reg' ? 'Step 1 of 2 · mobile' : forWhat === 'regmail' ? 'Step 2 of 2 · email' : '';
+      document.querySelectorAll('#ao-boxes input').forEach(function(i){ i.value = ''; i.classList.remove('f'); });
+      goTo('auth-otp'); setTimeout(function(){ document.querySelector('#ao-boxes input').focus(); }, 350);
+      var left = 45; clearInterval(AU.timer);
+      function tick(){ $a('ao-resend').innerHTML = left > 0 ? 'Resend OTP in <b>00:' + String(left).padStart(2, '0') + '</b>' : 'Didn\'t get it? <a id="ao-again">Resend OTP</a>'; left--; if (left < -1) clearInterval(AU.timer); }
+      tick(); AU.timer = setInterval(tick, 1000);
+    }
+    var boxes = [].slice.call(document.querySelectorAll('#ao-boxes input'));
+    boxes.forEach(function(b, i){
+      b.addEventListener('input', function(){ b.value = b.value.replace(/\D/g, '').slice(-1); b.classList.toggle('f', !!b.value); if (b.value && boxes[i + 1]) boxes[i + 1].focus(); });
+      b.addEventListener('keydown', function(e){ if (e.key === 'Backspace' && !b.value && boxes[i - 1]){ boxes[i - 1].focus(); boxes[i - 1].value = ''; boxes[i - 1].classList.remove('f'); } });
+      b.addEventListener('paste', function(e){ var t = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6); if (!t) return; e.preventDefault(); boxes.forEach(function(x, k){ x.value = t[k] || ''; x.classList.toggle('f', !!x.value); }); (boxes[t.length] || boxes[5]).focus(); });
+    });
+    function otpDone(){
+      var code = boxes.map(function(b){ return b.value; }).join('');
+      if (code.length < 6){ $a('ao-err').textContent = 'Enter the 6-digit code'; var w = $a('ao-boxes'); w.classList.remove('shake'); void w.offsetWidth; w.classList.add('shake'); return; }
+      clearInterval(AU.timer);
+      if (AU.otpFor === 'login') return enter();
+      if (AU.otpFor === 'reset'){ goTo('auth-newpw'); return; }
+      if (AU.otpFor === 'reg'){ toast('Mobile number verified'); stack.pop(); render(); setTimeout(function(){ openOtp('regmail', v('email')); }, 60); return; }
+      if (AU.otpFor === 'regmail'){ AU.verified = true; stack.pop(); AU.step = 1; renderReg(); render(); toast('Mobile & email verified'); }
+    }
+    function enter(){
+      if (AU.otpFor === 'login') AU.role = /seller/i.test($a('al-id').value) ? 'seller' : 'buyer';   // demo only — the backend decides the role from the credentials
+      if (AU.role === 'seller'){ goTo('seller-home', true); return; }
+      if (window.vkSplash) window.vkSplash(true);
+      goTo('home', true);
+    }
+
+    // ---- registration ----
+    function v(k, dft){ return AU.d[k] != null ? AU.d[k] : (dft || ''); }
+    function ctry(){ return CTRY.filter(function(c){ return c[0] === v('country', 'in'); })[0] || CTRY[0]; }
+    function inp(k, label, ph, o){ o = o || {};
+      return '<div class="au-f' + (o.half ? ' half' : '') + '"><label>' + label + (o.opt ? ' <small>(optional)</small>' : ' <i>*</i>') + '</label><div class="au-in">' + (o.ico || '') +
+        '<input data-k="' + k + '" ' + (o.req === false || o.opt ? '' : 'data-req ') + 'type="' + (o.type || 'text') + '" value="' + esc(v(k)) + '" placeholder="' + esc(ph) + '"' + (o.mode ? ' inputmode="' + o.mode + '"' : '') + (o.strength ? ' data-au-strength="ar-st-' + k + '"' : '') + '>' + (o.type === 'password' ? '<button class="au-eye" data-au-eye></button>' : '') + (o.suffix ? '<span class="au-suf">' + o.suffix + '</span>' : '') + '</div>' +
+        (o.strength ? '<div class="au-str" id="ar-st-' + k + '"><i></i><i></i><i></i><i></i><small></small></div>' : '') + (o.hint ? '<p class="au-hint">' + o.hint + '</p>' : '') + '<em class="au-err"></em></div>'; }
+    function sel(k, label, list, o){ o = o || {}; var cur = v(k, o.dft || '');
+      return '<div class="au-f' + (o.half ? ' half' : '') + '"><label>' + label + (o.opt ? ' <small>(optional)</small>' : ' <i>*</i>') + '</label><div class="au-in sel"><select data-k="' + k + '" ' + (o.opt ? '' : 'data-req') + '><option value="">' + (o.ph || 'Select') + '</option>' +
+        list.map(function(x){ var val = Array.isArray(x) ? x[0] : x, txt = Array.isArray(x) ? x[1] : x; return '<option value="' + esc(val) + '"' + (val === cur ? ' selected' : '') + '>' + esc(txt) + '</option>'; }).join('') + '</select></div><em class="au-err"></em></div>'; }
+    function chips(k, label, list, o){ o = o || {}; var cur = v(k, []) || [];
+      return '<div class="au-f"><label>' + label + (o.opt ? ' <small>(optional)</small>' : '') + '</label><div class="au-chips" data-chips="' + k + '">' + list.map(function(x){ return '<span class="' + (cur.indexOf(x) > -1 ? 'on' : '') + '" data-chip="' + esc(x) + '">' + esc(x) + '</span>'; }).join('') + '</div></div>'; }
+    function phone(){ var c = ctry();
+      return '<div class="au-f"><label>Mobile number <i>*</i></label><div class="au-ph"><div class="au-in sel cc"><img src="assets/images/flags/' + v('dial', c[0]) + '.png" alt=""><select data-k="dial">' + CTRY.map(function(x){ return '<option value="' + x[0] + '"' + (x[0] === v('dial', c[0]) ? ' selected' : '') + '>' + x[2] + '</option>'; }).join('') + '</select></div><div class="au-in"><input data-k="mobile" data-req inputmode="tel" value="' + esc(v('mobile')) + '" placeholder="98765 43210"></div></div><em class="au-err"></em></div>'; }
+    var I = { user:'<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>', mail:'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>', lock:'<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>', bld:'<svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg>', pin:'<svg viewBox="0 0 24 24"><path d="M12 22s7-6.5 7-12a7 7 0 10-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>', id:'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="12" r="2.5"/><path d="M14 10h4M14 14h4"/></svg>', web:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg>', box:'<svg viewBox="0 0 24 24"><path d="M21 16V8l-9-5-9 5v8l9 5z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/></svg>', tag:'<svg viewBox="0 0 24 24"><path d="M20.6 13.4l-7.2 7.2a2 2 0 01-2.8 0L3 13V3h10l7.6 7.6a2 2 0 010 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>' };
+    function head(t, s){ return '<div class="au-sh"><b>' + t + '</b><small>' + s + '</small></div>'; }
+    function isIN(){ return v('country', 'in') === 'in'; }
+    function docsFor(){
+      var r = AU.role, cats = v('cat'), food = ['Fruits','Vegetables','Grains','Pulses','Spices','Nuts','Oilseeds','Beverages'].indexOf(cats) > -1, list = [];
+      if (r === 'buyer'){
+        list.push(['id','Identity proof','Passport, national ID or Aadhaar', v('btype') === 'Individual' || v('btype') === 'Farmer']);
+        if (v('btype') && ['Individual','Farmer'].indexOf(v('btype')) < 0) list.push(['reg','Company registration certificate','Certificate of incorporation / trade licence', true]);
+        list.push(['tax', isIN() ? 'GST certificate' : 'Tax / VAT certificate', 'If registered for tax', false]);
+        if (isIN()) list.push(['iec','IEC certificate','Importer Exporter Code (if applicable)', false]);
+        list.push(['addr','Business address proof','Utility bill, lease or bank statement', true]);
+        list.push(['other','Additional document','Anything else that supports verification', false]);
+      } else {
+        list.push(['reg','Business registration certificate','Incorporation / registration certificate', ['Individual','Farmer'].indexOf(v('stype')) < 0]);
+        list.push(['id','Authorised representative ID','Passport, national ID or Aadhaar', true]);
+        if (isIN()){ list.push(['pan','PAN card','Business or proprietor PAN', true]); list.push(['gst','GST registration','Where applicable', false]); list.push(['iec','IEC certificate','Required for import/export from India', true]); }
+        else list.push(['tax','Tax / VAT registration','Local tax identifier', true]);
+        list.push(['bank','Bank account proof','Cancelled cheque or bank letter in the business name', true]);
+        list.push(['site','Factory / warehouse / farm address proof','Where goods are produced or stored', false]);
+        if (food && isIN()) list.push(['fssai','FSSAI licence','Food business licence', true]);
+        if (food && isIN()) list.push(['apeda','APEDA registration','For scheduled agricultural exports', false]);
+        if (['Fruits','Vegetables','Grains','Pulses','Spices','Nuts','Oilseeds'].indexOf(cats) > -1) list.push(['phyto','Phytosanitary certificate','Issued per shipment for plant products — upload a sample', false]);
+        list.push(['coo','Certificate of Origin','If you already hold one', false]);
+        list.push(['iso','ISO / HACCP certificate','Quality & food-safety credentials', false]);
+        list.push(['lab','Product test report','Lab reports supporting quality claims', false]);
+      }
+      return list;
+    }
+    function stepHtml(name){
+      var r = AU.role, h = '';
+      if (name === 'Verify'){
+        h += head('Create your account', 'First, verify your mobile number and email');
+        h += inp('name', 'Full name', 'Enter your full name', { ico: I.user });
+        h += inp('email', 'Business email', 'you@company.com', { ico: I.mail, type: 'email' });
+        h += phone();
+        h += inp('pw', 'Password', 'Minimum 8 characters', { ico: I.lock, type: 'password', strength: true });
+        h += inp('pw2', 'Confirm password', 'Re-enter password', { ico: I.lock, type: 'password' });
+        h += '<label class="au-chk big"><input type="checkbox" data-k="terms" data-reqc' + (v('terms') ? ' checked' : '') + '><i></i>I agree to the <a>Terms of Use</a> and <a>Privacy Notice</a>.</label>';
+        h += '<div class="au-note"><svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg>We\'ll send one-time codes to your mobile and email to verify them.</div>';
+      }
+      if (name === 'Account type'){
+        h += head('How will you use Venture Kart?', 'Choose your account type — you can add the other role later');
+        if (AU.verified) h += '<div class="au-ok-pill">' + CK + 'Mobile &amp; email verified</div>';
+        h += '<div class="au-types">' +
+          '<div class="au-type' + (AU.chosen && AU.role === 'buyer' ? ' on' : '') + '" data-au-type="buyer"><span class="au-ri"><svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.7 12.4a1.5 1.5 0 001.5 1.1h8.9a1.5 1.5 0 001.5-1.1L22 7H6"/></svg></span><div><b>I want to buy</b><small>Source products, request quotations, book logistics and track shipments.</small><em>4 more steps · Business · Documents · Review</em></div><i class="au-tick"></i></div>' +
+          '<div class="au-type' + (AU.chosen && AU.role === 'seller' ? ' on' : '') + '" data-au-type="seller"><span class="au-ri"><svg viewBox="0 0 24 24"><path d="M3 9l1.5-5h15L21 9"/><path d="M4 9v11h16V9"/><path d="M3 9h18M9 20v-6h6v6"/></svg></span><div><b>I want to sell</b><small>List products, manage inventory and prices, respond to buyers and fulfil orders.</small><em>5 more steps · Business · Documents · Products · Review</em></div><i class="au-tick"></i></div></div>';
+        h += '<em class="au-err c" id="ar-type-err"></em>';
+      }
+      if (name === 'Business'){
+        h += head(r === 'buyer' ? 'Business details' : 'Business registration details', r === 'buyer' ? 'Tell us how you buy' : 'Provide your business information');
+        h += r === 'buyer' ? sel('btype', 'Buyer type', BTYPES, { ph: 'Select buyer type' }) : sel('stype', 'Seller type', STYPES, { ph: 'Select seller type' });
+        var indiv = r === 'buyer' ? ['Individual','Farmer'].indexOf(v('btype')) > -1 : false;
+        h += inp('company', r === 'buyer' ? 'Company / business name' : 'Legal business name', 'Enter registered name', { ico: I.bld, opt: indiv });
+        if (r === 'seller'){ h += inp('trade', 'Trade name (if different)', 'Brand / trading name', { ico: I.tag, opt: true }); h += '<div class="au-2">' + inp('desig', 'Your designation', 'e.g. Director', { half: true }) + sel('cat', 'Main product category', CATS, { half: true }) + '</div>'; }
+        h += '<div class="au-2">' + sel('country', r === 'buyer' ? 'Country' : 'Country of registration', CTRY.map(function(c){ return [c[0], c[1]]; }), { half: true, dft: 'in' }) + inp('state', 'State / province', 'Enter state', { half: true }) + '</div>';
+        h += '<div class="au-2">' + inp('city', 'City', 'Enter city', { half: true }) + inp('zip', 'Postal code', 'Postal / ZIP', { half: true, mode: 'numeric' }) + '</div>';
+        h += inp('addr', r === 'buyer' ? 'Business address' : 'Operating address', 'Building, street, area', { ico: I.pin });
+        if (r === 'seller') h += '<div class="au-2">' + inp('regno', 'Registration no.', 'e.g. U01100MH2015', { half: true }) + inp('regdate', 'Registration date', '', { half: true, type: 'date' }) + '</div>';
+        else h += inp('regno', 'Business registration no.', 'Company / trade licence number', { ico: I.id, opt: true });
+        if (isIN()){
+          h += '<div class="au-2">' + inp('pan', 'PAN', 'ABCDE1234F', { half: true, opt: r === 'buyer' }) + inp('gst', 'GSTIN', '27ABCDE1234F1Z5', { half: true, opt: true }) + '</div>';
+          h += inp('iec', 'IEC (Importer Exporter Code)', '10-digit IEC', { ico: I.id, opt: r === 'buyer', hint: 'Required for import / export activity from India.' });
+        } else h += inp('tax', 'Tax / VAT ID', 'Local tax identifier', { ico: I.id, opt: r === 'buyer' });
+        if (r === 'buyer'){
+          h += chips('interest', 'Product interests', CATS);
+          h += chips('srcc', 'Preferred sourcing countries', ['India','Vietnam','Thailand','Sri Lanka','Brazil','Kenya','Egypt','Türkiye'], { opt: true });
+          h += chips('otype', 'Expected order types', ['Spot orders','Contract supply','Samples first','Private label'], { opt: true });
+        } else { h += inp('web', 'Website', 'www.yourcompany.com', { ico: I.web, opt: true }); h += '<label class="au-chk big"><input type="checkbox" data-k="auth" data-reqc' + (v('auth') ? ' checked' : '') + '><i></i>I confirm I am authorised to represent this business.</label>'; }
+      }
+      if (name === 'Products'){
+        h += head('Product &amp; supply', 'Add your first product — you can add more later');
+        h += inp('pname', 'Product name', 'e.g. Alphonso Mango', { ico: I.box });
+        h += '<div class="au-2">' + sel('cat', 'Product category', CATS, { half: true }) + inp('variety', 'Variety', 'e.g. Ratnagiri', { half: true }) + '</div>';
+        h += '<div class="au-2">' + inp('grade', 'Grade', 'e.g. Premium / A', { half: true }) + inp('hs', 'HS code', 'e.g. 0804.50', { half: true, opt: true }) + '</div>';
+        h += sel('origin', 'Country of origin', CTRY.map(function(c){ return [c[0], c[1]]; }), { dft: v('country', 'in') });
+        h += inp('spec', 'Specifications', 'Size, moisture, colour, Brix…', { opt: true });
+        h += '<div class="au-2">' + inp('qty', 'Available quantity', '50', { half: true, mode: 'decimal', suffix: 'MT' }) + inp('cap', 'Monthly capacity', '200', { half: true, mode: 'decimal', suffix: 'MT' }) + '</div>';
+        h += '<div class="au-2">' + inp('moq', 'Minimum order', '500', { half: true, mode: 'decimal', suffix: 'kg' }) + inp('price', 'Indicative price', '1.20', { half: true, mode: 'decimal', suffix: '$/kg' }) + '</div>';
+        h += '<div class="au-2">' + sel('pack', 'Packing type', PACKS, { half: true }) + inp('pw8', 'Pack weight', '20', { half: true, mode: 'decimal', suffix: 'kg' }) + '</div>';
+        h += '<div class="au-2">' + inp('pcost', 'Packaging cost', '0.40', { half: true, mode: 'decimal', suffix: '$/pack', opt: true }) + sel('sample', 'Samples', ['Available','Paid samples','Not available'], { half: true }) + '</div>';
+        h += '<div class="au-f"><label>Product photos <i>*</i></label><div class="au-photos">' + [0, 1, 2, 3].map(function(i){ var on = AU.docs['ph' + i]; return '<span class="' + (on ? 'on' : '') + '" data-au-photo="' + i + '">' + (on ? '<img src="assets/images/' + ['mango','mango2','mango3','orchard'][i] + '.jpg" alt="">' : '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>') + '</span>'; }).join('') + '</div><em class="au-err" id="ar-ph-err"></em></div>';
+        h += inp('loc', 'Warehouse / factory location', 'City, state', { ico: I.pin });
+        h += chips('deliv', 'Delivery capability', ['Domestic','International','Ex-works only','Door delivery']);
+        h += '<button class="au-add" data-au-addprod><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add another product</button>';
+      }
+      if (name === 'Documents'){
+        var L = docsFor(), up = L.filter(function(x){ return AU.docs[x[0]]; }).length;
+        h += head('Upload documents', 'PDF, JPG or PNG · max 10 MB each');
+        h += '<div class="au-dyn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v5h1"/></svg>This checklist adapts to your country' + (r === 'seller' ? ', business type and products' : ' and buyer type') + '. Only marked items are required.</div>';
+        h += '<div class="au-prog"><span><b>' + up + '</b> of ' + L.length + ' uploaded</span><i><em style="width:' + Math.round(up / L.length * 100) + '%"></em></i></div>';
+        h += L.map(function(x){ var f = AU.docs[x[0]];
+          return '<div class="au-doc' + (f ? ' done' : '') + '" data-doc="' + x[0] + '"><span class="au-dic">' + (f ? CK : '<svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5"/></svg>') + '</span><div><b>' + x[1] + (x[3] ? ' <i>*</i>' : '') + '</b><small>' + (f ? esc(f) : x[2]) + '</small><div class="au-bar"><em></em></div></div>' +
+            (f ? '<button class="au-rm" data-au-rm="' + x[0] + '">Remove</button>' : '<button class="au-up" data-au-up="' + x[0] + '"><svg viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></svg>Upload</button>') + '</div>'; }).join('');
+        h += '<em class="au-err c" id="ar-doc-err"></em><div class="au-note"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Documents are encrypted and only visible to the Venture Kart verification team.</div>';
+      }
+      if (name === 'Review'){
+        var c = ctry(), dc = CTRY.filter(function(x){ return x[0] === v('dial', c[0]); })[0] || c, L2 = docsFor(), n = L2.filter(function(x){ return AU.docs[x[0]]; }).length;
+        function card(t, step, rows){ return '<div class="au-rv"><div class="au-rvh"><b>' + t + '</b><a data-ar-edit="' + step + '">Edit</a></div>' + rows.filter(function(x){ return x[1]; }).map(function(x){ return '<div class="au-kv"><span>' + x[0] + '</span><b>' + esc(x[1]) + '</b></div>'; }).join('') + '</div>'; }
+        h += head('Review &amp; submit', 'Please check your details before submitting');
+        h += card('Account', 0, [['Name', v('name')], ['Account type', ROLE_N[r]], ['Designation', v('desig')], ['Email', v('email')], ['Mobile', dc[2] + ' ' + v('mobile')], ['Verification', AU.verified ? 'Mobile & email verified' : 'Pending']]);
+        h += card('Business', 2, [[r === 'buyer' ? 'Buyer type' : 'Seller type', v(r === 'buyer' ? 'btype' : 'stype')], ['Business', v('company')], ['Trade name', v('trade')], ['Location', [v('city'), v('state'), c[1]].filter(Boolean).join(', ')], ['Registration', v('regno')], ['PAN / GSTIN', [v('pan'), v('gst')].filter(Boolean).join(' · ')], ['IEC', v('iec')], ['Tax ID', v('tax')], ['Interests', (v('interest', []) || []).join(', ')]]);
+        if (r === 'seller') h += card('Product', 4, [['Product', v('pname')], ['Category', [v('cat'), v('variety'), v('grade')].filter(Boolean).join(' · ')], ['Supply', v('qty') ? v('qty') + ' MT available · ' + v('cap') + ' MT / month' : ''], ['MOQ · price', v('moq') ? v('moq') + ' kg · $' + v('price') + '/kg' : ''], ['Packing', v('pack') ? v('pack') + (v('pw8') ? ' · ' + v('pw8') + ' kg' : '') : ''], ['Photos', Object.keys(AU.docs).filter(function(k){ return /^ph/.test(k); }).length + ' uploaded']]);
+        h += '<div class="au-rv"><div class="au-rvh"><b>Documents</b><a data-ar-edit="3">Edit</a></div><div class="au-docsum">' + L2.filter(function(x){ return AU.docs[x[0]]; }).map(function(x){ return '<span>' + CK + x[1] + '</span>'; }).join('') + '</div><div class="au-kv"><span>Uploaded</span><b>' + n + ' of ' + L2.length + '</b></div></div>';
+        h += '<label class="au-chk big"><input type="checkbox" id="ar-ok"><i></i>I confirm the information and documents are accurate, and consent to verification by Venture Kart.</label><em class="au-err c" id="ar-ok-err"></em>';
+      }
+      return h;
+    }
+    function renderReg(){
+      var L = steps(), cur = L[AU.step];
+      $a('ar-steps').innerHTML = L.map(function(n, i){ var cls = i < AU.step ? 'done' : i === AU.step ? 'on' : ''; return '<div class="au-st ' + cls + '"><span>' + (i < AU.step ? CK : i + 1) + '</span><small>' + n + '</small></div>' + (i < L.length - 1 ? '<i class="' + (i < AU.step ? 'done' : '') + '"></i>' : ''); }).join('');
+      $a('ar-n').textContent = (AU.step + 1) + '/' + L.length;
+      $a('ar-body').innerHTML = stepHtml(cur) + (AU.step === 0 ? '<div class="au-foot">Already have an account? <a data-au-go="login">Login</a></div>' : '');
+      $a('ar-next').textContent = cur === 'Review' ? 'Submit for verification' : cur === 'Verify' ? (AU.verified ? 'Continue' : 'Verify mobile & email') : 'Next';
+      document.querySelectorAll('#ar-body [data-au-strength]').forEach(drawStrength);
+      logo();
+      var sc = document.querySelector('#screen-auth-reg .screen-scroll'); if (sc) sc.scrollTop = 0;
+    }
+    function validStep(){
+      var cur = steps()[AU.step], ok = true, first = null;
+      if (cur === 'Account type' && !AU.chosen){ $a('ar-type-err').textContent = 'Choose buyer or seller to continue'; return false; }
+      document.querySelectorAll('#ar-body [data-req]').forEach(function(el){
+        var val = (el.value || '').trim(), m = '';
+        if (!val) m = 'This field is required';
+        else if (el.dataset.k === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) m = 'Enter a valid email';
+        else if (el.dataset.k === 'mobile' && val.replace(/\D/g, '').length < 7) m = 'Enter a valid mobile number';
+        else if (el.dataset.k === 'pw' && strength(val) < 2) m = 'Use 8+ characters with letters and numbers';
+        else if (el.dataset.k === 'pw2' && val !== v('pw')) m = 'Passwords do not match';
+        if (!err(el, m)){ ok = false; first = first || el; }
+      });
+      document.querySelectorAll('#ar-body [data-reqc]').forEach(function(el){ var l = el.closest('.au-chk'); l.classList.toggle('bad', !el.checked); if (!el.checked){ ok = false; first = first || l; } });
+      if (cur === 'Products' && !Object.keys(AU.docs).some(function(k){ return /^ph/.test(k); })){ $a('ar-ph-err').textContent = 'Add at least one product photo'; ok = false; }
+      if (cur === 'Documents'){ var miss = docsFor().filter(function(x){ return x[3] && !AU.docs[x[0]]; }); $a('ar-doc-err').textContent = miss.length ? 'Please upload: ' + miss.map(function(x){ return x[1]; }).join(', ') : ''; if (miss.length) ok = false; }
+      if (cur === 'Review' && !$a('ar-ok').checked){ $a('ar-ok-err').textContent = 'Please confirm to submit'; ok = false; }
+      if (first){ var sc = document.querySelector('#screen-auth-reg .screen-scroll'), r1 = first.getBoundingClientRect(), r0 = sc.getBoundingClientRect(); sc.scrollTo({ top: sc.scrollTop + r1.top - r0.top - 120, behavior: 'smooth' }); }
+      return ok;
+    }
+    function submit(){
+      var d = new Date(), id = 'VK-' + (AU.role === 'buyer' ? 'B' : 'S') + '-20261018-' + (1000 + Math.floor(Math.random() * 9000));
+      $a('ad-id').textContent = id;
+      $a('ad-msg').textContent = 'Your ' + AU.role + ' account has been submitted for verification. Our team reviews documents within 24–48 hours — you\'ll be notified once approved.';
+      var S = [['Account created', 'done'], ['Email & mobile verified', AU.verified ? 'done' : 'wait'], ['Documents submitted', 'done'], ['Admin review', 'now'], [AU.role === 'buyer' ? 'Approved — start sourcing' : 'Approved — listings go live', 'wait']];
+      $a('ad-status').innerHTML = S.map(function(x){ return '<div class="' + x[1] + '"><span>' + (x[1] === 'done' ? CK : '') + '</span><b>' + x[0] + '</b><em>' + (x[1] === 'done' ? 'Completed' : x[1] === 'now' ? 'In progress' : 'Pending') + '</em></div>'; }).join('');
+      goTo('auth-done', true);
+    }
+    function startReg(){ AU.step = 0; AU.d = {}; AU.docs = {}; AU.verified = false; AU.chosen = false; renderReg(); goTo('auth-reg'); }
+
+    // ---- events ----
+    document.addEventListener('click', function(e){
+      var t;
+      if ((t = e.target.closest('[data-au-type]'))){ AU.role = t.dataset.auType; AU.chosen = true; renderReg(); return; }
+      if ((t = e.target.closest('[data-au-role]'))){ setRole(t.dataset.auRole); return; }
+      if ((t = e.target.closest('[data-au-sw]'))){ setRole(t.dataset.auSw); return; }
+      if ((t = e.target.closest('[data-au-eye]'))){ var i = t.parentNode.querySelector('input'); i.type = i.type === 'password' ? 'text' : 'password'; t.classList.toggle('on', i.type === 'text'); return; }
+      if ((t = e.target.closest('[data-au-go]'))){
+        var g = t.dataset.auGo;
+        if (g === 'select' || g === 'login'){ goTo('auth-login', true); return; }
+        if (g === 'forgot'){ $a('af-id').value = $a('al-id').value; goTo('auth-forgot'); return; }
+        if (g === 'reg'){ startReg(); return; }
+      }
+      if (e.target.closest('#al-go')){
+        var a = err($a('al-id'), $a('al-id').value.trim() ? '' : 'Enter your email or mobile number'), b = err($a('al-pw'), $a('al-pw').value.length >= 6 ? '' : 'Enter your password (min 6 characters)');
+        if (a && b) openOtp('login', $a('al-id').value.trim());
+        return;
+      }
+      if (e.target.closest('#al-otp')){ if (err($a('al-id'), $a('al-id').value.trim() ? '' : 'Enter your email or mobile number')) openOtp('login', $a('al-id').value.trim()); return; }
+      if ((t = e.target.closest('[data-au-sso]'))){ toast('Signed in with ' + t.dataset.auSso); AU.otpFor = 'sso'; AU.role = 'buyer'; setTimeout(enter, 400); return; }
+      if (e.target.closest('#ad-track')){ toast('We\'ll email you each status update'); return; }
+      if (e.target.closest('#ao-go')){ otpDone(); return; }
+      if (e.target.closest('#ao-again')){ toast('A new code has been sent'); openOtpTimer(); return; }
+      if (e.target.closest('#af-go')){ if (err($a('af-id'), $a('af-id').value.trim() ? '' : 'Enter your email or mobile number')) openOtp('reset', $a('af-id').value.trim()); return; }
+      if (e.target.closest('#an-go')){
+        var p1 = $a('an-pw'), p2 = $a('an-pw2'), x = err(p1, strength(p1.value) >= 2 ? '' : 'Use 8+ characters with letters and numbers'), y = err(p2, p2.value && p2.value === p1.value ? '' : 'Passwords do not match');
+        if (x && y){ toast('Password updated — please log in'); p1.value = p2.value = ''; drawStrength(p1); stack = ['auth-login']; render(); }
+        return;
+      }
+      if (e.target.closest('#ar-back')){ if (AU.step > 0){ AU.step--; renderReg(); } else goBack(); return; }
+      if (e.target.closest('#ar-next')){
+        if (!validStep()) return;
+        var cur = steps()[AU.step];
+        if (cur === 'Verify' && !AU.verified){ var c = CTRY.filter(function(x){ return x[0] === v('dial', 'in'); })[0] || CTRY[0]; openOtp('reg', c[2] + ' ' + v('mobile')); return; }
+        if (cur === 'Review'){ submit(); return; }
+        AU.step++; renderReg(); return;
+      }
+      if ((t = e.target.closest('[data-ar-edit]'))){ AU.step = +t.dataset.arEdit; renderReg(); return; }
+      if ((t = e.target.closest('#ar-body [data-chip]'))){ var k = t.parentNode.dataset.chips, arr = (AU.d[k] || []).slice(), ix = arr.indexOf(t.dataset.chip); if (ix > -1) arr.splice(ix, 1); else arr.push(t.dataset.chip); AU.d[k] = arr; t.classList.toggle('on'); return; }
+      if ((t = e.target.closest('[data-au-up]'))){
+        var key = t.dataset.auUp, row = t.closest('.au-doc'); row.classList.add('busy'); t.disabled = true; t.textContent = 'Uploading…';
+        setTimeout(function(){ AU.docs[key] = key.toUpperCase() + '_' + (v('company') || v('name') || 'document').split(' ')[0] + '.pdf · ' + (0.6 + Math.random() * 2).toFixed(1) + ' MB'; renderReg(); }, 900); return;
+      }
+      if ((t = e.target.closest('[data-au-rm]'))){ delete AU.docs[t.dataset.auRm]; renderReg(); return; }
+      if ((t = e.target.closest('[data-au-photo]'))){ var pk = 'ph' + t.dataset.auPhoto; if (AU.docs[pk]) delete AU.docs[pk]; else AU.docs[pk] = 'photo'; renderReg(); return; }
+      if (e.target.closest('[data-au-addprod]')){ toast('You can add more products from your seller dashboard'); return; }
+    });
+    function openOtpTimer(){ openOtp(AU.otpFor, $a('ao-to').textContent); stack.pop(); render(); }
+    document.addEventListener('input', function(e){
+      var el = e.target;
+      if (el.dataset && el.dataset.auStrength) drawStrength(el);
+      if (el.closest && el.closest('#ar-body') && el.dataset.k){ AU.d[el.dataset.k] = el.type === 'checkbox' ? el.checked : el.value; var f = el.closest('.au-f'); if (f && f.classList.contains('bad')) err(el, ''); }
+      if (el.closest && el.closest('#screen-auth-login, #screen-auth-forgot, #screen-auth-newpw')){ var f2 = el.closest('.au-f'); if (f2 && f2.classList.contains('bad')) err(el, ''); }
+    });
+    document.addEventListener('change', function(e){
+      var el = e.target; if (!el.closest || !el.closest('#ar-body') || !el.dataset.k) return;
+      AU.d[el.dataset.k] = el.type === 'checkbox' ? el.checked : el.value;
+      if (el.dataset.k === 'country'){ AU.d.dial = el.value; renderReg(); }
+      if (el.dataset.k === 'dial' || el.dataset.k === 'btype' || el.dataset.k === 'stype') renderReg();
+      if (el.tagName === 'SELECT' && el.value) err(el, '');
+    });
+    setRole('buyer');
   })();
