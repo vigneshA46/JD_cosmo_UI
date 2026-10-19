@@ -207,3 +207,25 @@
 .s-sh2{ position:absolute; left:0; right:0; bottom:0; padding:12px 18px 28px; border-radius:24px 24px 0 0; background:#fff; transform:translateY(100%); transition:transform .25s cubic-bezier(.2,.8,.2,1); }
 .s-sheet.open{ pointer-events:auto; } .s-sheet.open .s-bd{ opacity:1; } .s-sheet.open .s-sh2{ transform:none; }
 .s-hdl{ display:block; width:40px; height:5px; border-radius:3px; background:#E2DACB; margin:0 auto 12px; } .s-sh2 > b{ display:block; font-size:17px; font-weight:900; color:var(--navy-900); } .s-sh2 > small{ display:block; font-size:12px; color:var(--navy-500); font-weight:600; margin-bottom:14px; } .s-sh2 .s-f{ margin-bottom:14px; }
+.s-vk{ width:34px; height:34px; border-radius:10px; background:var(--navy-grad); display:flex; align-items:center; justify-content:center; flex:none; }
+.s-vk svg{ width:20px; height:13px; fill:#E6B45C; }
+/* transport */
+.s-trc{ padding:13px 14px; cursor:pointer; } .s-trc .s-prow{ margin-top:10px; } .s-prow small.m svg{ width:13px; height:13px; }
+.s-trg{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:10px; } .s-trg > div{ background:#F7F3EC; border-radius:11px; padding:8px; }
+.s-trg small{ display:block; font-size:9.8px; font-weight:700; color:var(--navy-500); } .s-trg b{ display:block; font-size:11.5px; font-weight:800; color:var(--navy-900); margin-top:2px; line-height:1.25; } .s-trg em{ font-style:normal; font-size:10px; font-weight:800; color:#2C62C9; }
+.s-trl{ display:flex; align-items:center; gap:8px; margin-top:10px; padding-top:10px; border-top:1px dashed #ECE6DA; font-size:12px; font-weight:800; color:var(--brand-primary); } .s-trl svg{ width:14px; height:14px; margin-left:auto; }
+.s-live{ display:inline-flex; align-items:center; gap:5px; padding:3px 8px; border-radius:8px; background:#FDECEC; color:#C62828; font-size:10.5px; font-weight:900; } .s-live i{ width:7px; height:7px; border-radius:50%; background:#E5484D; animation:o2Pulse 1.4s infinite; box-shadow:0 0 0 3px rgba(229,72,77,.2); }
+.s-map{ position:relative; height:210px; border-radius:20px; overflow:hidden; margin-bottom:12px; background:linear-gradient(135deg,#E9EEF2,#DDE5EA); box-shadow:0 2px 12px rgba(2,9,20,.08); }
+.s-map:before{ content:""; position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,.7) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.7) 1px, transparent 1px); background-size:28px 28px; }
+.s-map svg{ position:absolute; inset:0; width:100%; height:100%; } .s-map .rd{ fill:none; stroke:#fff; stroke-width:9; stroke-linecap:round; } .s-map .rd2{ fill:none; stroke:#B87D2D; stroke-width:4; stroke-linecap:round; stroke-dasharray:0 2000; }
+.s-pin{ position:absolute; transform:translate(-50%,-50%); width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(2,9,20,.25); }
+.s-pin svg{ width:15px; height:15px; color:#fff; } .s-pin.a{ background:var(--navy-900); } .s-pin.b{ background:#2EAD6B; }
+.s-truck{ position:absolute; transform:translate(-50%,-50%); width:38px; height:38px; border-radius:50%; background:var(--gold-grad); display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 6px rgba(184,125,45,.25), 0 6px 14px rgba(111,65,16,.35); z-index:2; }
+.s-truck svg{ width:19px; height:19px; color:#1A1206; }
+.s-eta{ position:absolute; left:12px; bottom:12px; padding:8px 12px; border-radius:12px; background:rgba(2,9,20,.88); color:#fff; } .s-eta b{ display:block; font-size:15px; font-weight:900; color:#F2C877; } .s-eta small{ font-size:10.5px; color:rgba(255,255,255,.75); font-weight:600; }
+.s-live.map{ position:absolute; right:10px; top:10px; background:#fff; }
+.s-tr4 b{ font-size:13.5px; }
+.s-drv{ display:flex; align-items:center; gap:11px; } .s-drv .s-vk svg{ width:18px; height:18px; color:#F2C877; fill:none; } .s-drv > div{ flex:1; } .s-drv b{ display:block; font-size:13.5px; font-weight:900; color:var(--navy-900); font-family:var(--font-mono); } .s-drv small{ display:block; font-size:11px; color:var(--navy-500); font-weight:600; }
+.s-eta{ left:auto; right:12px; bottom:12px; text-align:right; }
+.s-truck svg{ display:block; }
+.s-map .s-truck svg, .s-map .s-pin svg{ position:static; inset:auto; width:17px; height:17px; }
