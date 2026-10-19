@@ -2967,3 +2967,8 @@
   .au-type em{ display:block; font-style:normal; font-size:10.5px; font-weight:700; color:rgba(255,255,255,.45); margin-top:8px; }
   .au-type .au-tick{ top:14px; right:14px; } .au-type.on .au-tick{ border:none; background:var(--gold-grad); box-shadow:inset 0 0 0 4px #0B1A2E; }
   .au-steps .au-st{ width:48px; } .au-steps .au-st small{ font-size:9px; }
+  /* Buyer | Seller switch on login */
+  .au-rs{ display:flex; width:200px; margin:6px auto 0; padding:3px; border-radius:13px; background:rgba(255,255,255,.07); border:1px solid rgba(230,180,92,.25); position:relative; z-index:2; }
+  .au-rs a, .au-rs span{ flex:1; text-align:center; padding:8px 0; border-radius:10px; font-size:13px; font-weight:800; color:rgba(255,255,255,.65); cursor:pointer; }
+  .au-rs .on{ background:linear-gradient(135deg,#F2C877,#C28A3A); color:#1A1206; }
+  .au-lg .au-rs + .au-brand.big{ margin-top:18px; }

@@ -2318,7 +2318,7 @@
     }
     function enter(){
       if (AU.otpFor === 'login') AU.role = /seller/i.test($a('al-id').value) ? 'seller' : 'buyer';   // demo only — the backend decides the role from the credentials
-      if (AU.role === 'seller'){ goTo('seller-home', true); return; }
+      if (AU.role === 'seller'){ location.href = 'seller.html#home'; return; }
       if (window.vkSplash) window.vkSplash(true);
       goTo('home', true);
     }
@@ -2545,4 +2545,5 @@
       if (el.tagName === 'SELECT' && el.value) err(el, '');
     });
     setRole('buyer');
+    if (location.hash === '#register') setTimeout(startReg, 50);
   })();
