@@ -7,3 +7,5 @@
   Cache-Control: no-cache
 /assets/js/*
   Cache-Control: no-cache
+/investor/*
+  Cache-Control: no-cache
