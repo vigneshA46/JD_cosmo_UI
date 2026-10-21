@@ -229,3 +229,10 @@
 .s-eta{ left:auto; right:12px; bottom:12px; text-align:right; }
 .s-truck svg{ display:block; }
 .s-map .s-truck svg, .s-map .s-pin svg{ position:static; inset:auto; width:17px; height:17px; }
+
+/* invoice numbers */
+.s-inv{ font-weight:600; color:var(--navy-500); font-size:.88em; }
+.s-tx small{ display:block; } .s-tx small.s-txi{ font-family:var(--font-mono); color:var(--navy-700); margin:2px 0 1px; }
+.s-pdf{ display:inline-flex; align-items:center; gap:4px; border:1px solid #E6DCC8; background:#FBF7EF; color:var(--brand-highlight); border-radius:8px; padding:3px 8px; font:inherit; font-size:10.5px; font-weight:800; cursor:pointer; }
+.s-pdf svg{ width:12px; height:12px; }
+.s-prow b:has(.s-inv), .s-orow small:has(.s-inv){ white-space:normal; } .s-inv{ white-space:nowrap; }
