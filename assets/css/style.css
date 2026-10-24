@@ -2982,3 +2982,4 @@
   .au-brand .au-crown .vk-emb{ width:84px; height:84px; filter:drop-shadow(0 6px 18px rgba(0,0,0,.45)); }
   .au-brand.big .au-crown .vk-emb{ width:120px; height:120px; }
   .au-mini .au-crown .vk-emb{ width:36px; height:36px; }
+  .o2-rt.to{ align-items:center; gap:12px; } .o2-rt.to > div:last-child{ text-align:left; }

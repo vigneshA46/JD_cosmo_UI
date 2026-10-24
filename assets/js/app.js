@@ -1970,7 +1970,7 @@
       globe: sv('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/>'),
       leaf: sv('<path d="M5 21c0-9 5-15 15-16-1 10-7 15-15 16z"/><path d="M5 21l8-8"/>')
     };
-    var ST = [['Order Created','Your order has been confirmed.'],['Processing','Supplier is preparing the goods.'],['Packing','Goods are packed for shipment.'],['Warehouse','Goods moved to the export warehouse.'],['Port','Customs clearance and port handling.'],['Vessel','Goods loaded on the vessel.'],['In Transit','Your shipment is on the way.'],['Destination','Arrived at the destination country.'],['Delivered','Order delivered successfully.']];
+    var ST = [['Order Created','Your order has been confirmed.'],['Processing','Your goods are being prepared.'],['Packing','Goods are packed for shipment.'],['Warehouse','Goods moved to the export warehouse.'],['Port','Customs clearance and port handling.'],['Vessel','Goods loaded on the vessel.'],['In Transit','Your shipment is on the way.'],['Destination','Arrived at the destination country.'],['Delivered','Order delivered successfully.']];
     var SHORT = ['Created','Processing','Packing','Warehouse','Port','Vessel','In Transit','Destination','Delivered'];
     var STAT = { 1:['Processing','proc'], 2:['Packing','pack'], 3:['Processing','proc'], 4:['At Port','pack'], 5:['In Transit','tran'], 6:['In Transit','tran'], 7:['In Transit','tran'], 8:['Delivered','done'] };
     var O = [
@@ -1990,9 +1990,9 @@
       var idx = o.st === 8 ? [0,1,2,3,4,8] : o.st <= 4 ? [0,1,2,3,4,-1] : [0,1,2,3,o.st,-1];
       return '<div class="o2-mini">' + idx.map(function(i){ var done = i > -1 && i <= o.st, now = i === o.st; return '<span class="' + (done ? 'd' : '') + (now ? ' now' : '') + '"><i>' + (done ? IC.chk : '') + '</i><small>' + (i < 0 ? 'More' : lbl(i, o)) + '</small></span>'; }).join('') + '</div>';
     }
-    function prodBox(o, big){ return '<div class="o2-pr"><img src="assets/images/' + o.img + '.jpg" alt=""><div><b>' + o.name + '</b><small>' + o.spec + '</small><small>Qty: ' + o.qty + '</small><small>Supplier: ' + o.sup + '</small>' + (big ? '' : '<div class="o2-pf"><em>' + usd(o.tot) + '</em><a>View Details' + IC.chev + '</a></div>') + '</div></div>'; }
+    function prodBox(o, big){ return '<div class="o2-pr"><img src="assets/images/' + o.img + '.jpg" alt=""><div><b>' + o.name + '</b><small>' + o.spec + '</small><small>Qty: ' + o.qty + '</small>' + (big ? '' : '<div class="o2-pf"><em>' + usd(o.tot) + '</em><a>View Details' + IC.chev + '</a></div>') + '</div></div>'; }
     function list(){
-      var a = O.filter(function(o){ var f = flt === 'all' || (flt === 'proc' && o.st <= 4) || (flt === 'tran' && o.st > 4 && o.st < 8) || (flt === 'done' && o.st === 8); return f && (!q || (o.id + o.name + o.sup).toLowerCase().indexOf(q) > -1); });
+      var a = O.filter(function(o){ var f = flt === 'all' || (flt === 'proc' && o.st <= 4) || (flt === 'tran' && o.st > 4 && o.st < 8) || (flt === 'done' && o.st === 8); return f && (!q || (o.id + o.name).toLowerCase().indexOf(q) > -1); });
       L.innerHTML = a.length ? a.map(function(o, i){ return '<div class="o2-c" data-o2="' + o.id + '" style="animation-delay:' + i * 50 + 'ms"><div class="o2-ch"><b>Order ID: ' + o.id + '</b><small>' + o.d + '</small></div><div class="o2-bw">' + badge(o) + '</div>' + prodBox(o) + mini(o) + '</div>'; }).join('')
         : '<div class="o2-empty">' + IC.srch + '<b>No orders found</b><small>Try another filter or search term.</small></div>';
       document.querySelectorAll('[data-o2f]').forEach(function(c){ c.classList.toggle('on', c.dataset.o2f === flt); });
@@ -2003,7 +2003,7 @@
       var o = cur, done = o.st === 8, air = o.mode === 'air', h = '';
       $o('od2-share').style.visibility = 'visible';
       h += '<div class="o2-card"><div class="o2-ch"><div><b>Order ID: ' + o.id + '</b><small>Placed on ' + o.d + ', ' + o.t + '</small></div>' + badge(o) + '</div>' +
-        '<div class="o2-pr big"><img src="assets/images/' + o.img + '.jpg" alt=""><div><b>' + o.name + '</b><small>' + o.spec + '</small><small>Qty: ' + o.qty + '</small><small>Supplier: ' + o.sup + '</small><div class="o2-pf"><em>' + usd(o.tot) + '</em><button class="o2-ob" data-o2-go="reorder">Reorder</button></div></div></div>' +
+        '<div class="o2-pr big"><img src="assets/images/' + o.img + '.jpg" alt=""><div><b>' + o.name + '</b><small>' + o.spec + '</small><small>Qty: ' + o.qty + '</small><div class="o2-pf"><em>' + usd(o.tot) + '</em><button class="o2-ob" data-o2-go="reorder">Reorder</button></div></div></div>' +
         '<div class="o2-tiles"><span>' + IC.card + '<div><small>Payment</small><b class="ok">' + o.pay + '</b></div></span><span data-goto="quotation-details">' + IC.doc + '<div><small>Quotation</small><b>View PDF</b></div></span><span ' + (o.st >= 2 ? 'data-o2-go="ord-invoice"' : 'class="off"') + '>' + IC.doc + '<div><small>Invoice</small><b>' + (o.st >= 2 ? 'View PDF' : 'Coming soon') + '</b></div></span></div></div>';
       if (done){
         h += '<div class="o2-card o2-addr">' + IC.pin + '<div><b>Delivery Address</b><span>Dockside Provisions Ltd. — Ahmed Al Fahim</span><span>Plot S30210, Jebel Ali Free Zone South, Dubai, UAE</span><span>+971 4 880 1200</span></div></div>' +
@@ -2015,16 +2015,15 @@
       }
       h += '<div class="o2-card"><div class="o2-h"><b>Shipping &amp; Logistics</b><a data-o2-go="ord-ship">View All' + IC.chev + '</a></div>' +
         '<div class="o2-mode"><span class="o2-mi">' + (air ? IC.plane : IC.ship) + '</span><div><small>Mode</small><b>' + (air ? 'Air Freight' : 'Sea Freight') + '</b></div><em>' + o.vsl.split(' · ')[0] + '</em></div>' +
-        '<div class="o2-rt"><div><small>' + (air ? 'Airport of Loading' : 'Port of Loading') + '</small><b>' + o.pol[0].replace(/ \(.*\)/, '') + '</b><span>' + (o.pol[0].match(/\((.*)\)/) || ['', ''])[1] + ' · ' + o.pol[1] + '</span></div><i>' + (air ? IC.plane : IC.ship) + '</i><div><small>' + (air ? 'Airport of Discharge' : 'Port of Discharge') + '</small><b>' + o.pod[0].replace(/ \(.*\)/, '') + '</b><span>' + (o.pod[0].match(/\((.*)\)/) || ['', ''])[1] + ' · ' + o.pod[1] + '</span></div></div>' +
+        '<div class="o2-rt to"><i>' + (air ? IC.plane : IC.ship) + '</i><div><small>Destination · ' + (air ? 'Airport of Discharge' : 'Port of Discharge') + '</small><b>' + o.pod[0].replace(/ \(.*\)/, '') + '</b><span>' + (o.pod[0].match(/\((.*)\)/) || ['', ''])[1] + ' · ' + o.pod[1] + '</span></div></div>' +
         '<div class="o2-dt"><span>' + IC.cal + '<div><small>Est. Shipment Date</small><b>' + o.etd + '</b></div></span><span>' + IC.cal + '<div><small>' + (done ? 'Delivered On' : 'Est. Delivery Date') + '</small><b>' + (o.del || o.eta) + '</b></div></span></div></div>';
       h += '<div class="o2-card"><div class="o2-h"><b>Order Summary</b></div>' + kv2('Item total (' + o.qty.split(' (')[0] + ' × ' + usd(o.rate, 2) + '/' + o.u + ')', usd(o.sub)) + kv2('Shipping charges', usd(o.ship)) + kv2('Tax (5%)', usd(o.tax)) + '<div class="o2-kv tot"><span>Total Paid</span><b>' + usd(o.tot) + '</b></div></div>';
-      h += '<div class="o2-card o2-sup"><div class="o2-h"><b>Supplier Details</b></div><div class="o2-sr"><span class="o2-sa">' + IC.leaf + '</span><div><b>' + o.sup + '</b><small class="v">' + IC.chk + 'Verified Supplier</small></div><button class="o2-ob" data-goto="message-thread">Contact</button></div></div>';
       h += '<div class="o2-card o2-help" data-o2-go="ord-options"><span>' + IC.chat + '</span><div><b>Need help with this order?</b><small>Reorder, returns, support &amp; more</small></div>' + IC.chev + '</div>';
       $o('od2-body').innerHTML = h;
     }
     function kv2(k, v){ return '<div class="o2-kv"><span>' + k + '</span><b>' + v + '</b></div>'; }
     function track(){
-      var o = cur, air = o.mode === 'air', top = [[0,'Order Placed'],[2,'Packed'],[6,'In Transit'],[8,'Delivered']], ev = [], loc = { 0:'Online', 1:o.sup, 2:o.sup, 3:'Export warehouse, ' + o.pol[1], 4:o.pol[0], 5:o.pol[0], 6:air ? 'In flight' : 'At sea', 7:o.pod[0], 8:'Dockside Provisions, Jebel Ali' };
+      var o = cur, air = o.mode === 'air', top = [[0,'Order Placed'],[2,'Packed'],[6,'In Transit'],[8,'Delivered']], ev = [], loc = { 0:'Online', 1:'Origin facility', 2:'Origin facility', 3:'Export warehouse', 4:'Port of loading', 5:'Port of loading', 6:air ? 'In flight' : 'At sea', 7:o.pod[0], 8:'Dockside Provisions, Jebel Ali' };
       for (var i = o.st; i >= 0; i--) ev.push('<div class="d' + (i === o.st ? ' now' : '') + '"><i>' + IC.chk + '</i><div><b>' + (i === 5 && air ? 'Departed on Flight' : ST[i][0]) + '</b><small class="t">' + stepDate(o, i) + ', ' + TIMES[i] + '</small><small>' + (i === 5 && air ? 'Goods loaded on the aircraft.' : ST[i][1]) + '</small><small>' + loc[i] + '</small></div></div>');
       $o('ot2-body').innerHTML = '<div class="o2-card"><div class="o2-pr sm"><img src="assets/images/' + o.img + '.jpg" alt=""><div><b>' + o.name + '</b><small>Order #' + o.id + '</small></div>' + badge(o) + '</div>' +
         '<div class="o2-hz">' + top.map(function(x, k){ var dn = o.st >= x[0]; return '<span class="' + (dn ? 'd' : '') + '"><i>' + (dn ? IC.chk : '') + '</i><b>' + x[1] + '</b><small>' + (dn ? stepDate(o, x[0]).replace(' 2026', '') : '—') + '</small></span>'; }).join('') + '</div></div>' +
@@ -2033,14 +2032,14 @@
     }
     function ship(){
       var o = cur, air = o.mode === 'air', docs = air ? ['Air Waybill','Commercial Invoice','Packing List','Phytosanitary Certificate','Certificate of Origin'] : ['Bill of Lading','Commercial Invoice','Packing List','Phytosanitary Certificate','Certificate of Origin'];
-      $o('os2-body').innerHTML = '<div class="o2-card o2-shh"><img src="assets/images/' + (air ? 'aircargo' : 'ship') + '.jpg" alt=""><div><b>' + (air ? 'Air Freight' : 'Sea Freight') + '</b><small>' + (air ? '' : 'Container No: ') + o.ctr + '</small><small>From <em>' + o.pol[0] + '</em></small><small>To <em>' + o.pod[0] + '</em></small>' + badge(o) + '</div></div>' +
+      $o('os2-body').innerHTML = '<div class="o2-card o2-shh"><img src="assets/images/' + (air ? 'aircargo' : 'ship') + '.jpg" alt=""><div><b>' + (air ? 'Air Freight' : 'Sea Freight') + '</b><small>' + (air ? '' : 'Container No: ') + o.ctr + '</small><small>To <em>' + o.pod[0] + '</em></small>' + badge(o) + '</div></div>' +
         '<div class="o2-card"><div class="o2-h"><b>Shipment Overview</b></div>' + kv2('Mode', air ? 'Air Freight' : 'Sea Freight') + kv2(air ? 'Flight' : 'Vessel / voyage', o.vsl) + kv2(air ? 'Cargo type' : 'Container type', o.ctype) + kv2('Weight', o.qty.split(' (')[0].replace(' MT', ',000 kg')) + kv2('Volume', o.cbm + ' CBM') + kv2('Departure date', o.etd) + kv2(o.st === 8 ? 'Arrival date' : 'Est. arrival', o.eta) + '</div>' +
         '<div class="o2-card"><div class="o2-h"><b>Documents</b><small>' + docs.length + ' files</small></div>' + docs.map(function(d){ return '<div class="o2-doc">' + IC.doc + '<span>' + d + '<small>PDF · ' + (120 + d.length * 9) + ' KB</small></span><a data-o2-dl="' + d + '">Download ' + IC.dl + '</a></div>'; }).join('') + '</div>';
     }
     function invoice(){
       var o = cur;
       $o('oi2-body').innerHTML = '<div class="o2-card"><div class="o2-ch"><div class="o2-ivh">' + IC.doc + '<div><b>Invoice #INV' + o.id.slice(4) + '</b><small>' + o.d + '</small></div></div><span class="o2-b done">' + IC.chk + 'Paid</span></div>' +
-        '<div class="o2-pt"><small>From</small><div><b>JD Cosmopolitan Pvt Ltd</b><span>Global Trade &amp; Logistics · on behalf of ' + o.sup + '</span><span>GSTIN: 32AABCJ1234F1Z5</span></div></div>' +
+        '<div class="o2-pt"><small>From</small><div><b>JD Cosmopolitan Pvt Ltd</b><span>Global Trade &amp; Logistics</span><span>GSTIN: 32AABCJ1234F1Z5</span></div></div>' +
         '<div class="o2-pt"><small>To</small><div><b>Dockside Provisions Ltd.</b><span>Plot S30210, Jebel Ali Free Zone South, Dubai, UAE</span><span>TRN: 100384729100003</span></div></div>' +
         '<div class="o2-it"><div class="hd"><span>Items</span><span>Qty</span><span>Rate</span><span>Amount</span></div><div><span><b>' + o.name + '</b><small>' + o.spec + '</small></span><span>' + o.qty.split(' (')[0] + '</span><span>' + usd(o.rate, 2) + '</span><span>' + usd(o.sub) + '</span></div></div>' +
         '<div class="o2-sum">' + kv2('Subtotal', usd(o.sub)) + kv2('Shipping', usd(o.ship)) + kv2('Tax (5%)', usd(o.tax)) + '<div class="o2-kv tot"><span>Total</span><b>' + usd(o.tot) + '</b></div></div></div>' +
@@ -2081,7 +2080,7 @@
     }
     document.addEventListener('click', function(e){
       var t = e.target.closest('[data-q2f]'); if (t){ qf = t.dataset.q2f; qList(); return; }
-      if ((t = e.target.closest('.o2-seg .tab-pill[data-tab-panel]'))){ var isQ = t.dataset.tabPanel === 'quotations-panel'; $o('o2-q').value = ''; q = ''; $o('o2-q').placeholder = isQ ? 'Search quotations by ID, product or supplier' : 'Search by Order ID, Product or Supplier'; setTimeout(function(){ list(); qList(); }, 0); }
+      if ((t = e.target.closest('.o2-seg .tab-pill[data-tab-panel]'))){ var isQ = t.dataset.tabPanel === 'quotations-panel'; $o('o2-q').value = ''; q = ''; $o('o2-q').placeholder = isQ ? 'Search quotations by ID, product or supplier' : 'Search by Order ID or Product'; setTimeout(function(){ list(); qList(); }, 0); }
     });
     $o('o2-q').addEventListener('input', function(){ q = this.value.trim().toLowerCase(); if ($o('screen-orders').classList.contains('o2-q')) qList(); else list(); });
     detail();

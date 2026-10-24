@@ -9,3 +9,5 @@
   Cache-Control: no-cache
 /investor/*
   Cache-Control: no-cache
+/intros/*
+  Cache-Control: no-cache

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Venture Kart — Service Intros</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/assets/images/logo/vk-emblem-128.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:wght@600;700&family=Cinzel:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{ --navy:#111A2B; --navy2:#19263E; --silver:#B5AFA6; --silver2:#DAD5CD; --gold:#B59A6A; --gold2:#D8C39A; --ivory:#F2EBDD; }
+*{ box-sizing:border-box; margin:0; padding:0; }
+body{ background:#0B1220; color:var(--ivory); font-family:Inter,system-ui,sans-serif; padding:36px 20px 60px; }
+header{ max-width:1100px; margin:0 auto 26px; display:flex; align-items:center; gap:16px; }
+header img{ width:58px; }
+header h1{ font-family:'Playfair Display',serif; font-size:30px; font-weight:600; }
+header p{ color:#9AA4B2; font-size:14px; margin-top:2px; }
+header button{ margin-left:auto; height:40px; padding:0 18px; border-radius:10px; border:1px solid rgba(181,175,166,.4); background:none; color:var(--silver2); font:600 13px Inter; cursor:pointer; }
+section{ max-width:1100px; margin:0 auto 40px; }
+section > h2{ font-family:Cinzel,serif; letter-spacing:.14em; font-size:16px; color:var(--gold2); margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid rgba(181,175,166,.15); }
+.row{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+.opt{ display:flex; flex-direction:column; align-items:center; }
+.ph{ position:relative; width:270px; height:560px; border-radius:40px; background:#05080E; padding:9px; box-shadow:0 20px 50px rgba(0,0,0,.5), inset 0 0 0 1.5px #2A3346; }
+.scr{ position:absolute; inset:9px; border-radius:32px; overflow:hidden; background:var(--navy); }
+.lbl{ margin-top:14px; text-align:center; max-width:270px; }
+.lbl b{ display:flex; align-items:center; justify-content:center; gap:8px; font-size:14.5px; }
+.lbl b em{ font-style:normal; font-size:11px; font-weight:800; color:#111A2B; background:var(--gold2); border-radius:6px; padding:2px 7px; }
+.lbl p{ font-size:12.5px; color:#9AA4B2; margin-top:4px; line-height:1.45; }
+.lbl button{ margin-top:10px; height:32px; padding:0 14px; border-radius:8px; border:1px solid rgba(181,175,166,.35); background:rgba(255,255,255,.04); color:var(--silver2); font:600 12px Inter; cursor:pointer; }
+@media (max-width:900px){ .row{ grid-template-columns:1fr; justify-items:center; } }
+
+/* ---------- shared title ---------- */
+.tt{ position:absolute; left:0; right:0; text-align:center; z-index:20; }
+.tt small{ display:block; font-family:Cinzel,serif; font-size:10px; letter-spacing:.42em; color:var(--silver2); opacity:0; animation:fu .6s 1.25s ease both; }
+.tt b{ display:block; font-family:'Playfair Display',serif; font-size:31px; font-weight:700; color:var(--ivory); margin:6px 0 4px; text-shadow:0 4px 20px rgba(0,0,0,.45); }
+.tt b span{ display:inline-block; opacity:0; animation:lt .55s cubic-bezier(.2,.8,.2,1) both; }
+.tt i{ display:block; width:70px; height:2px; margin:8px auto; background:linear-gradient(90deg,transparent,var(--gold2),transparent); transform:scaleX(0); animation:sx .7s 1.7s ease both; }
+.tt em{ display:block; font-style:normal; font-size:12px; color:#C9CED6; opacity:0; animation:fu .6s 1.85s ease both; }
+@keyframes fu{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:none; } }
+@keyframes lt{ from{ opacity:0; transform:translateY(16px) rotateX(60deg); filter:blur(4px); } to{ opacity:1; transform:none; filter:none; } }
+@keyframes sx{ to{ transform:scaleX(1); } }
+@keyframes fade{ from{ opacity:0; } to{ opacity:1; } }
+
+/* ================= SEA 1 · Horizon sunrise ================= */
+.s1{ background:linear-gradient(180deg,#0B1220 0%,#1A2741 38%,#4A4436 50%,#121B2C 50.2%,#0B1220 100%); }
+.s1 .sun{ position:absolute; left:50%; top:50%; width:120px; height:120px; margin:-60px 0 0 -60px; border-radius:50%; background:radial-gradient(circle,#F2E3BE 0%,#D8C39A 35%,rgba(181,154,106,0) 70%); animation:rise 2.4s cubic-bezier(.2,.7,.2,1) both; clip-path:inset(0 0 50% 0); }
+.s1 .glow{ position:absolute; left:-20%; right:-20%; top:36%; height:28%; background:radial-gradient(ellipse at 50% 50%,rgba(216,195,154,.45),transparent 60%); animation:fade 2s both; }
+.s1 .refl{ position:absolute; left:50%; top:50.5%; width:60px; height:40%; margin-left:-30px; background:repeating-linear-gradient(180deg,rgba(242,227,190,.55) 0 2px,transparent 2px 7px); mask-image:linear-gradient(180deg,#000,transparent); -webkit-mask-image:linear-gradient(180deg,#000,transparent); animation:shim 1.6s ease-in-out infinite alternate, fade 1.4s .6s both; }
+.s1 .wv{ position:absolute; left:0; width:200%; bottom:0; --c:rgba(25,38,62,.55); }
+.s1 .wv svg{ display:block; width:100%; height:14px; } .s1 .wv path{ fill:var(--c); } .s1 .wv::after{ content:''; display:block; height:100%; background:var(--c); }
+.s1 .w1{ top:57%; animation:wave 9s linear infinite; } .s1 .w2{ top:67%; --c:rgba(17,26,43,.7); animation:wave 6s linear infinite reverse; } .s1 .w3{ top:80%; --c:rgba(11,18,32,.92); animation:wave 4.5s linear infinite; }
+.s1 .ship{ position:absolute; top:calc(50% - 46px); left:18%; width:180px; animation:sail 2.6s cubic-bezier(.15,.7,.25,1) both, bob 2.2s 2.6s ease-in-out infinite; }
+.s1 .wake{ position:absolute; top:calc(50% + 2px); left:68%; width:0; height:3px; border-radius:3px; background:linear-gradient(90deg,rgba(242,235,221,.7),transparent); animation:wk 2.6s .2s ease-out both; }
+.s1 .tt{ top:70px; }
+@keyframes rise{ from{ transform:translateY(70px); opacity:.2; } to{ transform:none; opacity:1; } }
+@keyframes shim{ to{ transform:scaleX(1.5); opacity:.6; } }
+@keyframes wave{ to{ transform:translateX(-50%); } }
+@keyframes sail{ from{ transform:translateX(260px); } to{ transform:none; } }
+@keyframes bob{ 50%{ transform:translateY(-2px) rotate(-.6deg); } }
+@keyframes wk{ 0%{ width:0; left:68%; } 60%{ width:120px; } 100%{ width:40px; left:68%; opacity:.5; } }
+
+/* ================= SEA 2 · Compass to route ================= */
+.s2{ background:radial-gradient(circle at 50% 40%,#1C2B46 0%,#111A2B 65%); }
+.s2 .grid{ position:absolute; inset:0; background-image:radial-gradient(rgba(181,175,166,.16) 1px,transparent 1.4px); background-size:12px 12px; animation:fade 1s both; }
+.s2 .cmp{ position:absolute; left:50%; top:38%; width:180px; height:180px; margin:-90px 0 0 -90px; animation:cmpIn 1.3s cubic-bezier(.2,.8,.2,1) both, cmpOut .8s 1.3s cubic-bezier(.6,0,.3,1) forwards; }
+.s2 .cmp .spin{ transform-origin:50% 50%; animation:cspin 1.3s cubic-bezier(.2,.8,.2,1) both; }
+.s2 .route{ position:absolute; inset:0; }
+.s2 .route path.r{ fill:none; stroke:var(--gold2); stroke-width:2; stroke-dasharray:4 5; stroke-dashoffset:0; }
+.s2 .route .mask{ fill:none; stroke:#fff; stroke-width:6; stroke-dasharray:420; stroke-dashoffset:420; animation:draw 1.2s 1.55s ease-in-out forwards; }
+.s2 .route circle{ fill:var(--gold2); opacity:0; animation:fade .4s 1.5s both; }
+.s2 .route text{ fill:var(--silver2); font:700 9px Inter; letter-spacing:.1em; opacity:0; animation:fade .4s 1.6s both; }
+.s2 .boat{ position:absolute; left:0; top:0; width:22px; height:22px; margin:-11px 0 0 -11px; border-radius:50%; background:var(--ivory); box-shadow:0 0 0 5px rgba(216,195,154,.25), 0 0 18px rgba(216,195,154,.8); offset-path:path('M40 300 C 90 200, 160 330, 200 222'); offset-distance:0%; opacity:0; animation:boat 1.2s 1.55s ease-in-out forwards; display:flex; align-items:center; justify-content:center; }
+.s2 .boat svg{ width:12px; height:12px; }
+.s2 .tt{ top:350px; }
+@keyframes cmpIn{ from{ opacity:0; transform:scale(.3); } to{ opacity:1; transform:none; } }
+@keyframes cspin{ from{ transform:rotate(-420deg); } to{ transform:rotate(0); } }
+@keyframes cmpOut{ to{ transform:translate(-62px,-150px) scale(.32); opacity:.85; } }
+@keyframes draw{ to{ stroke-dashoffset:0; } }
+@keyframes boat{ 0%{ opacity:1; offset-distance:0%; } 100%{ opacity:1; offset-distance:100%; } }
+
+/* ================= SEA 3 · Container wall reveal ================= */
+.s3 .bg{ position:absolute; inset:0; background:url(/assets/images/hero_sea.jpg) center/cover; transform:scale(1.25); animation:zoomOut 2.6s 1s cubic-bezier(.2,.7,.2,1) both; }
+.s3 .bg::after{ content:''; position:absolute; inset:0; background:linear-gradient(180deg,rgba(17,26,43,.35),rgba(17,26,43,.85)); }
+.s3 .half{ position:absolute; top:0; bottom:0; width:50%; display:grid; grid-template-columns:repeat(2,1fr); grid-auto-rows:44px; gap:3px; padding:3px; align-content:start; z-index:5; background:#0B1220; }
+.s3 .half.l{ left:0; animation:openL .8s 1.25s cubic-bezier(.7,0,.3,1) forwards; } .s3 .half.r{ right:0; animation:openR .8s 1.25s cubic-bezier(.7,0,.3,1) forwards; }
+.s3 .ct{ border-radius:3px; background:repeating-linear-gradient(90deg,rgba(255,255,255,.14) 0 2px,transparent 2px 7px), var(--c); box-shadow:inset 0 -6px 0 rgba(0,0,0,.18); opacity:0; animation:ctIn .45s cubic-bezier(.2,.8,.2,1) both; }
+.s3 .tt{ top:220px; }
+.s3 .tt small, .s3 .tt b span, .s3 .tt i, .s3 .tt em{ animation-delay:calc(var(--d,0s) + .45s); }
+@keyframes ctIn{ from{ opacity:0; transform:translateX(var(--fx)); } to{ opacity:1; transform:none; } }
+@keyframes openL{ to{ transform:translateX(-102%); } } @keyframes openR{ to{ transform:translateX(102%); } }
+@keyframes zoomOut{ to{ transform:scale(1); } }
+
+/* ================= AIR 1 · Runway take-off ================= */
+.a1{ background:linear-gradient(180deg,#0B1220 0%,#16223A 45%,#111A2B 100%); }
+.a1 .sky{ position:absolute; inset:0; background:linear-gradient(180deg,#1C2B46 0%,#6E5A38 60%,#D8C39A 100%); opacity:0; animation:fade 1s 1.2s both; }
+.a1 .rw{ position:absolute; left:-60%; right:-60%; bottom:-30%; height:95%; transform:perspective(420px) rotateX(58deg); transform-origin:50% 100%; background:
+  linear-gradient(90deg,transparent 30%,#202C40 30%,#202C40 70%,transparent 70%); animation:rwOut .8s 1.2s ease-in forwards; }
+.a1 .rw::before{ content:''; position:absolute; left:49%; width:2%; top:0; bottom:0; background:repeating-linear-gradient(180deg,#DAD5CD 0 30px,transparent 30px 70px); animation:rush .35s linear infinite; }
+.a1 .rw::after{ content:''; position:absolute; inset:0; background:repeating-linear-gradient(180deg,#F2E3BE 0 6px,transparent 6px 40px) 29.5% 0/1% 100% no-repeat, repeating-linear-gradient(180deg,#F2E3BE 0 6px,transparent 6px 40px) 69.5% 0/1% 100% no-repeat; filter:drop-shadow(0 0 4px #F2E3BE); animation:rush2 .35s linear infinite; }
+.a1 .plane{ position:absolute; left:50%; top:58%; width:150px; margin-left:-75px; animation:lift 1.6s .55s cubic-bezier(.5,0,.2,1) both; filter:drop-shadow(0 12px 18px rgba(0,0,0,.5)); }
+.a1 .tt{ top:200px; }
+@keyframes rush{ from{ background-position:0 0; } to{ background-position:0 70px; } }
+@keyframes rush2{ from{ background-position:29.5% 0, 69.5% 0; } to{ background-position:29.5% 40px, 69.5% 40px; } }
+@keyframes rwOut{ to{ transform:perspective(420px) rotateX(58deg) translateY(60%); opacity:0; } }
+@keyframes lift{ 0%{ transform:translateY(60px) scale(.9); } 40%{ transform:translateY(30px) scale(1.05); } 100%{ transform:translateY(-300px) scale(.35); opacity:0; } }
+
+/* ================= AIR 2 · Through the clouds ================= */
+.a2{ background:linear-gradient(180deg,#19263E 0%,#4A5872 35%,#B9A57F 75%,#E9D9B5 100%); }
+.a2 .layer{ position:absolute; inset:-20% -10%; }
+.a2 .cl{ position:absolute; border-radius:50%; background:radial-gradient(ellipse at 50% 60%,rgba(255,250,240,.95) 0%,rgba(242,235,221,.7) 35%,rgba(242,235,221,0) 70%); filter:blur(9px); }
+.a2 .sea{ position:absolute; left:-20%; right:-20%; bottom:-6%; height:42%; background:radial-gradient(ellipse at 20% 30%,#FFF8EC 0,transparent 40%),radial-gradient(ellipse at 60% 20%,#FBF3E3 0,transparent 42%),radial-gradient(ellipse at 90% 40%,#FFF8EC 0,transparent 38%),linear-gradient(180deg,rgba(242,235,221,0),#F2EBDD 45%); filter:blur(6px); animation:seaUp 2.4s cubic-bezier(.3,.6,.3,1) both; }
+@keyframes seaUp{ from{ transform:translateY(-140%); opacity:0; } 40%{ opacity:1; } to{ transform:none; } }
+.a2 .L1{ animation:camUp 2.4s cubic-bezier(.4,0,.2,1) both; } .a2 .L2{ animation:camUp2 2.4s cubic-bezier(.4,0,.2,1) both; } .a2 .L3{ animation:camUp3 2.4s cubic-bezier(.4,0,.2,1) both; }
+.a2 .jet{ position:absolute; top:44%; left:-30%; width:86px; animation:jet 2.2s .7s cubic-bezier(.3,.6,.3,1) both; z-index:4; }
+.a2 .trail{ position:absolute; top:calc(44% + 18px); right:100%; height:2px; width:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,.9)); }
+.a2 .jetw{ position:absolute; inset:0; animation:fade .2s .7s both; }
+.a2 .tt{ top:78px; } .a2 .tt b{ color:#fff; } .a2 .tt em{ color:#F2EBDD; }
+@keyframes camUp{ from{ transform:translateY(-10%); } to{ transform:translateY(95%); } }
+@keyframes camUp2{ from{ transform:translateY(-30%); } to{ transform:translateY(120%); opacity:.6; } }
+@keyframes camUp3{ from{ transform:translateY(-60%) scale(1.4); } to{ transform:translateY(160%) scale(1.4); } }
+@keyframes jet{ from{ left:-30%; } to{ left:62%; } }
+
+/* ================= AIR 3 · Globe flight path ================= */
+.a3{ background:radial-gradient(circle at 50% 42%,#1C2B46 0%,#0B1220 70%); }
+.a3 canvas{ position:absolute; left:50%; top:40%; width:240px; height:240px; margin:-120px 0 0 -120px; border-radius:50%; box-shadow:0 0 60px rgba(181,154,106,.25), inset -30px -20px 60px rgba(0,0,0,.6); background:radial-gradient(circle at 38% 32%,#22324D 0%,#111A2B 60%,#070C16 100%); animation:gIn .7s ease both, gZoom .7s 2.3s cubic-bezier(.6,0,.4,1) forwards; }
+.a3 .tt{ top:372px; }
+@keyframes gIn{ from{ opacity:0; transform:scale(.8); } to{ opacity:1; transform:none; } }
+@keyframes gZoom{ to{ transform:scale(2.6); opacity:0; filter:blur(4px); } }
+
+/* ================= WH 1 · Roller shutter ================= */
+.w1 .bg{ position:absolute; inset:0; background:url(/assets/images/warehouse.jpg) center/cover; animation:kb 3s ease-out both; }
+.w1 .bg::after{ content:''; position:absolute; inset:0; background:linear-gradient(180deg,rgba(17,26,43,.55),rgba(17,26,43,.9)); }
+.w1 .shut{ position:absolute; inset:0; z-index:5; background:repeating-linear-gradient(180deg,#4A505B 0 2px,#8A8C90 2px 5px,#B5AFA6 5px 14px,#6F737A 14px 18px); box-shadow:0 10px 30px rgba(0,0,0,.6); animation:flick .5s steps(2) both, roll 1s .55s cubic-bezier(.6,0,.25,1.1) forwards; }
+.w1 .shut::after{ content:'VENTURE KART'; position:absolute; left:0; right:0; top:46%; text-align:center; font:700 13px Cinzel; letter-spacing:.3em; color:#111A2B; opacity:.55; }
+.w1 .light{ position:absolute; left:0; right:0; bottom:0; height:0; z-index:4; background:linear-gradient(0deg,rgba(242,227,190,.45),transparent); animation:spill 1s .55s ease-out forwards, fadeO .8s 1.6s forwards; }
+.w1 .tt{ top:240px; }
+@keyframes flick{ 0%{ filter:brightness(.3); } 50%{ filter:brightness(1.1); } 100%{ filter:brightness(1); } }
+@keyframes roll{ to{ transform:translateY(-101%); } }
+@keyframes spill{ to{ height:70%; } }
+@keyframes fadeO{ to{ opacity:0; } }
+@keyframes kb{ from{ transform:scale(1.25); } to{ transform:scale(1.05); } }
+
+/* ================= WH 2 · Isometric racks ================= */
+.w2{ background:radial-gradient(circle at 50% 38%,#1C2B46 0%,#111A2B 70%); }
+.w2 svg{ position:absolute; left:50%; top:36%; width:240px; height:240px; margin:-120px 0 0 -120px; overflow:visible; }
+.w2 .rack line{ stroke:var(--silver); stroke-width:1.6; stroke-dasharray:200; stroke-dashoffset:200; animation:draw .7s ease forwards; }
+.w2 .bx{ opacity:0; animation:drop .5s cubic-bezier(.3,1.4,.5,1) forwards; }
+.w2 .tt{ top:350px; }
+@keyframes drop{ from{ opacity:0; transform:translateY(-70px); } to{ opacity:1; transform:none; } }
+
+/* ================= WH 3 · Blueprint ================= */
+.w3{ background:#0F2036; }
+.w3 .grid{ position:absolute; inset:0; background-image:linear-gradient(rgba(181,175,166,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(181,175,166,.08) 1px,transparent 1px),linear-gradient(rgba(181,175,166,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(181,175,166,.04) 1px,transparent 1px); background-size:48px 48px,48px 48px,12px 12px,12px 12px; animation:fade .6s both; }
+.w3 > svg{ position:absolute; left:20px; right:20px; top:70px; width:calc(100% - 40px); }
+.w3 .ln{ fill:none; stroke:var(--silver2); stroke-width:1.6; stroke-dasharray:600; stroke-dashoffset:600; animation:draw 1s ease forwards; }
+.w3 .zn{ fill:var(--gold); opacity:0; animation:zf .4s ease forwards; }
+.w3 text{ fill:var(--ivory); font:700 8.5px Inter; letter-spacing:.06em; opacity:0; animation:fade .3s ease forwards; }
+.w3 .pin{ position:absolute; left:63%; top:128px; width:26px; animation:pin .6s 1.5s cubic-bezier(.3,1.5,.5,1) both; z-index:3; }
+.w3 .rip{ position:absolute; left:calc(63% + 13px); top:158px; width:10px; height:10px; margin:-5px; border-radius:50%; border:2px solid var(--gold2); opacity:0; animation:rip 1.2s 1.9s ease-out infinite; }
+.w3 .chip{ position:absolute; left:0; right:0; margin:0 auto; width:max-content; top:268px; white-space:nowrap; padding:6px 12px; border-radius:20px; background:rgba(216,195,154,.15); border:1px solid rgba(216,195,154,.5); color:var(--gold2); font:700 11px Inter; opacity:0; animation:fu .5s 2s both; }
+.w3 .tt{ top:330px; }
+@keyframes zf{ to{ opacity:.28; } }
+@keyframes pin{ from{ opacity:0; transform:translateY(-60px); } to{ opacity:1; transform:none; } }
+@keyframes rip{ from{ opacity:.9; transform:scale(1); } to{ opacity:0; transform:scale(5); } }
+
+/* ---------- page layout: menu · stage · details ---------- */
+body{ padding:0; min-height:100vh; display:grid; grid-template-columns:290px 1fr 320px; }
+.menu{ background:linear-gradient(180deg,#0F1726,#0B1220); border-right:1px solid rgba(181,175,166,.12); padding:22px 16px; display:flex; flex-direction:column; gap:4px; min-height:100vh; position:sticky; top:0; max-height:100vh; overflow-y:auto; }
+.brand{ display:flex; align-items:center; gap:10px; padding:0 6px 20px; margin-bottom:10px; border-bottom:1px solid rgba(181,175,166,.12); }
+.brand img{ width:48px; } .brand b{ display:block; font-family:Cinzel,serif; font-size:15px; letter-spacing:.08em; } .brand small{ display:block; font-size:10.5px; letter-spacing:.14em; color:var(--gold2); font-weight:700; margin-top:2px; }
+.grp{ font-family:Cinzel,serif; font-size:11px; letter-spacing:.2em; color:var(--gold2); padding:16px 10px 8px; display:flex; align-items:center; gap:8px; }
+.grp svg{ width:16px; height:16px; fill:none; stroke:var(--gold2); stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.mi{ display:flex; align-items:center; gap:10px; padding:11px 12px; border-radius:11px; cursor:pointer; color:#C9CED6; font-size:13.5px; font-weight:600; border:1px solid transparent; transition:background .2s,border-color .2s; text-align:left; background:none; font-family:inherit; width:100%; }
+.mi:hover{ background:rgba(255,255,255,.04); }
+.mi.on{ background:linear-gradient(90deg,rgba(181,154,106,.22),rgba(181,154,106,.04)); border-color:rgba(216,195,154,.35); color:#fff; }
+.mi i{ font-style:normal; width:30px; height:24px; border-radius:6px; background:rgba(181,175,166,.12); color:var(--silver2); font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; flex:none; }
+.mi.on i{ background:var(--gold2); color:#111A2B; }
+.mi em{ margin-left:auto; font-style:normal; font-size:9.5px; font-weight:800; letter-spacing:.06em; color:var(--gold2); border:1px solid rgba(216,195,154,.4); border-radius:5px; padding:1px 5px; }
+.stage{ display:flex; align-items:center; justify-content:center; padding:30px; background:radial-gradient(circle at 50% 40%,#18243A 0%,#0B1220 70%); min-height:100vh; }
+.stage .ph{ transform:scale(1.18); }
+.info{ border-left:1px solid rgba(181,175,166,.12); padding:34px 26px; background:#0D1422; display:flex; flex-direction:column; gap:14px; }
+.info .k{ font-family:Cinzel,serif; font-size:11px; letter-spacing:.2em; color:var(--gold2); }
+.info h2{ font-family:'Playfair Display',serif; font-size:28px; font-weight:600; line-height:1.15; }
+.info p{ color:#AEB6C2; font-size:14px; line-height:1.6; }
+.info .tags{ display:flex; flex-wrap:wrap; gap:6px; } .info .tags span{ font-size:11.5px; font-weight:600; color:var(--silver2); border:1px solid rgba(181,175,166,.25); border-radius:20px; padding:4px 10px; }
+.info .btns{ display:flex; gap:10px; margin-top:6px; }
+.info button{ height:42px; padding:0 18px; border-radius:10px; font:700 13px Inter; cursor:pointer; border:1px solid rgba(181,175,166,.35); background:none; color:var(--silver2); }
+.info button.pri{ background:linear-gradient(135deg,#E6E2DB,#B5AFA6 50%,#8A847B); color:#111A2B; border:none; }
+.info .nav{ margin-top:auto; display:flex; justify-content:space-between; font-size:12.5px; color:#8C94A1; }
+.info .nav a{ cursor:pointer; color:var(--silver2); }
+.info label{ display:flex; align-items:center; gap:8px; font-size:13px; color:#AEB6C2; cursor:pointer; } .info label input{ accent-color:var(--gold); }
+.tbar{ display:none; }
+@media (max-width:1100px){ body{ grid-template-columns:250px 1fr; } .info{ grid-column:1 / -1; border-left:none; border-top:1px solid rgba(181,175,166,.12); } }
+@media (max-width:720px){
+  body{ grid-template-columns:1fr; }
+  .menu{ position:static; min-height:0; max-height:none; flex-direction:row; flex-wrap:nowrap; overflow-x:auto; padding:12px; gap:6px; border-right:none; border-bottom:1px solid rgba(181,175,166,.12); }
+  #menu{ display:contents; } .brand, .grp{ display:none; } .mi{ width:auto; white-space:nowrap; flex:none; } .mi em{ display:none; }
+  .stage{ min-height:0; padding:30px 0 40px; } .stage .ph{ transform:none; }
+}
+</style>
+</head>
+<body>
+<aside class="menu"><div class="brand"><img src="/assets/images/logo/vk-emblem-256.png" alt=""><div><b>VENTURE KART</b><small>SERVICE INTROS</small></div></div><div id="menu"></div></aside>
+<main class="stage"><div class="ph"><div class="scr" id="scr"></div></div></main>
+<aside class="info" id="info"></aside>
+<script>
+var GROUPS = [['sea','SEA FREIGHT','<svg viewBox="0 0 24 24"><path d="M3 17l2 4h14l2-4-9-3z"/><path d="M5 15V9h14v6M9 9V5h6v4"/></svg>'],['air','AIR FREIGHT','<svg viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 00-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg>'],['wh','WAREHOUSING','<svg viewBox="0 0 24 24"><path d="M3 21V9l9-5 9 5v12M7 21v-8h10v8M7 17h10"/></svg>']];
+var LIST = [
+  ['s1','sea','Horizon Sunrise','Cinematic: a container ship sails in over parallax waves as the gold sun rises on the horizon and its reflection shimmers on the water.',['Cinematic','Illustrated','~2.6 s']],
+  ['s2','sea','Compass to Route','The compass from the VENTURE KART emblem spins and settles, then a dotted sea route draws from Nhava Sheva to Jebel Ali with a glowing vessel travelling along it.',['On-brand','Logo compass','~2.8 s']],
+  ['s3','sea','Container Wall','Coloured containers stack in from both sides into a wall, then split open like doors to reveal the port behind.',['Bold','Photo reveal','~2.5 s']],
+  ['a1','air','Runway Take-off','Runway lights rush toward the camera, the aircraft lifts off and flies away, and the scene opens into a golden dawn.',['Cinematic','Motion','~2.4 s']],
+  ['a2','air','Through the Clouds','The camera climbs through soft cloud layers, a jet crosses with a contrail, and a sea of clouds settles below.',['Calm','Premium','~2.6 s']],
+  ['a3','air','Globe Flight Path','The dotted globe turns to India and gold flight routes draw out to Dubai, Rotterdam, Singapore, Tokyo, New York and Mombasa — then zooms through into the app.',['On-brand','Global','~3.0 s']],
+  ['w1','wh','Roller Shutter','Lights flicker on, a steel shutter marked VENTURE KART rolls up and warm light spills into the warehouse.',['Cinematic','Photo reveal','~2.4 s']],
+  ['w2','wh','Isometric Racks','A 3D rack draws itself and pallets drop into each slot one by one — clean, modern and playful.',['Modern','Illustrated','~2.2 s']],
+  ['w3','wh','Blueprint Floor Plan','A floor plan draws in blueprint lines, the storage zones light up and a pin drops on available space.',['On-brand','Informative','~2.6 s']]
+];
+var REC = { s2:1, a3:1, w3:1 };
+</script>
+<script>
+(function(){
+  function title(t, sub, delay){ delay = delay || 0; var w = t.split('').map(function(c, i){ return '<span style="animation-delay:' + (1.3 + delay + i * .045).toFixed(3) + 's">' + (c === ' ' ? '&nbsp;' : c) + '</span>'; }).join('');
+    return '<div class="tt"' + (delay ? ' style="--d:' + delay + 's"' : '') + '><small>VENTURE KART</small><b>' + w + '</b><i></i><em>' + sub + '</em></div>'; }
+  var WAVE = '<svg viewBox="0 0 800 60" preserveAspectRatio="none"><path d="M0 20 Q50 5 100 20 T200 20 T300 20 T400 20 T500 20 T600 20 T700 20 T800 20 V60 H0Z"/></svg>';
+  var SHIP = '<svg viewBox="0 0 180 56"><g fill="#0A0F18" stroke="rgba(218,213,205,.55)" stroke-width=".8"><path d="M4 38h172l-12 16H20z"/><rect x="138" y="14" width="18" height="24" rx="1.5"/><rect x="142" y="6" width="10" height="8"/></g>' +
+    '<g stroke="#0A0F18" stroke-width=".8">' + [0,1,2,3,4,5,6].map(function(i){ var c = ['#B59A6A','#B5AFA6','#2B374D','#D8C39A','#8A847B','#B59A6A','#B5AFA6'][i]; return '<rect x="' + (20 + i * 16) + '" y="26" width="15" height="12" fill="' + c + '"/><rect x="' + (20 + i * 16) + '" y="' + (i % 3 ? 14 : 18) + '" width="15" height="' + (i % 3 ? 12 : 8) + '" fill="' + ['#2B374D','#B5AFA6','#B59A6A'][i % 3] + '"/>'; }).join('') + '</g><circle cx="150" cy="22" r="1.4" fill="#F2E3BE"/><circle cx="145" cy="22" r="1.4" fill="#F2E3BE"/></svg>';
+  var STAR = (function(){ var s = ''; for (var i = 0; i < 16; i++){ var a = i * 22.5, L = i % 4 === 0 ? 78 : i % 2 === 0 ? 52 : 34, w = i % 4 === 0 ? 9 : 6; s += '<g transform="rotate(' + a + ' 90 90)"><path d="M90 ' + (90 - L) + ' L' + (90 + w) + ' 90 L90 90Z" fill="' + (i % 4 === 0 ? '#D8C39A' : '#B5AFA6') + '"/><path d="M90 ' + (90 - L) + ' L' + (90 - w) + ' 90 L90 90Z" fill="' + (i % 4 === 0 ? '#9C8254' : '#7F7A72') + '"/></g>'; } return s; })();
+  var COMPASS = '<svg viewBox="0 0 180 180"><circle cx="90" cy="90" r="86" fill="none" stroke="#B5AFA6" stroke-width="2"/><circle cx="90" cy="90" r="76" fill="rgba(17,26,43,.6)" stroke="rgba(216,195,154,.5)" stroke-width="1" stroke-dasharray="2 4"/>' +
+    '<g class="spin">' + STAR + '<circle cx="90" cy="90" r="6" fill="#F2EBDD"/></g>' + ['N', 'E', 'S', 'W'].map(function(d, i){ var p = [[90, 14], [168, 94], [90, 174], [12, 94]][i]; return '<text x="' + p[0] + '" y="' + p[1] + '" text-anchor="middle" font-family="Playfair Display" font-weight="700" font-size="12" fill="#F2EBDD">' + d + '</text>'; }).join('') + '</svg>';
+  var PLANE_FRONT = '<svg viewBox="0 0 160 70"><path d="M2 40 L70 30 L90 30 L158 40 L158 44 L90 38 L70 38 L2 44Z" fill="#B5AFA6"/><ellipse cx="80" cy="34" rx="12" ry="12" fill="#DAD5CD"/><ellipse cx="80" cy="34" rx="7" ry="5" fill="#111A2B"/><path d="M80 4 L84 24 L76 24Z" fill="#B59A6A"/><circle cx="48" cy="44" r="7" fill="#8A847B"/><circle cx="112" cy="44" r="7" fill="#8A847B"/><circle cx="48" cy="44" r="3.5" fill="#111A2B"/><circle cx="112" cy="44" r="3.5" fill="#111A2B"/><path d="M60 22 L80 18 L100 22" stroke="#B59A6A" stroke-width="2" fill="none"/></svg>';
+  var JET = '<svg viewBox="0 0 90 36"><path d="M4 18 Q10 14 30 14 L70 13 Q84 13 88 18 Q84 22 70 22 L30 22 Q10 22 4 18Z" fill="#F2EBDD"/><path d="M40 14 L28 0 L36 0 L56 14Z M40 22 L28 36 L36 36 L56 22Z" fill="#DAD5CD"/><path d="M6 17 L2 6 L8 6 L14 15Z" fill="#B59A6A"/><path d="M74 15 h8" stroke="#111A2B" stroke-width="2"/></svg>';
+
+  function clouds(){ var h = ''; [['L1', 9, 70, 130], ['L2', 7, 110, 190], ['L3', 5, 170, 260]].forEach(function(L){ h += '<div class="layer ' + L[0] + '">'; for (var i = 0; i < L[1]; i++){ var w = L[2] + (i * 37 % L[3] - L[2] / 2); h += '<i class="cl" style="left:' + ((i * 53) % 100 - 10) + '%;top:' + ((i * 29) % 90) + '%;width:' + w + 'px;height:' + (w * .55) + 'px"></i>'; } h += '</div>'; }); return h; }
+  function iso(){ var s = 25, out = '<g class="rack">', C = Math.cos(Math.PI / 6), S = .5;
+    function P(x, y, z){ return [102 + (x - y) * C * s, 140 + (x + y) * S * s - z * s]; }
+    function L(a, b, d){ var p = P.apply(null, a), q = P.apply(null, b); return '<line x1="' + p[0] + '" y1="' + p[1] + '" x2="' + q[0] + '" y2="' + q[1] + '" style="animation-delay:' + d + 's"/>'; }
+    for (var x = 0; x <= 3; x++) for (var y = 0; y <= 1; y += 1){ out += L([x * 1.6, y * 1.6, 0], [x * 1.6, y * 1.6, 4.5], .05 * x); }
+    for (var z = 0; z <= 3; z++){ out += L([0, 0, z * 1.5], [4.8, 0, z * 1.5], .2 + z * .05) + L([0, 1.6, z * 1.5], [4.8, 1.6, z * 1.5], .25 + z * .05) + L([0, 0, z * 1.5], [0, 1.6, z * 1.5], .25) + L([4.8, 0, z * 1.5], [4.8, 1.6, z * 1.5], .3); }
+    out += '</g>'; var k = 0, cols = [['#E9DCC0', '#B59A6A', '#8C7448'], ['#E6E2DB', '#B5AFA6', '#8A847B']];
+    for (var zz = 2; zz >= 0; zz--) for (var xx = 0; xx < 3; xx++){ var c = cols[(xx + zz) % 2], x0 = xx * 1.6 + .2, y0 = .2, z0 = zz * 1.5, w = 1.2, dd = 1.2, hh = 1.1;
+      var t = [P(x0, y0, z0 + hh), P(x0 + w, y0, z0 + hh), P(x0 + w, y0 + dd, z0 + hh), P(x0, y0 + dd, z0 + hh)], l = [P(x0, y0 + dd, z0 + hh), P(x0 + w, y0 + dd, z0 + hh), P(x0 + w, y0 + dd, z0), P(x0, y0 + dd, z0)], r = [P(x0 + w, y0, z0 + hh), P(x0 + w, y0 + dd, z0 + hh), P(x0 + w, y0 + dd, z0), P(x0 + w, y0, z0)];
+      function poly(p, f){ return '<polygon points="' + p.map(function(q){ return q.join(','); }).join(' ') + '" fill="' + f + '"/>'; }
+      out += '<g class="bx" style="animation-delay:' + (.75 + k * .09).toFixed(2) + 's">' + poly(l, c[1]) + poly(r, c[2]) + poly(t, c[0]) + '</g>'; k++; }
+    return '<svg viewBox="0 0 240 240">' + out + '</svg>'; }
+  var BLUE = '<svg viewBox="0 0 230 190"><path class="ln" d="M5 5 H225 V185 H5 Z" style="animation-delay:.1s"/><path class="ln" d="M5 70 H120 M120 5 V120 M120 120 H225 M80 70 V185" style="animation-delay:.45s"/><path class="ln" d="M40 185 A20 20 0 0 1 60 165 M170 185 A18 18 0 0 0 152 167" style="animation-delay:.8s"/>' +
+    '<rect class="zn" x="8" y="8" width="109" height="59" style="animation-delay:1.1s"/><rect class="zn" x="123" y="8" width="99" height="109" style="animation-delay:1.25s;fill:#D8C39A"/><rect class="zn" x="8" y="73" width="69" height="109" style="animation-delay:1.4s;fill:#B5AFA6"/>' +
+    '<text x="62" y="40" text-anchor="middle" style="animation-delay:1.2s">COLD 2–8 °C</text><text x="172" y="66" text-anchor="middle" style="animation-delay:1.35s">AVAILABLE</text><text x="42" y="130" text-anchor="middle" style="animation-delay:1.5s">BONDED</text><text x="150" y="155" text-anchor="middle" style="animation-delay:1.55s">DRY STORAGE</text></svg>';
+  var PIN = '<svg viewBox="0 0 24 32"><path d="M12 31s10-11 10-19A10 10 0 002 12c0 8 10 19 10 19z" fill="#D8C39A" stroke="#111A2B" stroke-width="1.5"/><circle cx="12" cy="12" r="4" fill="#111A2B"/></svg>';
+
+  var T = {
+    s1:function(){ return '<div class="scr-in s1" style="position:absolute;inset:0"><div class="glow"></div><div class="sun"></div><div class="refl"></div><div class="ship">' + SHIP + '</div><div class="wake"></div><div class="wv w1">' + WAVE + '</div><div class="wv w2">' + WAVE + '</div><div class="wv w3">' + WAVE + '</div>' + title('Sea Freight', 'Oceans of possibility') + '</div>'; },
+    s2:function(){ return '<div class="scr-in s2" style="position:absolute;inset:0"><div class="grid"></div><svg class="route" viewBox="0 0 252 542"><defs><mask id="m2"><path class="mask" d="M40 300 C 90 200, 160 330, 200 222"/></mask></defs><path class="r" d="M40 300 C 90 200, 160 330, 200 222" mask="url(#m2)"/><circle cx="40" cy="300" r="4"/><circle cx="200" cy="222" r="4"/><text x="24" y="318" text-anchor="start">NHAVA SHEVA</text><text x="200" y="244" text-anchor="middle">JEBEL ALI</text></svg><div class="boat"><svg viewBox="0 0 24 24" fill="none" stroke="#111A2B" stroke-width="2.4" stroke-linecap="round"><path d="M3 15l2 4h14l2-4-9-3z M7 12V8h10v4"/></svg></div><div class="cmp">' + COMPASS + '</div>' + title('Sea Freight', 'Charting every ocean route', .35) + '</div>'; },
+    s3:function(){ var C = ['#B59A6A', '#B5AFA6', '#2B374D', '#D8C39A', '#8A847B', '#19263E', '#B5AFA6', '#B59A6A'];
+      function half(side){ var h = ''; for (var i = 0; i < 24; i++){ var row = Math.floor(i / 2); h += '<i class="ct" style="--c:' + C[(i * 3 + (side === 'l' ? 0 : 5)) % C.length] + ';--fx:' + (side === 'l' ? '-120px' : '120px') + ';animation-delay:' + (row * .07 + (i % 2) * .04).toFixed(2) + 's"></i>'; } return '<div class="half ' + side + '">' + h + '</div>'; }
+      return '<div class="scr-in s3" style="position:absolute;inset:0"><div class="bg"></div>' + half('l') + half('r') + title('Sea Freight', 'Full & part container loads', .45) + '</div>'; },
+    a1:function(){ return '<div class="scr-in a1" style="position:absolute;inset:0"><div class="sky"></div><div class="rw"></div><div class="plane">' + PLANE_FRONT + '</div>' + title('Air Freight', 'Faster than ever') + '</div>'; },
+    a2:function(){ return '<div class="scr-in a2" style="position:absolute;inset:0">' + clouds() + '<div class="sea"></div>' + '<div class="jetw"><div class="jet">' + JET + '<i class="trail" style="animation:trailG 2.2s .7s ease-out both"></i></div></div>' + title('Air Freight', 'Above and beyond') + '</div>'; },
+    a3:function(){ return '<div class="scr-in a3" style="position:absolute;inset:0"><canvas width="480" height="480"></canvas>' + title('Air Freight', 'Connected to 190+ countries') + '</div>'; },
+    w1:function(){ return '<div class="scr-in w1" style="position:absolute;inset:0"><div class="bg"></div><div class="light"></div><div class="shut"></div>' + title('Warehousing', 'Space, perfectly placed') + '</div>'; },
+    w2:function(){ return '<div class="scr-in w2" style="position:absolute;inset:0">' + iso() + title('Warehousing', 'Store smarter, ship faster') + '</div>'; },
+    w3:function(){ return '<div class="scr-in w3" style="position:absolute;inset:0"><div class="grid"></div>' + BLUE + '<div class="rip"></div><div class="pin">' + PIN + '</div><div class="chip">Space found · 1,200 sq ft</div>' + title('Warehousing', 'Find the right space, fast') + '</div>'; }
+  };
+  var st = document.createElement('style'); st.textContent = '@keyframes trailG{ from{ width:0; } to{ width:220px; } }'; document.head.appendChild(st);
+
+  // --- A3 globe (land polygons, lon/lat) ---
+  var LAND = [
+    [[-168,66],[-162,70],[-140,70],[-125,72],[-95,72],[-80,73],[-62,66],[-56,52],[-66,45],[-70,42],[-76,35],[-81,31],[-80,25],[-82,27],[-84,30],[-90,29],[-97,26],[-97,22],[-92,18],[-87,21],[-88,16],[-83,10],[-79,8],[-80,7],[-85,11],[-92,14],[-105,20],[-110,24],[-112,30],[-117,32],[-124,40],[-124,48],[-133,56],[-150,60],[-160,58],[-165,62]],
+    [[-55,60],[-44,60],[-20,70],[-18,80],[-40,83],[-65,80],[-58,75],[-52,68]],
+    [[-80,8],[-72,12],[-62,10],[-50,0],[-35,-6],[-38,-13],[-41,-22],[-48,-26],[-58,-34],[-62,-40],[-66,-46],[-69,-52],[-72,-50],[-74,-42],[-71,-30],[-70,-18],[-76,-12],[-81,-5],[-80,0]],
+    [[-10,36],[-9,43],[-2,44],[-5,48],[2,51],[5,53],[8,57],[5,62],[12,66],[18,70],[28,71],[40,68],[45,66],[40,60],[30,57],[28,46],[40,44],[30,41],[26,40],[23,36],[20,40],[16,38],[18,40],[13,44],[10,44],[8,44],[3,43],[0,38]],
+    [[-5,50],[1,51],[2,53],[-1,55],[-3,58],[-6,57],[-5,54],[-3,53]],
+    [[-17,21],[-16,28],[-9,33],[-5,36],[10,37],[11,33],[20,31],[32,31],[34,28],[39,18],[43,12],[51,12],[48,5],[40,-3],[40,-15],[35,-24],[32,-29],[27,-34],[19,-35],[16,-28],[12,-18],[13,-8],[9,-1],[9,4],[5,6],[-4,5],[-8,4],[-13,8],[-17,14]],
+    [[44,-25],[47,-25],[50,-15],[49,-12],[44,-16]],
+    [[28,46],[40,44],[50,45],[52,41],[54,37],[60,37],[67,37],[72,40],[80,42],[88,48],[96,42],[105,40],[118,40],[122,40],[127,40],[130,43],[135,44],[141,52],[136,55],[142,59],[155,59],[163,62],[178,65],[180,70],[160,71],[140,73],[113,74],[100,78],[80,73],[68,73],[60,70],[45,68],[40,66],[40,60],[30,57]],
+    [[36,36],[43,37],[48,30],[56,26],[57,23],[59,22],[55,17],[44,12],[39,18],[34,28],[35,32]],
+    [[44,38],[54,37],[62,37],[70,37],[74,35],[71,28],[67,25],[62,25],[57,26],[52,28],[48,30]],
+    [[67,25],[71,28],[74,35],[80,32],[88,27],[92,26],[97,28],[92,22],[88,22],[86,20],[80,15],[78,8],[76,9],[73,16],[72,21],[69,22]],
+    [[74,35],[80,42],[88,48],[96,42],[105,40],[118,40],[122,40],[121,32],[122,30],[119,25],[110,21],[106,17],[109,12],[105,9],[100,13],[99,8],[103,1],[100,3],[98,16],[94,17],[92,22],[97,28],[88,27],[80,32]],
+    [[130,31],[135,34],[140,35],[141,41],[145,44],[141,45],[139,39],[133,35]],
+    [[95,5],[106,-6],[104,-5],[98,2]], [[109,2],[117,7],[119,1],[116,-4],[110,-3]], [[105,-6],[115,-8],[114,-9],[106,-7]], [[131,-1],[141,-3],[150,-10],[141,-9],[132,-4]],
+    [[114,-22],[122,-18],[130,-12],[137,-12],[136,-15],[142,-11],[146,-19],[153,-25],[151,-34],[146,-39],[140,-38],[135,-34],[131,-31],[124,-33],[115,-34],[113,-26]],
+    [[172,-34],[178,-38],[174,-41],[167,-46],[171,-44]]
+  ];
+  function inPoly(x, y, p){ var c = false; for (var i = 0, j = p.length - 1; i < p.length; j = i++){ if (((p[i][1] > y) !== (p[j][1] > y)) && (x < (p[j][0] - p[i][0]) * (y - p[i][1]) / (p[j][1] - p[i][1]) + p[i][0])) c = !c; } return c; }
+  var PTS = []; for (var la = 78; la > -56; la -= 2.4) for (var lo = -180; lo < 180; lo += 2.4){ for (var k = 0; k < LAND.length; k++) if (inPoly(lo, la, LAND[k])){ PTS.push([lo, la]); break; } }
+  var R = Math.PI / 180, HUB = [72.9, 19], DEST = [[55.3, 25.2], [4.5, 51.9], [103.8, 1.3], [139.7, 35.6], [-74, 40.7], [39.7, -4]];
+  function v3(lon, lat){ return [Math.cos(lat * R) * Math.cos(lon * R), Math.cos(lat * R) * Math.sin(lon * R), Math.sin(lat * R)]; }
+  var ARCS = DEST.map(function(d){ var a = v3(HUB[0], HUB[1]), b = v3(d[0], d[1]), om = Math.acos(a[0] * b[0] + a[1] * b[1] + a[2] * b[2]), seg = [];
+    for (var t = 0; t <= 1.0001; t += 1 / 50){ var s1 = Math.sin((1 - t) * om) / Math.sin(om), s2 = Math.sin(t * om) / Math.sin(om), v = [a[0] * s1 + b[0] * s2, a[1] * s1 + b[1] * s2, a[2] * s1 + b[2] * s2]; seg.push([Math.atan2(v[1], v[0]) / R, Math.asin(v[2]) / R, Math.sin(Math.PI * t) * om * .3]); } return seg; });
+  function globe(cv){ var ctx = cv.getContext('2d'), S = cv.width, Rr = S / 2 * .97, t0 = performance.now(), lat0 = 18 * R;
+    function ease(x){ return 1 - Math.pow(1 - Math.min(1, Math.max(0, x)), 3); }
+    function frame(now){ if (!cv.isConnected) return; var t = (now - t0) / 1000, lon0 = -40 + 100 * ease(t / 1.4);
+      function pj(lon, lat, h){ var la = lat * R, lo = (lon - lon0) * R, x0 = Math.cos(la) * Math.cos(lo), y0 = Math.cos(la) * Math.sin(lo), z0 = Math.sin(la), k = Rr * (1 + (h || 0)); return [S / 2 + k * y0, S / 2 - k * (z0 * Math.cos(lat0) - x0 * Math.sin(lat0)), x0 * Math.cos(lat0) + z0 * Math.sin(lat0)]; }
+      ctx.clearRect(0, 0, S, S);
+      for (var i = 0; i < PTS.length; i++){ var p = pj(PTS[i][0], PTS[i][1]); if (p[2] <= 0) continue; ctx.globalAlpha = .2 + p[2] * .7; ctx.fillStyle = '#B5AFA6'; ctx.beginPath(); ctx.arc(p[0], p[1], 1.6 + p[2] * 1.6, 0, 6.283); ctx.fill(); }
+      var pr = ease((t - 1.0) / 1.0);
+      ARCS.forEach(function(seg, ai){ var n = Math.floor(seg.length * Math.max(0, Math.min(1, pr * 1.3 - ai * .06))); if (n < 2) return; ctx.beginPath(); var st = false;
+        for (var j = 0; j < n; j++){ var q = pj(seg[j][0], seg[j][1], seg[j][2]); if (q[2] < -.05){ st = false; continue; } if (!st){ ctx.moveTo(q[0], q[1]); st = true; } else ctx.lineTo(q[0], q[1]); }
+        ctx.globalAlpha = .9; ctx.strokeStyle = '#D8C39A'; ctx.lineWidth = 2.2; ctx.stroke();
+        var hq = pj(seg[n - 1][0], seg[n - 1][1], seg[n - 1][2]); if (hq[2] > 0){ ctx.globalAlpha = 1; ctx.fillStyle = '#F2EBDD'; ctx.shadowColor = '#D8C39A'; ctx.shadowBlur = 14; ctx.beginPath(); ctx.arc(hq[0], hq[1], 4, 0, 6.283); ctx.fill(); ctx.shadowBlur = 0; } });
+      var h = pj(HUB[0], HUB[1]); if (h[2] > 0){ ctx.globalAlpha = .3; ctx.fillStyle = '#D8C39A'; ctx.beginPath(); ctx.arc(h[0], h[1], 14, 0, 6.283); ctx.fill(); ctx.globalAlpha = 1; ctx.beginPath(); ctx.arc(h[0], h[1], 5, 0, 6.283); ctx.fill(); }
+      ctx.globalAlpha = 1; requestAnimationFrame(frame); }
+    requestAnimationFrame(frame); }
+
+  var scr = document.getElementById('scr'), cur = 0, loop = false, lt;
+  function play(){ clearTimeout(lt); scr.innerHTML = T[LIST[cur][0]](); var cv = scr.querySelector('canvas'); if (cv) globe(cv); if (loop) lt = setTimeout(play, 4200); }
+  function render(){ var it = LIST[cur], g = GROUPS.filter(function(x){ return x[0] === it[1]; })[0];
+    document.getElementById('menu').innerHTML = GROUPS.map(function(G){ return '<div class="grp">' + G[2] + G[1] + '</div>' + LIST.map(function(x, i){ return x[1] !== G[0] ? '' : '<button class="mi' + (i === cur ? ' on' : '') + '" data-i="' + i + '"><i>' + x[0].toUpperCase() + '</i>' + x[2] + (REC[x[0]] ? '<em>PICK</em>' : '') + '</button>'; }).join(''); }).join('');
+    document.getElementById('info').innerHTML = '<div class="k">' + g[1] + ' · ' + it[0].toUpperCase() + '</div><h2>' + it[2] + '</h2><p>' + it[3] + '</p><div class="tags">' + it[4].map(function(t){ return '<span>' + t + '</span>'; }).join('') + (REC[it[0]] ? '<span style="color:#111A2B;background:#D8C39A;border-color:#D8C39A">Recommended</span>' : '') + '</div>' +
+      '<div class="btns"><button class="pri" data-play>&#9654; Play again</button></div><label><input type="checkbox" id="loop"' + (loop ? ' checked' : '') + '> Loop animation</label>' +
+      '<p style="font-size:12.5px;color:#8C94A1">Tip: use ← → keys to switch concepts. Recommended set: S2 + A3 + W3 (all use the logo’s compass, globe and map style).</p>' +
+      '<div class="nav"><a data-step="-1">← Previous</a><a data-step="1">Next →</a></div>';
+    var on = document.querySelector('.mi.on'), mn = document.querySelector('.menu'); if (on && mn.scrollWidth > mn.clientWidth) mn.scrollLeft = on.offsetLeft - (mn.clientWidth - on.offsetWidth) / 2;
+    try { history.replaceState(null, '', '#' + it[0]); } catch (e){} }
+  function go(i){ cur = (i + LIST.length) % LIST.length; render(); play(); }
+  document.addEventListener('click', function(e){ var t;
+    if ((t = e.target.closest('[data-i]'))) go(+t.dataset.i);
+    else if (e.target.closest('[data-play]')) play();
+    else if ((t = e.target.closest('[data-step]'))) go(cur + +t.dataset.step); });
+  document.addEventListener('change', function(e){ if (e.target.id === 'loop'){ loop = e.target.checked; play(); } });
+  document.addEventListener('keydown', function(e){ if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(cur + 1); if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') go(cur - 1); });
+  var h = location.hash.slice(1), hi = LIST.findIndex(function(x){ return x[0] === h; }); go(hi > -1 ? hi : 0);
+})();
+</script>
+</body>
+</html>
