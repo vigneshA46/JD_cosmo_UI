@@ -2,7 +2,7 @@
 (function(){
   'use strict';
   var app = document.getElementById('app');
-  var ST = { cargo:'daily', fin:'overview', prog:'ms', doc:'all', docq:'', msg:0, slot:'11:30 AM', navOpen:false };
+  var ST = { mf:'all', cargo:'daily', fin:'overview', prog:'ms', doc:'all', docq:'', msg:0, slot:'11:30 AM', navOpen:false };
   var RAF = null, OBS = [];
 
   // ---------------- icons ----------------
@@ -55,7 +55,7 @@
   function ic(n, cls){ return '<svg class="ic' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24">' + P[n] + '</svg>'; }
   var CROWN = '<img class="vk-emb" src="/assets/images/logo/vk-emblem-256.png" alt="Venture Kart">';
   function logo(cls, tag){ return '<div class="iv-logo ' + (cls || '') + '"><span class="iv-emb">' + CROWN + '</span><div><b>VENTURE KART</b><small>GLOBAL TRADE &amp; LOGISTICS PLATFORM</small>' + (tag ? '<em>' + tag + '</em>' : '') + '</div></div>'; }
-  function pill(s){ var c = /^(Completed|Delivered|Cleared|Verified|Confirmed|Signed|Accredited|Valid)$/.test(s) ? 'ok' : /^(In Progress|In Transit|Pending|Requested)$/.test(s) ? 'prog' : /^(Planned|Projected|Estimated)$/.test(s) ? 'plan' : 'bad'; return '<span class="pill ' + c + '">' + s + '</span>'; }
+  function pill(s){ var c = /^(Completed|Delivered|Cleared|Verified|Confirmed|Signed|Accredited|Valid|Processed|Paid)$/.test(s) ? 'ok' : /^(In Progress|In Transit|Pending|Requested)$/.test(s) ? 'prog' : /^(Planned|Projected|Estimated)$/.test(s) ? 'plan' : 'bad'; return '<span class="pill ' + c + '">' + s + '</span>'; }
   function money(n){ return '$' + n.toLocaleString('en-US'); }
   function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]; }); }
 
@@ -181,8 +181,36 @@
     ['Compliance', 'CO', 'Your KYC verification is approved', '01 Oct', 0, ['Dear Rajesh,', 'Your investor KYC and accreditation have been verified. You now have full access to the data room, including financial models and legal documents (subject to NDA).', 'Compliance · Venture Kart']]
   ];
   var MEET = [['28', 'OCT', 'Quarterly investor call', '4:00 PM IST · Video call · 60 min', 'Confirmed'], ['04', 'NOV', 'One-on-one with the CEO', '11:30 AM IST · Video call · 30 min', 'Requested']];
-  var NAV = [['dashboard', 'dash', 'Dashboard'], ['company', 'building', 'Company Overview'], ['platform', 'cpu', 'Platform & Technology'], ['market', 'target', 'Market Opportunity'], ['progress', 'trend', 'Business Progress'], ['financials', 'wallet', 'Financials & Funding'], ['documents', 'file', 'Investment Documents'], ['messages', 'mail', 'Messages & Updates'], ['meetings', 'cal', 'Meeting Requests'], ['profile', 'gear', 'Profile & Settings']];
-  var TITLES = { dashboard:['Investor Dashboard', 'Track progress. Review performance. Build the future.'], company:['Company Overview', 'Who we are and what we are building.'], platform:['Platform & Technology', 'Everything you need for global trade — in one place.'], market:['Market Opportunity', 'A massive and growing global trade market.'], progress:['Business Progress', 'What we have achieved and what is in progress.'], financials:['Financials & Funding', 'Transparent numbers. A clear path to growth.'], documents:['Investment Documents', 'Secure data room · 48 documents · NDA signed'], messages:['Messages & Updates', 'Announcements and messages from the Venture Kart team.'], meetings:['Meeting Requests', 'Book time with the leadership team.'], profile:['Profile & Settings', 'Your investor profile, security and notifications.'] };
+  // ---------------- investor share + money flow data ----------------
+  var SHARE = 45; // per mille → 4.5% of every shipment
+  function shr(v){ return Math.round(v * SHARE / 1000); }
+  var OWN = [['#D8C39A', 'You (Rajesh Kumar)', 4.5], ['#86BDF7', 'Other angel investors', 18.5], ['#4B8BF5', 'Institutional / VC', 22], ['#B5AFA6', 'Founders', 50], ['#5D6B80', 'ESOP & reserve', 5]];
+  var FLOW_TOTAL = 8642500, FLOW_RECEIVED = 6980000;
+  var MY_TOTAL = shr(FLOW_TOTAL), MY_DONE = shr(FLOW_RECEIVED), MY_PEND = shr(FLOW_TOTAL - FLOW_RECEIVED);
+  var MF_MONTHS = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'], MF_DONE = [30200, 36800, 41500, 47900, 52300, 49100, 56300];
+  var MF_SHIP = [['VK-2026-1043', 'Electronics', 'CN', 'AE', 38400, 'In Transit', 'Pending'], ['VK-2026-1042', 'Textiles', 'IN', 'DE', 21800, 'Delivered', 'Processed'], ['VK-2026-1041', 'Fresh Fruits', 'LK', 'OM', 12600, 'In Transit', 'Pending'], ['VK-2026-1040', 'Pharma', 'SG', 'US', 48500, 'Cleared', 'Processed'],
+    ['VK-2026-1039', 'Machinery', 'TR', 'SA', 45200, 'In Transit', 'Pending'], ['VK-2026-1038', 'Spices', 'IN', 'AE', 15300, 'Delivered', 'Processed'], ['VK-2026-1037', 'Basmati Rice', 'IN', 'SA', 28900, 'Delivered', 'Processed'], ['VK-2026-1036', 'Chemicals', 'KR', 'DE', 34200, 'Delivered', 'Processed']];
+  var MF_PAID = [['PAY-2026-0412', 'VK-2026-1042 · Textiles', 21800, '28 Oct 2026'], ['PAY-2026-0405', 'VK-2026-1040 · Pharma', 48500, '24 Oct 2026'], ['PAY-2026-0391', 'VK-2026-1038 · Spices', 15300, '19 Oct 2026'], ['PAY-2026-0377', 'VK-2026-1037 · Basmati Rice', 28900, '12 Oct 2026'], ['PAY-2026-0360', 'VK-2026-1036 · Chemicals', 34200, '05 Oct 2026']];
+  var MF_PEND = (function(){ var a = [['VK-2026-1043 · Electronics', shr(38400), 'In Transit', '12 Nov 2026', 6], ['VK-2026-1041 · Fresh Fruits', shr(12600), 'In Transit', '09 Nov 2026', 6], ['VK-2026-1039 · Machinery', shr(45200), 'In Transit', '05 Nov 2026', 5], ['Cleared shipments · awaiting settlement (9)', 28400, 'Cleared', '03 Nov 2026', 5]], t = a.reduce(function(x, r){ return x + r[1]; }, 0);
+    a.push(['Other shipments in transit (21)', MY_PEND - t, 'In Transit', '15 Nov 2026', 6]); return a; })();
+  var MF_PEND_M = MF_MONTHS.map(function(m, i){ return MF_PEND.reduce(function(x, r){ return x + (r[4] === i ? r[1] : 0); }, 0); });
+  function k(n){ return '$' + (n / 1000).toFixed(n % 1000 ? 1 : 0) + 'K'; }
+  function stk(a, b){ var t = a + b; return '<div class="stk"><i style="width:' + (a / t * 100) + '%;background:#3CC48D"></i><i style="width:' + (b / t * 100) + '%;background:#D8C39A"></i></div>'; }
+  function ownDonut(sz){ return donut(OWN.map(function(o){ return { v:o[2], c:o[0] }; }), sz, 24, '<b>4.5%</b><small>Your share</small>', 3); }
+  function ownLegend(){ return legend(OWN.map(function(o){ return [o[0], o[1], o[2] + '%']; })); }
+  function invDash(){
+    return '<div class="card mt"><div class="card-h">' + ic('users') + '<div><h3>Investor Share Analysis</h3><p>Ownership split and your share of the money flow</p></div><a class="link sp" data-go="app/moneyflow">Investor Money Flow ' + ic('arrow') + '</a></div><div class="ivs"><div class="donut-w">' + ownDonut(170) + ownLegend() + '</div>' +
+      '<div><div class="ivs-t"><div><small>Your share of every shipment</small><b>4.5%</b></div><div><small>Your share of total money flow</small><b>' + money(MY_TOTAL) + '</b></div><div><small>Processed payments</small><b class="g">' + money(MY_DONE) + '</b></div><div><small>Pending payments</small><b class="gd">' + money(MY_PEND) + '</b></div></div>' +
+      '<div class="ivs-b">' + stk(MY_DONE, MY_PEND) + '<div class="lg-row"><span><i style="background:#3CC48D"></i>Processed ' + Math.round(MY_DONE / MY_TOTAL * 100) + '%</span><span><i style="background:#D8C39A"></i>Pending ' + Math.round(MY_PEND / MY_TOTAL * 100) + '%</span><span class="mu" style="margin-left:auto">Next payout · 03 Nov 2026</span></div></div></div></div></div>'; }
+  function mfShipTable(){ var rows = MF_SHIP.filter(function(r){ return ST.mf === 'all' || r[6] === ST.mf; }), tot = rows.reduce(function(x, r){ return x + r[4]; }, 0), mine = rows.reduce(function(x, r){ return x + shr(r[4]); }, 0);
+    return '<div class="tbl-w"><table class="tbl"><thead><tr><th>Shipment ID</th><th>Product</th><th>Route</th><th>Shipment value</th><th>Your share</th><th>Your amount</th><th>Shipment</th><th>Payment</th></tr></thead><tbody>' +
+      rows.map(function(r){ return '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td><td>' + r[2] + ' → ' + r[3] + '</td><td>' + money(r[4]) + '</td><td>4.5%</td><td><b>' + money(shr(r[4])) + '</b></td><td>' + pill(r[5]) + '</td><td>' + pill(r[6]) + '</td></tr>'; }).join('') +
+      '</tbody><tfoot><tr><td colspan="3" style="color:var(--text2)">Total · ' + rows.length + ' shipments</td><td><b>' + money(tot) + '</b></td><td>4.5%</td><td><b class="gd">' + money(mine) + '</b></td><td colspan="2"></td></tr></tfoot></table></div>'; }
+  function mfList(rows, done){ return rows.map(function(r){ return '<div class="mfr"><span class="ib sq" style="width:38px;height:38px">' + ic(done ? 'checkc' : 'clock') + '</span><div><b>' + r[0 + (done ? 1 : 0)] + '</b><small>' + (done ? r[0] + ' · ' + r[3] : 'Expected ' + r[3]) + '</small></div><div class="mfa"><em class="' + (done ? 'g' : 'gd') + '">' + (done ? '+' : '') + money(done ? shr(r[2]) : r[1]) + '</em>' + (done ? '<button class="ibtn" data-dl="' + r[0] + '.pdf" title="Receipt">' + ic('dl') + '</button>' : pill(r[2])) + '</div></div>'; }).join(''); }
+  function mfCard(icn, label, val, sub, cls){ return '<div class="card mfk"><span class="ib">' + ic(icn) + '</span><div><small>' + label + '</small><b class="' + (cls || '') + '">' + val + '</b><span>' + sub + '</span></div></div>'; }
+
+  var NAV = [['dashboard', 'dash', 'Dashboard'], ['company', 'building', 'Company Overview'], ['platform', 'cpu', 'Platform & Technology'], ['market', 'target', 'Market Opportunity'], ['progress', 'trend', 'Business Progress'], ['financials', 'wallet', 'Financials & Funding'], ['moneyflow', 'dollar', 'Investor Money Flow'], ['documents', 'file', 'Investment Documents'], ['messages', 'mail', 'Messages & Updates'], ['meetings', 'cal', 'Meeting Requests'], ['profile', 'gear', 'Profile & Settings']];
+  var TITLES = { dashboard:['Investor Dashboard', 'Track progress. Review performance. Build the future.'], company:['Company Overview', 'Who we are and what we are building.'], platform:['Platform & Technology', 'Everything you need for global trade — in one place.'], market:['Market Opportunity', 'A massive and growing global trade market.'], progress:['Business Progress', 'What we have achieved and what is in progress.'], financials:['Financials & Funding', 'Transparent numbers. A clear path to growth.'], moneyflow:['Investor Money Flow', 'Your share, payouts and pending payments across shipments.'], documents:['Investment Documents', 'Secure data room · 48 documents · NDA signed'], messages:['Messages & Updates', 'Announcements and messages from the Venture Kart team.'], meetings:['Meeting Requests', 'Book time with the leadership team.'], profile:['Profile & Settings', 'Your investor profile, security and notifications.'] };
   function unread(){ return MSGS.filter(function(m){ return m[4]; }).length; }
 
   // ---------------- shared sections ----------------
@@ -323,7 +351,7 @@
         legend([['#1F5FD1', 'Sea Freight', '52%'], ['#86BDF7', 'Air Freight', '24%'], ['#C1BCB5', 'Land Transport', '14%'], ['#3CC48D', 'LCL (Consolidation)', '7%'], ['#C9CED6', 'Others', '3%']]) + '</div></div>' +
         '<div class="card"><div class="card-h">' + ic('card') + '<h3>Payment &amp; Collection Status</h3></div><div class="donut-w">' + donut([{ v:77, c:'#3CC48D' }, { v:23, c:'#C1BCB5' }], 150, 18, '<b>77%</b><small>Received</small>', 0) +
         '<div style="flex:1">' + legend([['#3CC48D', 'Received', '77%', '$6,980,000'], ['#C1BCB5', 'Pending', '23%', '$2,085,000']]) + '<div style="margin-top:16px;font-size:12px;color:var(--text2)">Total Invoice Value<b style="display:block;font-size:17px;color:#fff">$9,065,000</b></div></div></div></div></div>' +
-        '<div class="dash-r3 mt"><div class="card"><div class="card-h">' + ic('globe') + '<div><h3>Global Trade Flow</h3><p>Live overview of your shipments across 193 countries</p></div></div><div class="tf"><div><div class="map">' + worldMap() + '</div>' +
+        invDash() + '<div class="dash-r3 mt"><div class="card"><div class="card-h">' + ic('globe') + '<div><h3>Global Trade Flow</h3><p>Live overview of your shipments across 193 countries</p></div></div><div class="tf"><div><div class="map">' + worldMap() + '</div>' +
         '<div class="regs">' + [['Asia', '42%', 203], ['Europe', '28%', 135], ['Middle East', '15%', 72], ['Americas', '9%', 43], ['Africa', '4%', 19], ['Oceania', '2%', 10]].map(function(r){ return '<div>' + r[0] + '<b>' + r[1] + '</b><small>' + r[2] + ' shipments</small></div>'; }).join('') + '</div></div>' +
         '<div class="tfs">' + [['box', 'Active Shipments', '67', 'In Transit'], ['receipt', 'Delivered This Month', '415', '+18%'], ['anchor', 'Ports Handled', '48', 'Global'], ['globe', 'Countries Served', '193', 'UN Member States']].map(function(s){ return '<div><span class="ib">' + ic(s[0]) + '</span><div><small>' + s[1] + '</small><b>' + s[2] + '<em>' + s[3] + '</em></b></div></div>'; }).join('') + '</div></div></div>' +
         '<div class="card"><div class="card-h">' + ic('ship') + '<h3>Recent Shipments</h3><a class="link sp" data-toast="Opening all shipments">View All ' + ic('arrow') + '</a></div><div class="tbl-w"><table class="tbl"><thead><tr><th>Shipment ID</th><th>Product</th><th>From → To</th><th>Status</th><th>Progress</th></tr></thead><tbody>' +
@@ -339,6 +367,17 @@
     platform:function(){ return secPlatform(true); },
     market:function(){ return secMarket(true); },
     progress:function(){ return '<div id="t-prog">' + secProgress() + '</div>'; },
+    moneyflow:function(){
+      var pc = Math.round(MY_DONE / MY_TOTAL * 100);
+      return '<div class="grid g4 kpis">' + mfCard('pie', 'Your share', '4.5%', 'of every shipment', '') + mfCard('dollar', 'Share of total money flow', money(MY_TOTAL), 'of ' + money(FLOW_TOTAL) + ' processed by Venture Kart', '') + mfCard('checkc', 'Processed payments', money(MY_DONE), pc + '% of your share · paid to ICICI ••3307', 'g') + mfCard('clock', 'Pending payments', money(MY_PEND), 'Next payout 03 Nov 2026', 'gd') + '</div>' +
+        '<div class="grid mt" style="grid-template-columns:1.5fr 1fr"><div class="card flat"><div class="card-h">' + ic('bars') + '<div><h3>Monthly payouts</h3><p>Processed vs pending, by shipment month</p></div><button class="btn line sm sp" data-dl="Investor Statement — Oct 2026.pdf">' + ic('dl') + 'Statement</button></div><div class="lg-row" style="margin-bottom:8px"><span><i style="background:#3CC48D"></i>Processed</span><span><i style="background:#D8C39A"></i>Pending</span></div>' +
+        bars({ labels:MF_MONTHS, series:[{ d:MF_DONE, c:'url(#bGreen)', n:'Processed' }, { d:MF_PEND_M, c:'url(#bGold)', n:'Pending' }], max:60000, ticks:[0, 20000, 40000, 60000], fmt:k, bw:20, h:220, w:600 }) + '</div>' +
+        '<div class="card flat"><div class="card-h">' + ic('pie') + '<h3>Processed vs pending</h3></div><div class="donut-w">' + donut([{ v:MY_DONE, c:'#3CC48D' }, { v:MY_PEND, c:'#D8C39A' }], 150, 20, '<b>' + pc + '%</b><small>Processed</small>', 2) + '<div style="flex:1">' + legend([['#3CC48D', 'Processed', pc + '%', money(MY_DONE)], ['#D8C39A', 'Pending', (100 - pc) + '%', money(MY_PEND)]]) + '</div></div>' +
+        '<div class="kf mt"><div><span>Average per shipment</span><b>' + money(Math.round(MY_TOTAL / 482)) + '</b></div><div><span>Shipments in your share</span><b>482</b></div><div><span>Your ownership</span><b>4.5%</b></div></div></div></div>' +
+        '<div class="card flat mt"><div class="card-h">' + ic('ship') + '<div><h3>Your share in each shipment</h3><p>Recent shipments · 4.5% of the shipment value</p></div><div class="seg sp">' + [['all', 'All'], ['Processed', 'Processed'], ['Pending', 'Pending']].map(function(t){ return '<button data-tab="mf|' + t[0] + '" class="' + (ST.mf === t[0] ? 'on' : '') + '">' + t[1] + '</button>'; }).join('') + '</div></div><div id="mf-ship">' + mfShipTable() + '</div></div>' +
+        '<div class="grid g2 mt"><div class="card flat"><div class="card-h">' + ic('checkc') + '<div><h3>Processed payments</h3><p>Recent 5 of 61 payments</p></div></div>' + mfList(MF_PAID, true) + '</div>' +
+        '<div class="card flat"><div class="card-h">' + ic('clock') + '<div><h3>Pending payments</h3><p>' + money(MY_PEND) + ' expected over the next 30 days</p></div></div>' + mfList(MF_PEND, false) + '</div></div>' +
+        '<p class="note">Figures are illustrative. Your share is calculated on shipment value and paid after delivery and customs clearance.</p>'; },
     financials:function(){ return '<div id="t-fin">' + secFinancial() + '</div><h2 class="sec-t mt2" style="font-size:22px">Investment Opportunity</h2><p class="sec-s" style="margin-bottom:16px">Be part of our next growth phase.</p>' + secInvest(); },
     documents:function(){
       return '<div class="dr">' + [['folder', 'Total documents', '48'], ['file', 'New this month', '12'], ['eye', 'Viewed by you', '21'], ['shield', 'NDA status', 'Signed']].map(function(d){ return '<div class="card" style="display:flex;gap:14px;align-items:center;padding:16px"><span class="ib">' + ic(d[0]) + '</span><div><small class="mu">' + d[1] + '</small><b style="display:block;font-size:20px">' + d[2] + '</b></div></div>'; }).join('') + '</div>' +
@@ -407,6 +446,7 @@
     if ((x = t.closest('[data-tab]'))){ var p = x.dataset.tab.split('|'); ST[p[0]] = p[1];
       if (p[0] === 'prog') document.getElementById('t-prog').innerHTML = secProgress();
       if (p[0] === 'fin') document.getElementById('t-fin').innerHTML = secFinancial();
+      if (p[0] === 'mf'){ x.parentNode.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', b === x); }); document.getElementById('mf-ship').innerHTML = mfShipTable(); }
       if (p[0] === 'doc'){ x.parentNode.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', b === x); }); document.getElementById('doclist').innerHTML = docList(); }
       return; }
     if ((x = t.closest('[data-cargo]'))){ ST.cargo = x.dataset.cargo; x.parentNode.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', b === x); }); document.getElementById('cargo').innerHTML = cargoChart(); return; }

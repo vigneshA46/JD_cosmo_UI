@@ -533,3 +533,18 @@ textarea.inp{ height:auto; padding:12px 14px; width:100%; resize:vertical; outli
 .kpi .v .up{ display:inline-flex; }
 @media (min-width:1281px){ .dash-r2{ grid-template-columns:1.35fr 1fr 1fr; } }
 @media (max-width:720px){ .top > div:nth-child(2){ order:3; width:100%; } .top .r{ margin-left:auto; } }
+
+/* investor share + money flow */
+.ivs{ display:grid; grid-template-columns:1fr 1.1fr; gap:26px; align-items:center; } .ivs > *{ min-width:0; }
+.ivs-t{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+.ivs-t > div, .mfk{ border:1px solid var(--line2); background:rgba(255,255,255,.03); border-radius:13px; }
+.ivs-t > div{ padding:14px 16px; } .ivs-t small{ display:block; font-size:12px; color:var(--text2); } .ivs-t b{ display:block; font-size:22px; font-weight:700; letter-spacing:-.01em; margin-top:4px; }
+.ivs-b{ margin-top:16px; } .stk{ display:flex; height:10px; border-radius:6px; overflow:hidden; background:rgba(255,255,255,.07); margin-bottom:10px; } .stk i{ display:block; }
+.mfk{ display:flex; gap:14px; align-items:center; padding:16px 18px; } .mfk small{ display:block; font-size:12px; color:var(--text2); } .mfk b{ display:block; font-size:24px; font-weight:700; letter-spacing:-.01em; margin:2px 0; } .mfk span:not(.ib){ display:block; font-size:11.5px; color:var(--muted); }
+.mfr{ display:flex; gap:12px; align-items:center; padding:12px 0; border-bottom:1px solid var(--line2); } .mfr:last-child{ border-bottom:none; }
+.mfr > div:nth-child(2){ flex:1; min-width:0; } .mfr b{ display:block; font-size:13px; } .mfr small{ font-size:11.5px; color:var(--muted); }
+.mfa{ display:flex; align-items:center; gap:10px; flex:none; } .mfa em{ font-style:normal; font-weight:700; font-size:14px; font-family:'IBM Plex Mono',monospace; }
+.tbl tfoot td{ border-top:1px solid var(--line3); border-bottom:none; padding-top:14px; }
+.card-h .seg{ flex:none; }
+@media (max-width:1080px){ .ivs{ grid-template-columns:1fr; } }
+@media (max-width:720px){ .ivs-t{ grid-template-columns:1fr 1fr; } .grid[style*="1.5fr"]{ grid-template-columns:1fr !important; } .card-h{ flex-wrap:wrap; } }
