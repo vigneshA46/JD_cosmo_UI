@@ -718,7 +718,7 @@
       $('ix-fc').textContent = fltCount() || '';
     }
 
-    // ======================= full-screen intros (Sea / Air / Warehouse) + Venture Kart splash =======================
+    // ======================= full-screen intros (Sea / Air / Warehouse) + Venture Karts splash =======================
     function playIntro(kind){
       var host = $('appBody'), el = document.createElement('div'), title = { sea: 'Sea Freight', air: 'Air Freight', wh: 'Warehousing' }[kind], tag = { sea: 'Oceans of possibility', air: 'Faster than ever', wh: 'Space, perfectly placed' }[kind], art = '';
       if (kind === 'sea') art = '<div class="in-sun"></div><svg class="in-ship" viewBox="0 0 200 80"><g fill="#C7C3BC"><rect x="40" y="18" width="16" height="14" rx="1"/><rect x="58" y="18" width="16" height="14" rx="1" fill="#997D4C"/><rect x="76" y="18" width="16" height="14" rx="1"/><rect x="94" y="18" width="16" height="14" rx="1" fill="#E3E0DD"/><rect x="112" y="18" width="16" height="14" rx="1" fill="#997D4C"/><rect x="58" y="4" width="16" height="14" rx="1" fill="#E3E0DD"/><rect x="94" y="4" width="16" height="14" rx="1"/><rect x="140" y="6" width="14" height="26" rx="2" fill="#fff"/></g><path d="M20 34h164l-16 26H38z" fill="#fff"/><path d="M28 44h150" stroke="#997D4C" stroke-width="3"/></svg>' +
@@ -726,16 +726,16 @@
       if (kind === 'air') art = '<i class="in-cloud c1"></i><i class="in-cloud c2"></i><i class="in-cloud c3"></i><svg class="in-trail" viewBox="0 0 400 400"><path d="M-20 380 Q140 300 420 40"/></svg><svg class="in-plane" viewBox="0 0 24 24"><path fill="#C7C3BC" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 00-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg>';
       if (kind === 'wh'){ var bx = ''; for (var i = 0; i < 12; i++) bx += '<i style="animation-delay:' + (0.05 * i).toFixed(2) + 's"></i>'; art = '<div class="in-boxes">' + bx + '</div><div class="in-door"></div>'; }
       el.className = 'intro in-' + kind;
-      el.innerHTML = art + '<div class="in-t"><small>VENTURE KART</small><b>' + title + '</b><span>' + tag + '</span></div>';
+      el.innerHTML = art + '<div class="in-t"><small>VENTURE KARTS</small><b>' + title + '</b><span>' + tag + '</span></div>';
       host.appendChild(el);
       setTimeout(function(){ el.classList.add('out'); }, 1700);
       setTimeout(function(){ el.remove(); }, 2250);
     }
     function playSplash(short){
-      var host = $('appBody'), el = document.createElement('div'), word = 'VENTURE KART'.split('').map(function(ch, i){ return '<span style="animation-delay:' + (0.9 + i * 0.05).toFixed(2) + 's">' + (ch === ' ' ? '&nbsp;' : ch) + '</span>'; }).join('');
+      var host = $('appBody'), el = document.createElement('div'), word = 'VENTURE KARTS'.split('').map(function(ch, i){ return '<span style="animation-delay:' + (0.9 + i * 0.05).toFixed(2) + 's">' + (ch === ' ' ? '&nbsp;' : ch) + '</span>'; }).join('');
       el.className = 'splash' + (short ? ' short' : '');
       el.innerHTML = '<div class="sp-glow"></div><svg class="sp-ring" viewBox="0 0 120 120"><circle cx="60" cy="60" r="54"/></svg>' +
-        '<div class="sp-logo"><img class="sp-emb" src="assets/images/logo/vk-emblem-256.png" alt="Venture Kart"></div>' +
+        '<div class="sp-logo"><img class="sp-emb" src="assets/images/logo/vk-emblem-256.png" alt="Venture Karts"></div>' +
         '<div class="sp-word">' + word + '</div><div class="sp-tag">Global B2B trade, simplified</div>';
       host.appendChild(el);
       setTimeout(function(){ el.classList.add('out'); }, short ? 1500 : 2600);
@@ -2248,7 +2248,7 @@
     if (!document.getElementById('screen-auth-login')) return;
     function $a(id){ return document.getElementById(id); }
     function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]; }); }
-    var CROWN = '<img class="vk-emb" src="assets/images/logo/vk-emblem-256.png" alt="Venture Kart">';
+    var CROWN = '<img class="vk-emb" src="assets/images/logo/vk-emblem-256.png" alt="Venture Karts">';
     var CK = '<svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>';
     var CTRY = [['in','India','+91'],['ae','United Arab Emirates','+971'],['sa','Saudi Arabia','+966'],['qa','Qatar','+974'],['om','Oman','+968'],['sg','Singapore','+65'],['gb','United Kingdom','+44'],['us','United States','+1'],['nl','Netherlands','+31'],['de','Germany','+49'],['lk','Sri Lanka','+94'],['vn','Vietnam','+84'],['th','Thailand','+66'],['ke','Kenya','+254'],['eg','Egypt','+20'],['br','Brazil','+55']];
     var AU = { role:'buyer', chosen:false, step:0, d:{}, docs:{}, verified:false, otpFor:'login', timer:null };
@@ -2264,9 +2264,9 @@
     function logo(){
       document.querySelectorAll('[data-au-logo]').forEach(function(el){
         var big = el.classList.contains('big');
-        el.innerHTML = '<span class="au-crown">' + CROWN + '</span><b>VENTURE KART</b>' + '<small>One Platform. Every Market. One Global Network.</small>';
+        el.innerHTML = '<span class="au-crown">' + CROWN + '</span><b>VENTURE KARTS</b>' + '<small>One Platform. Every Market. One Global Network.</small>';
       });
-      document.querySelectorAll('[data-au-logo-mini]').forEach(function(el){ el.innerHTML = '<span class="au-crown">' + CROWN + '</span><div><b>VENTURE KART</b><small>' + (el.closest('#screen-auth-reg') ? (AU.chosen ? ROLE_N[AU.role] + ' Registration' : 'Create your account') : ROLE_N[AU.role] + ' Portal') + '</small></div>'; });
+      document.querySelectorAll('[data-au-logo-mini]').forEach(function(el){ el.innerHTML = '<span class="au-crown">' + CROWN + '</span><div><b>VENTURE KARTS</b><small>' + (el.closest('#screen-auth-reg') ? (AU.chosen ? ROLE_N[AU.role] + ' Registration' : 'Create your account') : ROLE_N[AU.role] + ' Portal') + '</small></div>'; });
     }
     function setRole(r){
       AU.role = r;
@@ -2377,7 +2377,7 @@
         h += '<div class="au-note"><svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg>We\'ll send one-time codes to your mobile and email to verify them.</div>';
       }
       if (name === 'Account type'){
-        h += head('How will you use Venture Kart?', 'Choose your account type — you can add the other role later');
+        h += head('How will you use Venture Karts?', 'Choose your account type — you can add the other role later');
         if (AU.verified) h += '<div class="au-ok-pill">' + CK + 'Mobile &amp; email verified</div>';
         h += '<div class="au-types">' +
           '<div class="au-type' + (AU.chosen && AU.role === 'buyer' ? ' on' : '') + '" data-au-type="buyer"><span class="au-ri"><svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.7 12.4a1.5 1.5 0 001.5 1.1h8.9a1.5 1.5 0 001.5-1.1L22 7H6"/></svg></span><div><b>I want to buy</b><small>Source products, request quotations, book logistics and track shipments.</small><em>4 more steps · Business · Documents · Review</em></div><i class="au-tick"></i></div>' +
@@ -2429,7 +2429,7 @@
         h += L.map(function(x){ var f = AU.docs[x[0]];
           return '<div class="au-doc' + (f ? ' done' : '') + '" data-doc="' + x[0] + '"><span class="au-dic">' + (f ? CK : '<svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5"/></svg>') + '</span><div><b>' + x[1] + (x[3] ? ' <i>*</i>' : '') + '</b><small>' + (f ? esc(f) : x[2]) + '</small><div class="au-bar"><em></em></div></div>' +
             (f ? '<button class="au-rm" data-au-rm="' + x[0] + '">Remove</button>' : '<button class="au-up" data-au-up="' + x[0] + '"><svg viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></svg>Upload</button>') + '</div>'; }).join('');
-        h += '<em class="au-err c" id="ar-doc-err"></em><div class="au-note"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Documents are encrypted and only visible to the Venture Kart verification team.</div>';
+        h += '<em class="au-err c" id="ar-doc-err"></em><div class="au-note"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Documents are encrypted and only visible to the Venture Karts verification team.</div>';
       }
       if (name === 'Review'){
         var c = ctry(), dc = CTRY.filter(function(x){ return x[0] === v('dial', c[0]); })[0] || c, L2 = docsFor(), n = L2.filter(function(x){ return AU.docs[x[0]]; }).length;
@@ -2439,7 +2439,7 @@
         h += card('Business', 2, [[r === 'buyer' ? 'Buyer type' : 'Seller type', v(r === 'buyer' ? 'btype' : 'stype')], ['Business', v('company')], ['Trade name', v('trade')], ['Location', [v('city'), v('state'), c[1]].filter(Boolean).join(', ')], ['Registration', v('regno')], ['PAN / GSTIN', [v('pan'), v('gst')].filter(Boolean).join(' · ')], ['IEC', v('iec')], ['Tax ID', v('tax')], ['Interests', (v('interest', []) || []).join(', ')]]);
         if (r === 'seller') h += card('Product', 4, [['Product', v('pname')], ['Category', [v('cat'), v('variety'), v('grade')].filter(Boolean).join(' · ')], ['Supply', v('qty') ? v('qty') + ' MT available · ' + v('cap') + ' MT / month' : ''], ['MOQ · price', v('moq') ? v('moq') + ' kg · $' + v('price') + '/kg' : ''], ['Packing', v('pack') ? v('pack') + (v('pw8') ? ' · ' + v('pw8') + ' kg' : '') : ''], ['Photos', Object.keys(AU.docs).filter(function(k){ return /^ph/.test(k); }).length + ' uploaded']]);
         h += '<div class="au-rv"><div class="au-rvh"><b>Documents</b><a data-ar-edit="3">Edit</a></div><div class="au-docsum">' + L2.filter(function(x){ return AU.docs[x[0]]; }).map(function(x){ return '<span>' + CK + x[1] + '</span>'; }).join('') + '</div><div class="au-kv"><span>Uploaded</span><b>' + n + ' of ' + L2.length + '</b></div></div>';
-        h += '<label class="au-chk big"><input type="checkbox" id="ar-ok"><i></i>I confirm the information and documents are accurate, and consent to verification by Venture Kart.</label><em class="au-err c" id="ar-ok-err"></em>';
+        h += '<label class="au-chk big"><input type="checkbox" id="ar-ok"><i></i>I confirm the information and documents are accurate, and consent to verification by Venture Karts.</label><em class="au-err c" id="ar-ok-err"></em>';
       }
       return h;
     }

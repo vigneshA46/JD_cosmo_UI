@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Venture Kart — Service Intros</title>
+<title>Venture Karts — Service Intros</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="/assets/images/logo/vk-emblem-128.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:wght@600;700&family=Cinzel:wght@700&display=swap" rel="stylesheet">
@@ -130,7 +130,7 @@ section > h2{ font-family:Cinzel,serif; letter-spacing:.14em; font-size:16px; co
 .w1 .bg{ position:absolute; inset:0; background:url(/assets/images/warehouse.jpg) center/cover; animation:kb 3s ease-out both; }
 .w1 .bg::after{ content:''; position:absolute; inset:0; background:linear-gradient(180deg,rgba(17,26,43,.55),rgba(17,26,43,.9)); }
 .w1 .shut{ position:absolute; inset:0; z-index:5; background:repeating-linear-gradient(180deg,#4A505B 0 2px,#8A8C90 2px 5px,#B5AFA6 5px 14px,#6F737A 14px 18px); box-shadow:0 10px 30px rgba(0,0,0,.6); animation:flick .5s steps(2) both, roll 1s .55s cubic-bezier(.6,0,.25,1.1) forwards; }
-.w1 .shut::after{ content:'VENTURE KART'; position:absolute; left:0; right:0; top:46%; text-align:center; font:700 13px Cinzel; letter-spacing:.3em; color:#111A2B; opacity:.55; }
+.w1 .shut::after{ content:'VENTURE KARTS'; position:absolute; left:0; right:0; top:46%; text-align:center; font:700 13px Cinzel; letter-spacing:.3em; color:#111A2B; opacity:.55; }
 .w1 .light{ position:absolute; left:0; right:0; bottom:0; height:0; z-index:4; background:linear-gradient(0deg,rgba(242,227,190,.45),transparent); animation:spill 1s .55s ease-out forwards, fadeO .8s 1.6s forwards; }
 .w1 .tt{ top:240px; }
 @keyframes flick{ 0%{ filter:brightness(.3); } 50%{ filter:brightness(1.1); } 100%{ filter:brightness(1); } }
@@ -199,19 +199,19 @@ body{ padding:0; min-height:100vh; display:grid; grid-template-columns:290px 1fr
 </style>
 </head>
 <body>
-<aside class="menu"><div class="brand"><img src="/assets/images/logo/vk-emblem-256.png" alt=""><div><b>VENTURE KART</b><small>SERVICE INTROS</small></div></div><div id="menu"></div></aside>
+<aside class="menu"><div class="brand"><img src="/assets/images/logo/vk-emblem-256.png" alt=""><div><b>VENTURE KARTS</b><small>SERVICE INTROS</small></div></div><div id="menu"></div></aside>
 <main class="stage"><div class="ph"><div class="scr" id="scr"></div></div></main>
 <aside class="info" id="info"></aside>
 <script>
 var GROUPS = [['sea','SEA FREIGHT','<svg viewBox="0 0 24 24"><path d="M3 17l2 4h14l2-4-9-3z"/><path d="M5 15V9h14v6M9 9V5h6v4"/></svg>'],['air','AIR FREIGHT','<svg viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 00-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg>'],['wh','WAREHOUSING','<svg viewBox="0 0 24 24"><path d="M3 21V9l9-5 9 5v12M7 21v-8h10v8M7 17h10"/></svg>']];
 var LIST = [
   ['s1','sea','Horizon Sunrise','Cinematic: a container ship sails in over parallax waves as the gold sun rises on the horizon and its reflection shimmers on the water.',['Cinematic','Illustrated','~2.6 s']],
-  ['s2','sea','Compass to Route','The compass from the VENTURE KART emblem spins and settles, then a dotted sea route draws from Nhava Sheva to Jebel Ali with a glowing vessel travelling along it.',['On-brand','Logo compass','~2.8 s']],
+  ['s2','sea','Compass to Route','The compass from the VENTURE KARTS emblem spins and settles, then a dotted sea route draws from Nhava Sheva to Jebel Ali with a glowing vessel travelling along it.',['On-brand','Logo compass','~2.8 s']],
   ['s3','sea','Container Wall','Coloured containers stack in from both sides into a wall, then split open like doors to reveal the port behind.',['Bold','Photo reveal','~2.5 s']],
   ['a1','air','Runway Take-off','Runway lights rush toward the camera, the aircraft lifts off and flies away, and the scene opens into a golden dawn.',['Cinematic','Motion','~2.4 s']],
   ['a2','air','Through the Clouds','The camera climbs through soft cloud layers, a jet crosses with a contrail, and a sea of clouds settles below.',['Calm','Premium','~2.6 s']],
   ['a3','air','Globe Flight Path','The dotted globe turns to India and gold flight routes draw out to Dubai, Rotterdam, Singapore, Tokyo, New York and Mombasa — then zooms through into the app.',['On-brand','Global','~3.0 s']],
-  ['w1','wh','Roller Shutter','Lights flicker on, a steel shutter marked VENTURE KART rolls up and warm light spills into the warehouse.',['Cinematic','Photo reveal','~2.4 s']],
+  ['w1','wh','Roller Shutter','Lights flicker on, a steel shutter marked VENTURE KARTS rolls up and warm light spills into the warehouse.',['Cinematic','Photo reveal','~2.4 s']],
   ['w2','wh','Isometric Racks','A 3D rack draws itself and pallets drop into each slot one by one — clean, modern and playful.',['Modern','Illustrated','~2.2 s']],
   ['w3','wh','Blueprint Floor Plan','A floor plan draws in blueprint lines, the storage zones light up and a pin drops on available space.',['On-brand','Informative','~2.6 s']]
 ];
@@ -220,7 +220,7 @@ var REC = { s2:1, a3:1, w3:1 };
 <script>
 (function(){
   function title(t, sub, delay){ delay = delay || 0; var w = t.split('').map(function(c, i){ return '<span style="animation-delay:' + (1.3 + delay + i * .045).toFixed(3) + 's">' + (c === ' ' ? '&nbsp;' : c) + '</span>'; }).join('');
-    return '<div class="tt"' + (delay ? ' style="--d:' + delay + 's"' : '') + '><small>VENTURE KART</small><b>' + w + '</b><i></i><em>' + sub + '</em></div>'; }
+    return '<div class="tt"' + (delay ? ' style="--d:' + delay + 's"' : '') + '><small>VENTURE KARTS</small><b>' + w + '</b><i></i><em>' + sub + '</em></div>'; }
   var WAVE = '<svg viewBox="0 0 800 60" preserveAspectRatio="none"><path d="M0 20 Q50 5 100 20 T200 20 T300 20 T400 20 T500 20 T600 20 T700 20 T800 20 V60 H0Z"/></svg>';
   var SHIP = '<svg viewBox="0 0 180 56"><g fill="#0A0F18" stroke="rgba(218,213,205,.55)" stroke-width=".8"><path d="M4 38h172l-12 16H20z"/><rect x="138" y="14" width="18" height="24" rx="1.5"/><rect x="142" y="6" width="10" height="8"/></g>' +
     '<g stroke="#0A0F18" stroke-width=".8">' + [0,1,2,3,4,5,6].map(function(i){ var c = ['#B59A6A','#B5AFA6','#2B374D','#D8C39A','#8A847B','#B59A6A','#B5AFA6'][i]; return '<rect x="' + (20 + i * 16) + '" y="26" width="15" height="12" fill="' + c + '"/><rect x="' + (20 + i * 16) + '" y="' + (i % 3 ? 14 : 18) + '" width="15" height="' + (i % 3 ? 12 : 8) + '" fill="' + ['#2B374D','#B5AFA6','#B59A6A'][i % 3] + '"/>'; }).join('') + '</g><circle cx="150" cy="22" r="1.4" fill="#F2E3BE"/><circle cx="145" cy="22" r="1.4" fill="#F2E3BE"/></svg>';
